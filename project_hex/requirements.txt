@@ -1,3 +1,0 @@
-MySQL-python==1.2.3
-python-memcached==1.48
-wsgiref==0.1.2
