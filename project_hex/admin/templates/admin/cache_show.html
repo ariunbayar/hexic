@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+
+<a href="{{ url_for("admin.cache") }}" class="btn">cache</a>
+<br/>
+<textarea class="well size23" rows="15">
+{{ item|pprint }}
+</textarea>
+
+{% endblock %}

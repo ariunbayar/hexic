@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-27 13:25+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html:21
+msgid "Home"
+msgstr "Нүүр"
+
+#: templates/player/login.html:3 templates/player/login.html.py:11
+msgid "Login"
+msgstr "Нэвтрэх"
+
+#: templates/player/login.html:13
+msgid "Username"
+msgstr "Хэрэглэгчийн нэр"
+
+#: templates/player/login.html:20
+msgid "Phone"
+msgstr "Утас"
+
+#: templates/player/login.html:24
+msgid "Login to HexEnv"
+msgstr "HexEnv-д нэвтрэх"
+
+#: templates/player/login.html:25
+msgid "New player? Click here."
+msgstr "Шинэ тоглогч уу? Энд дар."

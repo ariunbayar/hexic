@@ -1,0 +1,11 @@
+{% set messages = get_flashed_messages(with_categories=True)|groupby(0) %}
+
+{% for group, msgs in messages %}
+<div class="alert alert-{{ group }}">
+    <a class="close" dismiss="alert">x</a>
+    {% for cat, msg in msgs %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+</div>
+{% endfor %}
+

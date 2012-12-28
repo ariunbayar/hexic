@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block body %}
+
+<a href="{{ url_for("admin.user_add") }}" class="btn">шинээр нэм</a>
+
+<table class="size24">
+<thead>
+    <tr>
+        <th>#</th>
+        <th>нэр</th>
+        <th>и-мэйл</th>
+        <th>утас</th>
+        <th>бүртгэгдсэн</th>
+        <th>сүүлд нэвтэрсэн</th>
+        <th>админ</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }} </td>
+        <td>{{ user.email|d("-", true) }} </td>
+        <td>{{ user.phone }} </td>
+        <td>{{ user.created }} </td>
+        <td>{{ user.last_seen|d("-", true) }} </td>
+        <td>{{ "админ" if user.is_admin else "-" }} </td>
+        <td><a href="{{ url_for("admin.user_edit", uid=user.id) }}">засах</a></td>
+    <tr>
+    {% endfor %}
+</tbody>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<fieldset>
+  <legend>Edit Player</legend>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.errors }}
+    <table>
+      <tr>
+        <td>{{ form.username.label }}</td>
+        <td>
+          {{ form.username.errors }}
+          {{ form.username }}
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.email.label }}</td>
+        <td>
+          {{ form.email.errors }}
+          {{ form.email }}
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.phone.label }}</td>
+        <td>
+          {{ form.phone.errors }}
+          {{ form.phone }}
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.code.label }}</td>
+        <td>
+          {{ form.code.errors }}
+          {{ form.code }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input type="submit" value="Save"/></td>
+      </tr>
+    </table>
+  </form>
+</fieldset>
+
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

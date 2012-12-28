@@ -1,0 +1,61 @@
+/**
+ * Oswald
+ */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Oswald '), local('Oswald'), url('/static/css/fonts/Oswald.woff') format('woff');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Oswald Bold'), local('Oswald-Bold'), url('/static/css/fonts/Oswald-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Oswald Light'), local('Oswald-Light'), url('/static/css/fonts/Oswald-Light.woff') format('woff');
+}
+
+
+/**
+ * Open Sans Condensed
+ */
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Condensed Bold'), local('OpenSans-CondensedBold'), url('/static/css/fonts/OpenSans-CondensedBold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Cond Light'), local('OpenSans-CondensedLight'), url('/static/css/fonts/OpenSans-CondensedLight.woff') format('woff');
+}
+
+
+/**
+ * Comfortaa
+ */
+@font-face {
+  font-family: 'Comfortaa';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Comfortaa'), local('Comfortaa-Regular'), url('/static/css/fonts/Comfortaa-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Comfortaa';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Comfortaa Bold'), local('Comfortaa-Bold'), url('/static/css/fonts/Comfortaa-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Comfortaa';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Comfortaa Light'), local('Comfortaa-Light'), url('/static/css/fonts/Comfortaa-Light.woff') format('woff');
+}

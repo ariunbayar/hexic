@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+
+<a href="{{ url_for("admin.cache_clear") }}" class="btn">цэвэрлэ</a>
+
+<ul>
+  {% for item in items %}
+  <li>
+    <a href="{{ url_for("admin.cache_show", key=item) }}">
+      {{ item }}
+      {% if hit_ratios[loop.index0] %}
+      ({{ hit_ratios[loop.index0][0] }}/{{ hit_ratios[loop.index0][1] }})
+      {% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

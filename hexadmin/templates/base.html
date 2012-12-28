@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>HexAdmin | {% block title %}{% endblock %}</title>
+  {% block extrahead %}{% endblock %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
+</head>
+<body>
+  <div class="head">
+    <a href="/">Dashboard</a>
+    {% if request.session.id %}
+    <a href="#">Logout</a>
+    {% else %}
+    <a href="#">Login</a>
+    {% endif %}
+    <span style="float:right" class="uid">{{ request.session.id }}</span>
+  </div>
+
+  {% block extracontent %}{% endblock %}
+
+  {% if messages %}
+  <ul>
+    {% for msg in messages %}
+    <li>{{ msg }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div class="wrapper">
+  {% block content %}{% endblock %}
+  </div>
+  <script src="{{ STATIC_URL }}js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ STATIC_URL }}js/main.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    $(function(){
+      {% block js-init %}{% endblock %}
+    });
+  </script>
+</body>
+</html>
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

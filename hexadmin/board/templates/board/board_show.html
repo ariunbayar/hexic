@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{ board.name }}</h1>
+
+
+<div class="actions">
+  <input type="radio" name="action" id="action-noop" value="noop" checked="checked"/>
+  <label for="action-noop">Nothing</label>
+  <input type="radio" name="action" id="action-cell" value="cell"/>
+  <label for="action-cell">Toggle Cells</label>
+  <input type="radio" name="action" id="action-jump" value="jump"/>
+  <label for="action-jump">Edit Jumps</label>
+
+  <input type="button" name="random" value="Generate Random"/>
+
+  <form action="{% url board-save board.name board.position %}" method="post" id="board-save">
+    {% csrf_token %}
+    <input type="hidden" name="data"/>
+    <input type="submit" value="Save Board"/>
+  </form>
+</div>
+
+
+<div class="board-edit">
+  <table cellspacing="10">
+    <tbody>
+      <tr>
+        <td></td>
+        <td class="board">
+          {% if board_up %}
+            <a href="{% url board-show board_up.name board_up.position %}" class="arrow-up">&#x2191;</a>
+            <div style="display:none"></div>
+            {% for row in board_up.get_cells %}
+              {% if forloop.counter > 5 %}
+              <div class="board_row">
+                {% for cell in row %}
+                  {% if cell.type == "off" %}
+                  <div class="cell off">0</div>
+                  {% else %}
+                  <div class="cell" player="{{ cell.player }}">{{ cell.count }}</div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="board">
+          {% if board_left %}
+            <a href="{% url board-show board_left.name board_left.position %}" class="arrow-left">&#x2190;</a>
+            {% for row in board_left.get_cells %}
+            <div class="board_row">
+              {% for cell in row %}
+                {% if forloop.counter > 5 %}
+                <div class="cell{% if cell.type == "off" %} off{% endif %}">
+                  {% if cell.type == "on" %}{{ cell.count }}{% endif %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% endfor %}
+          {% endif %}
+        </td>
+        <td class="board board-main">
+          {% for row in board.get_cells %}
+          <div class="board_row">
+            {% for cell in row %}
+              {% if cell.type == "off" %}
+              <div class="cell off" player="0">0</div>
+              {% else %}
+              <div class="cell" player="{{ cell.player }}">{{ cell.count }}</div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </td>
+        <td class="board">
+          {% if board_right %}
+            <a href="{% url board-show board_right.name board_right.position %}" class="arrow-right">&#x2192;</a>
+            {% for row in board_right.get_cells %}
+            <div class="board_row">
+              {% for cell in row %}
+                {% if forloop.counter < 6 %}
+                <div class="cell{% if cell.type == "off" %} off{% endif %}">
+                  {% if cell.type == "on" %}{{ cell.count }}{% endif %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% endfor %}
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="board">
+          {% if board_down %}
+            <a href="{% url board-show board_down.name board_down.position %}" class="arrow-down">&#x2193;</a>
+            {% for row in board_down.get_cells %}
+              {% if forloop.counter < 6 %}
+              <div class="board_row">
+                {% for cell in row %}
+                <div class="cell{% if cell.type == "off" %} off{% endif %}">
+                  {% if cell.type == "on" %}{{ cell.count }}{% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<table border="1" class="board-group">
+  <tbody>
+  {% for board_row in board_group %}
+    <tr>
+    {% for pos, y, x in board_row %}
+      <td>
+        {% if pos == None %}
+        <strong>{{ board.y }}-{{ board.x }}</strong>
+        {% else %}
+        <a href="{% url board-show board.name pos %}">{{ y }}-{{ x }}</a>
+        {% endif %}
+      </td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block js-init %}
+BoardEdit.init();
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

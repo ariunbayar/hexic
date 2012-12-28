@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %} {% trans "Login" %} {% endblock title %}
+
+{% block content %}
+
+<form action="{% url login %}" method="post">
+  {% csrf_token %}
+  <fieldset>
+    <legend>{% trans "Login" %}</legend>
+    <table>
+      {% if form.non_field_errors %}
+      <tr>
+        <td colspan="2" class="errorlist">{{ form.non_field_errors|join:"<br/>" }}</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>{{ form.phone.label }}</td>
+        <td>
+          {{ form.phone.errors }}
+          {{ form.phone }}
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.code.label }}</td>
+        <td>
+          {{ form.code.errors }}
+          {{ form.code }}
+        </td>
+      </tr>
+       <tr>
+        <td></td>
+        <td>
+          <input type="submit" value="{% trans "Login to HexEnv" %}"/>
+          <a href="#">{% trans "New player? Click here." %}</a>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+</form>
+
+<script type="text/javascript">
+  $(function(){
+    $('#id_phone').focus();
+  });
+</script>
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

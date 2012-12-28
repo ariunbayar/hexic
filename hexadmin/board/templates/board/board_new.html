@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.board_name.errors }}
+  <input type="text" name="board_name" placeholder="Enter new board name"
+   value="{{ form.board_name.data|default:'' }}" />
+  <input type="submit" value="Create the Board" />
+</form>
+
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

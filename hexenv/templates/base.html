@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"></META>
+  <title>{% block title %}{% endblock %}</title>
+  <script src="{{ STATIC_URL }}js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+  {% block extrahead %}{% endblock %}
+  <style type="text/css">
+  div{ border: 1px solid black; margin: 1px; }
+  .errorlist{ color: red; }
+  .uid:before{ content: "uid:"; }
+  </style>
+</head>
+{% load i18n %}
+<body>
+  <div class="head">
+    <a href="/">{% trans "Home" %}</a>
+    {% if request.session.id %}
+    <a href="{% url logout %}">{% trans "Logout" %}</a>
+    {% else %}
+    <a href="{% url login %}">Login</a>
+    {% endif %}
+    <span style="float:right" class="uid">{{ request.session.id }}</span>
+  </div>
+
+  {% block extracontent %}{% endblock %}
+
+  {% if messages %}
+  <ul>
+    {% for msg in messages %}
+    <li>{{ msg }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

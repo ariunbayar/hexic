@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div class="well span6">
+    <a href="{{ url_for("admin.users") }}">тоглогчид: {{ user_count }} </a>
+    <a href="{{ url_for("admin.user_add") }}" class="btn">шинээр нэм</a>
+</div>
+
+<div class="well span6">
+    <a href="{{ url_for("admin.cache") }}">cache: {{ cache_count }} </a>
+    <a href="{{ url_for("admin.cache_clear") }}" class="btn">цэвэрлэ</a>
+</div>
+
+{% for user in users %}
+    {{ user }}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<h1>Showing Player</h1>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <td>{{ player.id }}</td>
+  </tr>
+  <tr>
+    <th>Username</th>
+    <td>{{ player.username }}</td>
+  </tr>
+  <tr>
+    <th>Email (optional)</th>
+    <td>{{ player.email }}</td>
+  </tr>
+  <tr>
+    <th>Phone</th>
+    <td>{{ player.phone }}</td>
+  </tr>
+  <tr>
+    <th>Code</th>
+    <td>{{ player.code }}</td>
+  </tr>
+  <tr>
+    <th>Created at</th>
+    <td>{{ player.created_at|date:"Y-m-d H:i" }}</td>
+  </tr>
+  <tr>
+    <th>Last login</th>
+    <td>{{ player.last_seen_at|date:"Y-m-d H:i" }}</td>
+  </tr>
+</table>
+<a href="{% url admin-player-edit player.id %}">Edit this player</a>
+
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
