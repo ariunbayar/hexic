@@ -42,6 +42,35 @@ var Hexagon = function(x, y, hex_radius){
 }
 
 
+var Arrow = function(x, y, rotation) {
+    var arrow = new createjs.Shape();
+    var size = 40;
+
+    arrow.regX = size;
+    arrow.regY = size * 2;
+
+    var num_arrows = '';
+    var coef = 0.75;
+    var scaled_size = size;
+    for (var i = 0; i < 5; i += 1) {
+        var offset_x = size - scaled_size / 2;
+        var offset_y = offset_x * 3 - size;
+        arrow.graphics.moveTo(offset_x, offset_y);
+        arrow.graphics.setStrokeStyle(scaled_size/7);
+        arrow.graphics.beginStroke("#AAAAAA");
+        arrow.graphics.lineTo(offset_x + scaled_size/2, offset_y - scaled_size/2);
+        arrow.graphics.lineTo(offset_x + scaled_size, offset_y);
+        arrow.graphics.endStroke();
+        scaled_size = scaled_size * coef;
+    }
+
+    arrow.rotation = (rotation ? rotation : 0);
+    arrow.x = x;
+    arrow.y = y;
+    return arrow;
+}
+
+
 /**
  * Hexagon game logic
  */
@@ -82,6 +111,9 @@ hex.init = function(){
             hex.hexagons.push(shape);
         }
     }
+
+    var arrow = Arrow(500, 500);
+    stage.addChild(arrow);
 
     // fpsLabel
     hex.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
