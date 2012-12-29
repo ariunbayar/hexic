@@ -71,6 +71,22 @@ var Arrow = function(x, y, rotation) {
 }
 
 
+var angleFromPoints = function(point_start, point_end){
+    var a, b, c, angle;
+    b = point_end.y - point_start.y;
+    c = point_end.x - point_start.x;
+    a = Math.sqrt(b*b + c*c);
+    angle = Math.acos(b / a) * 180 / Math.PI;
+    console.log(c);
+    if (c > 0) {
+        angle = 360 - angle;
+    }
+    angle += 180;
+    console.log(angle);
+    return angle;
+}
+
+
 /**
  * Hexagon game logic
  */
@@ -90,6 +106,7 @@ var hex = {
     hexagon_radius : 50,
     hexagon_width : null
 }
+
 hex.init = function(){
     var stage;
     stage = new createjs.Stage(document.getElementById("canvas"));
@@ -111,9 +128,6 @@ hex.init = function(){
             hex.hexagons.push(shape);
         }
     }
-
-    var arrow = Arrow(500, 500);
-    stage.addChild(arrow);
 
     // fpsLabel
     hex.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
@@ -140,13 +154,9 @@ hex.showArrow = function(point_start, point_end){
         return;
     if(Math.abs(point_end.y - point_start.y) > hex.hexagon_width + 1)
         return;
-    var shape = new createjs.Shape();
-    shape.graphics.setStrokeStyle(5);
-    shape.graphics.beginStroke('#FFFFFF');
-    shape.graphics.moveTo(point_start.x, point_start.y);
-    shape.graphics.lineTo(point_end.x, point_end.y);
-    hex.stage.addChild(shape);
-    //update = true;
+    var rotation = angleFromPoints(point_start, point_end);
+    var arrow = Arrow(point_start.x, point_start.y, rotation);
+    hex.stage.addChild(arrow);
 }
 
 /*
