@@ -27,11 +27,25 @@ var Hexagon = function(x, y, hex_radius){
 
     // attach handlers
     hexagon.onMouseOver = function(e){
-        hex.point_end = new createjs.Point(e.target.x, e.target.y);
-        update = true;
+        if (hex.point_start){
+            hex.point_end = e.target;
+            if (hex.point_end != hex.point_start){
+                var arrow = hex.showArrow(hex.point_start, hex.point_end);
+                hex.target_arrow = arrow;
+                update = true;
+            }
+        }
+    }
+    hexagon.onMouseOut = function(e){
+        if (hex.point_end){
+            if (e.target.id == hex.point_end.id && hex.target_arrow){
+                a = hex.stage.removeChild(hex.target_arrow);
+                update = true;
+            }
+        }
     }
     hexagon.onPress = function(e){
-        hex.point_start = new createjs.Point(e.target.x, e.target.y);
+        hex.point_start = e.target;
         e.onMouseUp = function(ev){
             hex.point_start = null;
             hex.point_end = null;
@@ -77,12 +91,10 @@ var angleFromPoints = function(point_start, point_end){
     c = point_end.x - point_start.x;
     a = Math.sqrt(b*b + c*c);
     angle = Math.acos(b / a) * 180 / Math.PI;
-    console.log(c);
     if (c > 0) {
         angle = 360 - angle;
     }
     angle += 180;
-    console.log(angle);
     return angle;
 }
 
@@ -104,7 +116,9 @@ var hex = {
     point_start: null,
     point_end: null,
     hexagon_radius : 50,
-    hexagon_width : null
+    hexagon_width : null,
+    // temporary arrow to show while pointing
+    target_arrow: null
 }
 
 hex.init = function(){
@@ -157,27 +171,19 @@ hex.showArrow = function(point_start, point_end){
     var rotation = angleFromPoints(point_start, point_end);
     var arrow = Arrow(point_start.x, point_start.y, rotation);
     hex.stage.addChild(arrow);
+    return arrow;
 }
 
-/*
-hex.pressHandler = function(e){
-    e.onMouseMove = function(ev){
-        console.log(ev.stageX, ev.stageY);
-        return;
-        e.target.x = ev.stageX;
-        e.target.y = ev.stageY;
-        update = true;
-    }
-}
-*/
 
 hex.tick = function(){
     if (update){
+        /*
         if (hex.point_start && hex.point_end){
             if (hex.point_start.x != hex.point_end.x || hex.point_start.y != hex.point_end.y){
                 hex.showArrow(hex.point_start, hex.point_end);
             }
         }
+        */
         hex.fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
         update = false;
         hex.stage.update(); 
