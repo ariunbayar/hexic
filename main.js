@@ -15,7 +15,6 @@ var colors = {
 var Hexagon = function(x, y, hex_radius){
     var radius = (hex_radius ? hex_radius : 50);
     var hexagon = new createjs.Shape();
-    var fill_color = createjs.Graphics.getRGB(200, 200, 200);
 
     hexagon.graphics.setStrokeStyle(10, 'round');
     hexagon.graphics.beginStroke(colors.hex_border);
@@ -29,26 +28,17 @@ var Hexagon = function(x, y, hex_radius){
     hexagon.onMouseOver = function(e){
         if (hex.point_start){
             hex.point_end = e.target;
-            if (hex.point_end != hex.point_start){
-                var arrow = hex.showArrow(hex.point_start, hex.point_end);
-                hex.target_arrow = arrow;
-                update = true;
-            }
+            hex.temp_arrow.visible = true;
+            update = true;
         }
     }
-    hexagon.onMouseOut = function(e){
-        if (hex.point_end){
-            if (e.target.id == hex.point_end.id && hex.target_arrow){
-                a = hex.stage.removeChild(hex.target_arrow);
-                update = true;
-            }
-        }
-    }
+
     hexagon.onPress = function(e){
         hex.point_start = e.target;
         e.onMouseUp = function(ev){
-            hex.point_start = null;
-            hex.point_end = null;
+            hex.point_start = 0;
+            hex.point_end = 0;
+            update = true;
         }
     }
 
@@ -105,7 +95,6 @@ var angleFromPoints = function(point_start, point_end){
 var hex = {
     stage: null,
     fpsLabel: null,
-    hexagons: [],
     board: [
         [1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1],
@@ -117,8 +106,10 @@ var hex = {
     point_end: null,
     hexagon_radius : 50,
     hexagon_width : null,
-    // temporary arrow to show while pointing
-    target_arrow: null
+    cells: [],
+    temp_arrow: null,
+    arrow: null,
+    hexagon: null
 }
 
 hex.init = function(){
@@ -127,25 +118,33 @@ hex.init = function(){
     stage.enableMouseOver();
     hex.stage = stage;
     hex.drawBackground();
+    hex.temp_arrow = Arrow(0, 0, null)
     hex.hexagon_width = hex.hexagon_radius * Math.sqrt(3);
 
     var offset_x = 100;
     var offset_y = 100;
 
     for (var y = 0; y < hex.board.length; y += 1) {
+        var cell_rows = new Array();
         for (var x = 0; x < hex.board[0].length; x += 1) {
             if (!hex.board[y][x]) continue;
             var pos_x = hex.hexagon_width * x + (y % 2) * hex.hexagon_width / 2;
             var pos_y = hex.hexagon_radius * 1.5 * y;
             var shape = Hexagon(offset_x + pos_x, offset_y + pos_y, hex.hexagon_radius);
+            cell = {
+                arrow: null,
+                hexagon: shape
+            }
             stage.addChild(shape);
-            hex.hexagons.push(shape);
+            cell_rows[x] = cell;
         }
+        hex.cells.push(cell_rows);
     }
 
     // fpsLabel
     hex.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
     stage.addChild(hex.fpsLabel);
+    stage.addChild(hex.temp_arrow)
     hex.fpsLabel.x = 10;
     hex.fpsLabel.y = 20;
 
@@ -168,22 +167,23 @@ hex.showArrow = function(point_start, point_end){
         return;
     if(Math.abs(point_end.y - point_start.y) > hex.hexagon_width + 1)
         return;
-    var rotation = angleFromPoints(point_start, point_end);
-    var arrow = Arrow(point_start.x, point_start.y, rotation);
-    hex.stage.addChild(arrow);
-    return arrow;
+    hex.temp_arrow.x = point_start.x;
+    hex.temp_arrow.y = point_start.y;
+    hex.temp_arrow.rotation = angleFromPoints(point_start, point_end);
+    return hex.temp_arrow;
 }
 
 
 hex.tick = function(){
     if (update){
-        /*
         if (hex.point_start && hex.point_end){
             if (hex.point_start.x != hex.point_end.x || hex.point_start.y != hex.point_end.y){
                 hex.showArrow(hex.point_start, hex.point_end);
             }
         }
-        */
+        else {
+            hex.temp_arrow.visible = false;
+        }
         hex.fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
         update = false;
         hex.stage.update(); 

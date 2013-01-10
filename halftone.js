@@ -76,8 +76,8 @@ halftone.draw_image = function(){
 
     var size = 8,
         offset = new createjs.Point(-20, 100),
-        source_grid = 1,
-        grid = 8,
+        source_grid = 4,
+        grid = 2,
         treshhold = 3;
 
     for (var ygrid = 0; ygrid < data.height; ygrid+=source_grid) {
