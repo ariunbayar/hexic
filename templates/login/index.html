@@ -1,0 +1,15 @@
+<h1>Нэвтэрнэ үү:</h1>
+<p>Хэрэв та бүртгүүлээгүй бол 99887766 дугаар луу 100 нэгж илгээнэ үү</p>
+{% if form.errors %}
+{{ form.phone_number.errors }}
+{{ form.pin_code.errors }}
+{% endif %}
+<form action="" method="POST">{% csrf_token %}
+    <dl>
+        <dt>Утасны дугаар:</dt>
+        <dd>{{ form.phone_number }}</dd>
+        <dt>Нууц дугаар:</dt>
+        <dd>{{ form.pin_code }}</dd>
+        <dd><input type="submit" value="Нэвтрэх" /></dd>
+    </dl>
+</form>
