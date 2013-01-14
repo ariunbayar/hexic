@@ -1,0 +1,110 @@
+body, input { font-family: 'Comfortaa'; }
+
+div {
+    border: 1px solid #f0f0f0;
+    margin: 1px;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.content {
+    width: 960px;
+    margin: 0px auto;
+}
+
+.clearfix:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+a { color: #08C; text-decoration: none; }
+a:hover { color: #005580; text-decoration: underline; }
+
+/* heading {{{ */
+.right-heading {
+    float: right;
+}
+
+
+.left-heading {
+    float:left;
+}
+/* }}} */
+
+/* grid-layout {{{ */
+.span6 h2 {
+    width: 90%;
+    margin: auto;
+}
+.instruction {
+    width: 90%;
+    margin: auto;
+}
+
+.row-fluid {width: 940px;}
+
+.row-fluid::before, .row-fluid::after {
+    display: table;
+    line-height: 0px;
+    content: "";
+}
+
+.row-fluid::after {clear: both;}
+
+.show-grid {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.row-fluid [class*="span"] {
+    display: block;
+    float: left;
+    margin-left: 2%;
+}
+
+.row-fluid [class*="span"]:first-child {margin-left: 0px;}
+
+.span1 {width: 8.33%;}
+
+.span6 {width: 46.98%;}
+
+.span12 {width: 100%;}
+
+.span* {display: inline-block;}
+/* }}} */
+
+/* form {{{ */
+form label{
+    width: 40%;
+    display: inline-block;
+    padding: 0px;
+    text-align: right;
+}
+
+form input[type="text"] {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 0px 1px 3px #ddd inset;
+}
+
+form div {
+    width: 90%;
+    margin: auto;
+}
+
+form input[type="submit"] {
+    margin-left: 42.4%;
+}
+
+ul.errorlist {
+    color: red;
+    list-style: none;
+    height: 15px;
+    margin: 5px;
+}
+/* }}} */
+
+/* vim: set foldmethod=marker : */

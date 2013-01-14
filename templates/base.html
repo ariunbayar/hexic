@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>HexAdmin | {% block title %}{% endblock %}</title>
+      {% block extrahead %}{% endblock %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
+  </head>
+  <body class='content'>
+    <div class='clearfix'>
+      <div class='right-heading'>
+        {% if account_id %}
+        <a href="{% url security.views.logout %}">Гарах</a>
+        {% else %}
+        <a href="{% url security.views.login %}">Нэвтрэх</a>
+        {% endif %}
+      </div>
+      <div class='left-heading'>
+        <a href="{% url public.views.index %}">Нүүр</a>
+        <a href="{% url game.views.board %}">Тоглох</a>
+      </div>
+    </div>
+    {% block extracontent %}{% endblock %}
+
+    {% if messages %}
+    <ul>
+      {% for msg in messages %}
+      <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ STATIC_URL }}js/easeljs.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ STATIC_URL }}js/main.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      $(function(){
+        {% block js-init %}{% endblock %}
+      });
+    </script>
+  </body>
+</html>
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}login{% endblock %}
+{% block extracontent %}
+
+<div class='row-fluid show-grid'>
+  <div class='span6'>
+    <h2>Нэвтрэx</h2>
+    <p class="errorlist">
+    {% if form.errors %}
+    {{ form.phone_number.errors }}
+    {{ form.pin_code.errors }}
+    {% endif %}
+    </p>
+    <form action="" method="POST">{% csrf_token %}
+      <div>
+        <label for="id_phone_number">Утасны дугаар: </label>
+        {{ form.phone_number }}
+      </div>
+      <div>
+        <label for="id_pin_code">Нууц дугаар: </label>
+        {{ form.pin_code }}
+      </div>
+      <input type="submit" value="Нэвтрэх" />
+    </form>
+  </div>
+
+  <div class='span6'>
+    <h2>Бүртгүүлэх</h2>
+    <div class="instruction">
+      Хэрэв та бүртгүүлээгүй бол <br />
+      99887766 дугаар луу 100 нэгж илгээнэ үү
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
