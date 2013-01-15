@@ -106,7 +106,24 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # django debug toolbar setting
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+#django debug toolbar setting
+INTERNAL_IPS = ('127.0.0.1',)
+
+def custom_show_toolbar(request):
+    return True
+
+#django debug toolbar setting
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+    'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar,
+    'HIDE_DJANGO_SQL': False,
+    'TAG': 'div',
+    'ENABLE_STACKTRACES' : True,
+}
 
 ROOT_URLCONF = 'hexic.urls'
 
@@ -125,7 +142,8 @@ INSTALLED_APPS = (
     'public',
     'security',
     'game',
-    'api'
+    'api',
+    'debug_toolbar'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
