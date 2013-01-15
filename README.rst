@@ -14,7 +14,8 @@ Getting started
     CREATE DATABASE hexic CHARACTER SET utf8;
 
 
-#. Run following to create tables in your database::
+#. Run following to create tables in your database. Make sure you **don't** create
+   admin user::
 
     python manage.py syncdb
 
