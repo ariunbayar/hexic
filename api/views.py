@@ -1,5 +1,6 @@
 from security.models import Account
 from helpers import generate_password, is_deposit
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
 
@@ -8,9 +9,7 @@ def new_msg(request):
     msg = request.GET['msg']
 
     if sender and msg:
-        import logging
         phone, credit = is_deposit(sender, msg)
-        logging.error(is_deposit(sender, msg))
         if phone and credit:
             try:
                 old_acc = Account.objects.get(phone_number=phone)
@@ -27,4 +26,4 @@ def new_msg(request):
                 old_acc.credit += credit
                 old_acc.save()
 
-    return redirect('/')
+    return redirect(reverse('public.views.index'))
