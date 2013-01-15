@@ -2,6 +2,7 @@
 from security.models import Account
 from django.contrib import admin
 
+
 class AccountAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Утасны дугаар', {'fields': ['phone_number']}),

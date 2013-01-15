@@ -15,12 +15,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'hexic',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hexic',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
         'OPTIONS': {
             'init_command': 'SET storage_engine=INNODB',
         }
@@ -110,8 +110,9 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-#django debug toolbar setting
+# django debug toolbar setting
 INTERNAL_IPS = ('127.0.0.1',)
+
 
 def custom_show_toolbar(request):
     return True
@@ -122,7 +123,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar,
     'HIDE_DJANGO_SQL': False,
     'TAG': 'div',
-    'ENABLE_STACKTRACES' : True,
+    'ENABLE_STACKTRACES': True,
 }
 
 ROOT_URLCONF = 'hexic.urls'

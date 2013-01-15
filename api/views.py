@@ -17,9 +17,9 @@ def new_msg(request):
                 random_number = generate_password()
                 new_acc = Account()
 
-                new_acc.phone_number=phone
-                new_acc.pin_code=random_number
-                new_acc.credit=credit
+                new_acc.phone_number = phone
+                new_acc.pin_code = random_number
+                new_acc.credit = credit
 
                 new_acc.save()
             else:
