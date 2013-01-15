@@ -18,4 +18,5 @@ class AccountForm(forms.Form):
                                 'required': 'Нууц үгээ оруулна уу',
                                 'invalid': 'Нууц үг буруу байна',
                                 'max_value': 'Нууц үг буруу байна',
-                                'min_value': 'Нууц үг буруу байна'})
+                                'min_value': 'Нууц үг буруу байна'},
+                            widget=forms.PasswordInput)
