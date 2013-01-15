@@ -1,9 +1,10 @@
 # coding: utf-8
+from decorators import check_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from models import Account
 from forms import AccountForm
+from models import Account
 
 
 def login(request):
@@ -30,6 +31,7 @@ def login(request):
                                 context_instance=RequestContext(request))
 
 
+@check_login
 def logout(request):
     del request.session['account_id']
     return redirect(reverse('public.views.index'))
