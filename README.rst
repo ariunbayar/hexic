@@ -18,6 +18,20 @@ Getting started
 
     python manage.py syncdb
 
+   It will create inital data in ``initial_data.json``
+
+
+#. Run the server with::
+
+    python manage.py runserver
+
+
+#. You can now access ``http://localhost:8000``
+
+
+#. Also you can access admin page ``http://localhost:8000/admin`` with
+   username ``admin`` and password ``123``
+
 
 Extra commands
 ===============
