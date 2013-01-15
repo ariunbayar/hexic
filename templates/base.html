@@ -2,9 +2,10 @@
 <html>
   <head>
     <title>HexAdmin | {% block title %}{% endblock %}</title>
-      {% block extrahead %}{% endblock %}
+    <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.png">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
+    {% block extrahead %}{% endblock %}
   </head>
   <body class='content'>
     <div class='clearfix'>
