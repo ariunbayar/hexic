@@ -5,7 +5,14 @@ Getting started
 
     cp local_settings.py.def local_settings.py
 
+
 #. Have your database configuration set up in ``local_settings.py``
+
+
+#. Create a database in your mysql server with following SQL::
+
+    CREATE DATABASE hexic CHARACTER SET utf8;
+
 
 #. Run following to create tables in your database::
 

@@ -1,6 +1,10 @@
-# Django settings for startproject project.
+import os
 
-DEBUG = True
+
+DIRNAME = os.path.abspath(os.path.dirname(__file__))
+rel = lambda *x: os.path.join(DIRNAME, *x)
+
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -17,6 +21,9 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'OPTIONS': {
+            'init_command': 'SET storage_engine=INNODB',
+        }
     }
 }
 
@@ -72,7 +79,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "/home/programmer/project/hexic/static",
+    rel('static'),
 )
 
 # List of finder classes that know how to find static files in
