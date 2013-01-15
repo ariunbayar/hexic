@@ -1,6 +1,10 @@
-# Django settings for startproject project.
+import os
 
-DEBUG = True
+
+DIRNAME = os.path.abspath(os.path.dirname(__file__))
+rel = lambda *x: os.path.join(DIRNAME, *x)
+
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -75,7 +79,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    "/home/programmer/project/hexic/static",
+    rel('static'),
 )
 
 # List of finder classes that know how to find static files in
