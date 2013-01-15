@@ -18,3 +18,12 @@ Extra commands
 
     find . -name "*.pyc" -exec rm {} \;
 
+- To run tests::
+
+    python manage.py test -v 2 api game public security
+
+  ``-v 2`` is the verbosity level. Allowed values are 0=minimal output, 1=normal output, 2=all output
+
+- To run specific tests::
+
+    python manage.py test api.APITest.test_new_msj
