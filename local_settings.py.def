@@ -1,0 +1,21 @@
+import sys
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hexic',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+
+if 'test' in sys.argv:  # running Django tests
+    # run tests using sqlite on memory
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
