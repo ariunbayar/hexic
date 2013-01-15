@@ -8,8 +8,8 @@ def generate_password():
 
 def is_deposit(phone_number, msg):
     if phone_number == '+976596':
-        regex = re.compile(r'^\(Tand ([0-9]{8}) dugaaraas'\
-                            '([0-9]{3,}) negj ilgeelee\)', re.IGNORECASE)
+        pattern = r'^\(Tand ([0-9]{8}) dugaaraas ([0-9]{3,}) negj ilgeelee\)'
+        regex = re.compile(pattern, re.IGNORECASE)
         match = regex.match(msg)
 
         if match:
