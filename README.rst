@@ -30,8 +30,7 @@ Getting started
 #. You can now access ``http://localhost:8000``
 
 
-#. Also you can access admin page ``http://localhost:8000/admin`` with
-   username ``admin`` and password ``123``
+#. Also you can access admin page ``http://localhost:8000/admin``
 
 
 Extra commands
@@ -42,7 +41,7 @@ Extra commands
 
 - To run tests::
 
-    python manage.py test -v 2 api game public security
+    python manage.py test -v 2 api game public security admin
 
   ``-v 2`` is the verbosity level. Allowed values are 0=minimal output, 1=normal output, 2=all output
 
