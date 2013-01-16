@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% block title %}Admins{% endblock %}
+{% block extracontent %}
+    
+{% for admin in admins %}
+<div>
+{{ admin.user_name }}{% if admin.email %} - {{ admin.email }}{% endif %} - {{ admin.password }} 
+</div>
+{% endfor %}
+
+{% endblock %}

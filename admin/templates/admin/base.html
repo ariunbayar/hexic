@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>HexAdmin | {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.png">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body class='content'>
+    <div class='clearfix'>
+      <div class='right-heading'>
+        {% if admin_id %}
+        <a href="{% url admin.views.logout %}">Гарах</a>
+        {% else %}
+        <a href="{% url admin.views.login %}">Нэвтрэх</a>
+        {% endif %}
+      </div>
+      <div class='left-heading'>
+        <a href="{% url admin.views.accounts %}">Accounts</a>
+        <a href="{% url admin.views.admins %}">Admins</a>
+      </div>
+    </div>
+    {% block extracontent %}{% endblock %}
+
+    {% if messages %}
+    <ul>
+      {% for msg in messages %}
+      <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      $(function(){
+        {% block js-init %}{% endblock %}
+      });
+    </script>
+  </body>
+</html>
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

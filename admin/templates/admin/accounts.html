@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% block title %}Accounts{% endblock %}
+{% block extracontent %}
+    
+{% for account in accounts %}
+<div>
+{{ account.phone_number }} - {{ account.pin_code }}
+</div>
+{% endfor %}
+
+{% endblock %}
