@@ -1,13 +1,17 @@
+from api.models import Sms
 from security.models import Account
 from helpers import generate_password, is_deposit
-from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.http import HttpResponse
 
 
 def new_msg(request):
+    sms = Sms()
+
     sender = request.GET['phone']
     msg = request.GET['msg']
 
+    sms.sender = sender
+    sms.text = msg
     if sender and msg:
         phone, credit = is_deposit(sender, msg)
         if phone and credit:
@@ -22,8 +26,15 @@ def new_msg(request):
                 new_acc.credit = credit
 
                 new_acc.save()
+
+                sms.account = new_acc
+                sms.action = Sms.NEW_ACC
             else:
                 old_acc.credit += credit
                 old_acc.save()
 
-    return redirect(reverse('public.views.index'))
+                sms.account = old_acc
+                sms.action = Sms.DEPOSIT
+
+    sms.save()
+    return HttpResponse('msg received')

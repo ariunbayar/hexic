@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% block title %}Accounts{% endblock %}
+{% block extracontent %}
+    
+{% for message in messages %}
+<div>
+    {{ message.sender }} - {{ message.text }} - {{ message.get_action_display }}
+    {% if message.account %}
+    -  {{ message.account.phone_number }}
+    {% endif %}
+</div>
+{% endfor %}
+
+{% endblock %}

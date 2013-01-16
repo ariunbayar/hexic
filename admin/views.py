@@ -2,6 +2,7 @@
 from admin.decorators import check_login
 from admin.models import Admin
 from admin.forms import AdminLoginForm
+from api.models import Sms
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -56,4 +57,13 @@ def admins(request):
     data['admins'] = Admin.objects.all()
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/admins.html", data,
+                                context_instance=RequestContext(request))
+
+
+@check_login
+def messages(request):
+    data = {}
+    data['messages'] = Sms.objects.all()
+    data['admin_id'] = request.session['admin_id']
+    return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
