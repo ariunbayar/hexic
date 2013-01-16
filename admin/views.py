@@ -64,6 +64,11 @@ def admins(request):
 def messages(request):
     data = {}
     data['messages'] = Sms.objects.all()
+
+    if 'filter_by' in request.GET:
+        filter_by = request.GET['filter_by']
+        data['messages'] = Sms.objects.filter(action=filter_by)
+
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))

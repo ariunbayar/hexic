@@ -1,14 +1,31 @@
+<!DOCTYPE HTML>
 {% extends "admin/base.html" %}
-{% block title %}Accounts{% endblock %}
-{% block extracontent %}
+{% block title %}Messages{% endblock %}
+{% block content %}
     
-{% for message in messages %}
-<div>
-    {{ message.sender }} - {{ message.text }} - {{ message.get_action_display }}
-    {% if message.account %}
-    -  {{ message.account.phone_number }}
-    {% endif %}
-</div>
-{% endfor %}
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Account</th>
+      <th>Sender</th>
+      <th>Text</th>
+      <th>Datetime</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for message in messages %}
+    <tr>
+      <td>{{ message.get_action_display }}</td>
+      <td>{{ message.account.phone_number }}</td>
+      <td>{{ message.sender }}</td>
+      <td>{{ message.text }}</td>
+      <td>{{ message.date_time }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

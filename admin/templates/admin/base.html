@@ -3,9 +3,8 @@
   <head>
     <title>HexAdmin | {% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.png">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
-    {% block extrahead %}{% endblock %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/css/main.css" type="text/css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}admin/css/font.css" type="text/css"/>
   </head>
   <body class='content'>
     <div class='clearfix'>
@@ -22,14 +21,7 @@
         <a href="{% url admin.views.messages %}">Messages</a>
       </div>
     </div>
-    {% block extracontent %}{% endblock %}
-
-    <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8">
-      $(function(){
-        {% block js-init %}{% endblock %}
-      });
-    </script>
+    {% block content %}{% endblock %}
   </body>
 </html>
 

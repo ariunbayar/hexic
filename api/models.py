@@ -22,3 +22,4 @@ class Sms(models.Model):
         (DEPOSIT, 'Deposit Credit'),
     )
     action = models.SmallIntegerField(choices=ACTION_CHOICES, default=NONE)
+    date_time = models.DateTimeField(auto_now_add=True)

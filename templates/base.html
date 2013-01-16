@@ -5,7 +5,6 @@
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.png">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
-    {% block extrahead %}{% endblock %}
   </head>
   <body class='content'>
     <div class='clearfix'>
@@ -21,7 +20,6 @@
         <a href="{% url game.views.board %}">Тоглох</a>
       </div>
     </div>
-    {% block extracontent %}{% endblock %}
 
     {% if messages %}
     <ul>
@@ -31,6 +29,7 @@
     </ul>
     {% endif %}
 
+    {% block content %}{% endblock %}
     <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="{{ STATIC_URL }}js/easeljs.js" type="text/javascript" charset="utf-8"></script>
     <script src="{{ STATIC_URL }}js/main.js" type="text/javascript" charset="utf-8"></script>
