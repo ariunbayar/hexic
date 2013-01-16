@@ -24,14 +24,6 @@
     </div>
     {% block extracontent %}{% endblock %}
 
-    {% if messages %}
-    <ul>
-      {% for msg in messages %}
-      <li>{{ msg }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-
     <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       $(function(){
