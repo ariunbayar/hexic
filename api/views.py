@@ -1,7 +1,7 @@
 from api.models import Sms
 from security.models import Account
 from helpers import generate_password, is_deposit
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 
 def new_msg(request):
@@ -13,11 +13,11 @@ def new_msg(request):
     sms.sender = sender
     sms.text = msg
     if not (sender and msg):
-        return HttpResponse('404.html')
+        raise Http404('404.html')
 
     phone, credit = is_deposit(sender, msg)
     if not (phone and credit):
-        return HttpResponse('404.html')
+        raise Http404('404.html')
 
     try:
         old_acc = Account.objects.get(phone_number=phone)
