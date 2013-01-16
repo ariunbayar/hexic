@@ -12,29 +12,33 @@ def new_msg(request):
 
     sms.sender = sender
     sms.text = msg
-    if sender and msg:
-        phone, credit = is_deposit(sender, msg)
-        if phone and credit:
-            try:
-                old_acc = Account.objects.get(phone_number=phone)
-            except Account.DoesNotExist:
-                random_number = generate_password()
-                new_acc = Account()
+    if not (sender and msg):
+        return HttpResponse('404.html')
 
-                new_acc.phone_number = phone
-                new_acc.pin_code = random_number
-                new_acc.credit = credit
+    phone, credit = is_deposit(sender, msg)
+    if not (phone and credit):
+        return HttpResponse('404.html')
 
-                new_acc.save()
+    try:
+        old_acc = Account.objects.get(phone_number=phone)
+    except Account.DoesNotExist:
+        random_number = generate_password()
+        new_acc = Account()
 
-                sms.account = new_acc
-                sms.action = Sms.NEW_ACC
-            else:
-                old_acc.credit += credit
-                old_acc.save()
+        new_acc.phone_number = phone
+        new_acc.pin_code = random_number
+        new_acc.credit = credit
 
-                sms.account = old_acc
-                sms.action = Sms.DEPOSIT
+        new_acc.save()
+
+        sms.account = new_acc
+        sms.action = Sms.NEW_ACC
+    else:
+        old_acc.credit += credit
+        old_acc.save()
+
+        sms.account = old_acc
+        sms.action = Sms.DEPOSIT
 
     sms.save()
     return HttpResponse('msg received')
