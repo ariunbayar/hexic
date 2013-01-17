@@ -48,3 +48,17 @@ Extra commands
 - To run specific tests::
 
     python manage.py test api.APITest.test_new_msj
+
+South commands
+===============
+- For first migration::
+    
+    ./manage.py schemamigration app_name --initial
+
+- Other time::
+    
+    ./manage.py schemamigration app_name --auto
+
+- To apply this migration::
+
+   ./manage.py migrate app_name

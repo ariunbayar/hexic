@@ -115,7 +115,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 
 def custom_show_toolbar(request):
-    return False
+    return True
 
 #django debug toolbar setting
 DEBUG_TOOLBAR_CONFIG = {
@@ -145,8 +145,10 @@ INSTALLED_APPS = (
     'api',
     'debug_toolbar',
     'admin',
+    'south',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    
+    'django.contrib.admindocs',
 )
 
 # A sample logging configuration. The only tangible logging
