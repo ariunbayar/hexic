@@ -5,42 +5,38 @@ from django.http import HttpResponse, Http404
 
 
 def new_msg(request):
-    sms = Sms()
-
     sender = request.GET['phone']
     msg = request.GET['msg']
 
+    if not sender:
+        raise Http404
+
+    sms = Sms()
     sms.sender = sender
     sms.text = msg
-    if not (sender and msg):
-        sms.save()
-        raise Http404('404.html')
 
     phone, credit = is_deposit(sender, msg)
-    if not (phone and credit):
-        sms.save()
-        raise Http404('404.html')
+    if phone and credit:
+        try:
+            old_acc = Account.objects.get(phone_number=phone)
+        except Account.DoesNotExist: # Adding new account
+            random_number = generate_password()
+            new_acc = Account()
 
-    try:
-        old_acc = Account.objects.get(phone_number=phone)
-    except Account.DoesNotExist:
-        random_number = generate_password()
-        new_acc = Account()
+            new_acc.phone_number = phone
+            new_acc.pin_code = random_number
+            new_acc.credit = credit
 
-        new_acc.phone_number = phone
-        new_acc.pin_code = random_number
-        new_acc.credit = credit
+            new_acc.save()
 
-        new_acc.save()
+            sms.account = new_acc
+            sms.action = Sms.NEW_ACC
+        else: # Adding credit for old account
+            old_acc.credit += credit
+            old_acc.save()
 
-        sms.account = new_acc
-        sms.action = Sms.NEW_ACC
-    else:
-        old_acc.credit += credit
-        old_acc.save()
-
-        sms.account = old_acc
-        sms.action = Sms.DEPOSIT
+            sms.account = old_acc
+            sms.action = Sms.DEPOSIT
 
     sms.save()
     return HttpResponse('msg received')
