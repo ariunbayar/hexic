@@ -9,14 +9,16 @@ def new_msg(request):
 
     sender = request.GET['phone']
     msg = request.GET['msg']
-    if not (sender and msg):
-        raise Http404('404.html')
 
     sms.sender = sender
     sms.text = msg
+    if not (sender and msg):
+        sms.save()
+        raise Http404('404.html')
 
     phone, credit = is_deposit(sender, msg)
     if not (phone and credit):
+        sms.save()
         raise Http404('404.html')
 
     try:
