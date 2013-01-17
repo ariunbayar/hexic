@@ -4,7 +4,7 @@ from helpers import generate_password, is_deposit
 from django.http import HttpResponse, Http404
 
 
-def new_msg(request):
+def message_received(request):
     sender = request.GET['phone']
     msg = request.GET['msg']
 

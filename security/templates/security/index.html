@@ -5,13 +5,13 @@
 <div class='row-fluid show-grid'>
   <div class='span6'>
     <h2>Нэвтрэx</h2>
-    <p class="errorlist">
-    {% if form.errors %}
-    {{ form.phone_number.errors }}
-    {{ form.pin_code.errors }}
-    {% endif %}
-    </p>
-    <form action="" method="POST">{% csrf_token %}
+    <div class="errorlist">
+      {% if form.errors %}
+      {{ form.phone_number.errors }}
+      {{ form.pin_code.errors }}
+      {% endif %}
+    </div>
+    <form action="{% url security.views.login %}" method="POST">{% csrf_token %}
       <div>
         <label for="id_phone_number">Утасны дугаар: </label>
         {{ form.phone_number }}

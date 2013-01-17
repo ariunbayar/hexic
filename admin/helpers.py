@@ -1,4 +1,4 @@
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.paginator import Paginator
 
 
 class ShortPaginator(Paginator):
