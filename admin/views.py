@@ -1,8 +1,11 @@
 # coding: utf-8
 from admin.decorators import check_login
+from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm
+from api.models import Sms
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from security.models import Account
@@ -49,6 +52,19 @@ def logout(request):
 def accounts(request):
     data = {}
     data['accounts'] = Account.objects.all()
+    paginator = Paginator(data['accounts'], 20)
+    data['paginator'] = paginator
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        data['page'] = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        data['page'] = paginator.page(paginator.num_pages)
+
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
                                 context_instance=RequestContext(request))
@@ -58,6 +74,47 @@ def accounts(request):
 def admins(request):
     data = {}
     data['admins'] = Admin.objects.all()
+
+    paginator = Paginator(data['admins'], 20)
+    data['paginator'] = paginator
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        data['page'] = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        data['page'] = paginator.page(paginator.num_pages)
+
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/admins.html", data,
+                                context_instance=RequestContext(request))
+
+
+@check_login
+def messages(request):
+    data = {}
+    data['messages'] = Sms.objects.all()
+
+    if 'filter_by' in request.GET:
+        filter_by = request.GET['filter_by']
+        data['messages'] = Sms.objects.filter(action=filter_by)
+
+    data['admin_id'] = request.session['admin_id']
+    paginator = ShortPaginator(data['messages'], 2)
+    data['paginator'] = paginator
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        data['page'] = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        data['page'] = paginator.page(paginator.num_pages)
+
+    return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))

@@ -11,21 +11,19 @@ class APITest(TestCase):
 
         response = self.client.get(url % msg)
 
-        self.assertEqual(response.status_code, 302)
-        with self.assertRaises(Account.DoesNotExist):
-            Account.objects.get(phone_number=phone)
+        self.assertEqual(response.status_code, 404)
 
         # Check add new account
         msg = '(Tand %s dugaaraas 100 negj ilgeelee)' % phone
         response = self.client.get(url % msg)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         acc = Account.objects.get(phone_number=phone)
         self.assertEqual(acc.credit, 100)
 
         # Check credit add
         response = self.client.get(url % msg)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         acc = Account.objects.get(phone_number=phone)
         self.assertEqual(acc.credit, 200)

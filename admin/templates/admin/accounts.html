@@ -1,11 +1,26 @@
 {% extends "admin/base.html" %}
 {% block title %}Accounts{% endblock %}
-{% block extracontent %}
+{% block content %}
     
-{% for account in accounts %}
-<div>
-{{ account.phone_number }} - {{ account.pin_code }}
-</div>
-{% endfor %}
+<table>
+  <thead>
+    <tr>
+      <th>Phone Number</th>
+      <th>Credit</th>
+      <th>Pin Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for account in page.object_list %}
+    <tr>
+      <td>{{ account.phone_number }}</td>
+      <td>{{ account.credit }}</td>
+      <td>{{ account.pin_code }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% include "admin/_paginator.html" %}
 
 {% endblock %}
