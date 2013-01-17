@@ -28,8 +28,12 @@ def login(request):
                 return redirect(reverse('admin.views.accounts'))
 
     else:
+        if 'admin_id' in request.session:
+            return redirect(reverse('admin.views.accounts'))
+
         form = AdminLoginForm()
 
+    
     data['form'] = form
     return render_to_response("admin/login.html", data,
                                 context_instance=RequestContext(request))
