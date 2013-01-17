@@ -1,5 +1,6 @@
 # coding: utf-8
 from admin.decorators import check_login
+from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm
 from api.models import Sms
@@ -56,9 +57,9 @@ def accounts(request):
         page = 1
 
     try:
-        data['accounts'] = paginator.page(page)
+        data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        data['accounts'] = paginator.page(paginator.num_pages)
+        data['page'] = paginator.page(paginator.num_pages)
 
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
@@ -79,9 +80,9 @@ def admins(request):
         page = 1
 
     try:
-        data['admins'] = paginator.page(page)
+        data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        data['admins'] = paginator.page(paginator.num_pages)
+        data['page'] = paginator.page(paginator.num_pages)
 
     data['admin_id'] = request.session['admin_id']
     return render_to_response("admin/admins.html", data,
@@ -98,7 +99,7 @@ def messages(request):
         data['messages'] = Sms.objects.filter(action=filter_by)
 
     data['admin_id'] = request.session['admin_id']
-    paginator = Paginator(data['messages'], 20)
+    paginator = ShortPaginator(data['messages'], 2)
     data['paginator'] = paginator
 
     try:
@@ -107,9 +108,9 @@ def messages(request):
         page = 1
 
     try:
-        data['messages'] = paginator.page(page)
+        data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        data['messages'] = paginator.page(paginator.num_pages)
+        data['page'] = paginator.page(paginator.num_pages)
 
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
