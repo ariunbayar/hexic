@@ -49,6 +49,10 @@ Extra commands
 
     python manage.py test api.APITest.test_new_msj
 
+- To create new account by SMS::
+    wget -O - 'http://localhost:8000/api/?phone=%2B976596&msg=(Tand%2099437911%20dugaaraas%20100%20negj%20ilgeelee)'
+
+
 South commands
 ===============
 - For first migration::
