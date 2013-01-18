@@ -101,7 +101,7 @@ def messages(request):
         data['messages'] = Sms.objects.filter(action=filter_by)
 
     data['admin_id'] = request.session['admin_id']
-    paginator = ShortPaginator(data['messages'], 2)
+    paginator = ShortPaginator(data['messages'], 20)
     data['paginator'] = paginator
 
     try:
