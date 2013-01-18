@@ -5,5 +5,5 @@ urlpatterns = patterns('admin.views',
     url(r'^admins$', 'admins'),
     url(r'^logout$', 'logout'),
     url(r'^messages$', 'messages'),
-    url(r'^$', 'login'),
+    url(r'^login$', 'login'),
 )
