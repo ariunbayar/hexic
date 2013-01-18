@@ -3,7 +3,7 @@ from security.models import Account
 
 
 class APITest(TestCase):
-    def test_new_msj(self):
+    def test_message_received(self):
         # Check when got wrong message
         phone = 99999999
         msg = '(Wrong message)'
@@ -11,7 +11,7 @@ class APITest(TestCase):
 
         response = self.client.get(url % msg)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
         # Check add new account
         msg = '(Tand %s dugaaraas 100 negj ilgeelee)' % phone

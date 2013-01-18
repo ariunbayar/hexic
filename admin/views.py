@@ -15,8 +15,6 @@ def login(request):
     data = {}
     if request.POST:
         form = AdminLoginForm(request.POST)
-        import logging
-        logging.error(form.is_valid())
         if form.is_valid():
             try:
                 admin = Admin.objects.get(

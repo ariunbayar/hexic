@@ -10,7 +10,7 @@
     {{ form.password.errors }}
     {% endif %}
     </p>
-    <form action="" method="POST">{% csrf_token %}
+    <form action="{% url admin.views.login %}" method="POST">{% csrf_token %}
       <div>
         <label for="id_user_name">User name:</label>
         {{ form.user_name }}

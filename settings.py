@@ -115,7 +115,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 
 
 def custom_show_toolbar(request):
-    return True
+    return False
 
 #django debug toolbar setting
 DEBUG_TOOLBAR_CONFIG = {

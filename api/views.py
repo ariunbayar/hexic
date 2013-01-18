@@ -4,7 +4,7 @@ from helpers import generate_password, is_deposit
 from django.http import HttpResponse, Http404
 
 
-def new_msg(request):
+def message_received(request):
     sender = request.GET['phone']
     msg = request.GET['msg']
 
@@ -19,7 +19,7 @@ def new_msg(request):
     if phone and credit:
         try:
             old_acc = Account.objects.get(phone_number=phone)
-        except Account.DoesNotExist: # Adding new account
+        except Account.DoesNotExist:  # Adding new account
             random_number = generate_password()
             new_acc = Account()
 
@@ -31,7 +31,7 @@ def new_msg(request):
 
             sms.account = new_acc
             sms.action = Sms.NEW_ACC
-        else: # Adding credit for old account
+        else:  # Adding credit for old account
             old_acc.credit += credit
             old_acc.save()
 
