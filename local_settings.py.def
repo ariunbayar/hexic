@@ -14,6 +14,9 @@ DATABASES = {
     }
 }
 
+LOCAL_INSTALLED_APPS = (
+    'debug_toolbar',
+)
 
 if 'test' in sys.argv:  # running Django tests
     # run tests using sqlite on memory
@@ -21,3 +24,22 @@ if 'test' in sys.argv:  # running Django tests
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
     }
+
+
+#-------------
+# django debug toolbar setting
+#-------------
+INTERNAL_IPS = ('127.0.0.1',)
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    'HIDE_DJANGO_SQL': False,
+    'TAG': 'div',
+    'ENABLE_STACKTRACES': True,
+}
+
+PREPEND_MIDDLEWARE_CLASSES = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+APPEND_MIDDLEWARE_CLASSES = ()

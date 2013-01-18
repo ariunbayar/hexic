@@ -100,31 +100,13 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+BASE_MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # django debug toolbar setting
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
-
-# django debug toolbar setting
-INTERNAL_IPS = ('127.0.0.1',)
-
-
-def custom_show_toolbar(request):
-    return True
-
-#django debug toolbar setting
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-    'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar,
-    'HIDE_DJANGO_SQL': False,
-    'TAG': 'div',
-    'ENABLE_STACKTRACES': True,
-}
 
 ROOT_URLCONF = 'hexic.urls'
 
@@ -143,7 +125,6 @@ INSTALLED_APPS = (
     'security',
     'game',
     'api',
-    'debug_toolbar',
     'admin',
     'south',
 )
@@ -176,3 +157,11 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+
+INSTALLED_APPS += LOCAL_INSTALLED_APPS
+
+MIDDLEWARE_CLASSES = (
+        PREPEND_MIDDLEWARE_CLASSES +
+        BASE_MIDDLEWARE_CLASSES +
+        APPEND_MIDDLEWARE_CLASSES)
