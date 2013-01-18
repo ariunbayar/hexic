@@ -13,7 +13,7 @@ class ShortPaginator(Paginator):
             left_list.append(None)
             left_list.append(self.current_page.number - 2)
             left_list.append(self.current_page.number - 1)
-            
+
             return left_list
         else:
             return range(1, self.current_page.number)
@@ -26,7 +26,7 @@ class ShortPaginator(Paginator):
             left_list.append(self.current_page.number + 2)
             left_list.append(None)
             left_list.append(self.num_pages)
-            
+
             return left_list
         else:
             return range(self.current_page.number + 1, self.num_pages + 1)
