@@ -1,39 +1,39 @@
 {% extends "admin/base.html" %}
 {% block title %}Messages{% endblock %}
 {% block content %}
-<div class='show-grid row-fluid'>
-  <div class='span9'>
-    <table class='message-table'>
-      <thead>
-        <tr>
-          <th>Action</th>
-          <th>Account</th>
-          <th>Sender</th>
-          <th>Text</th>
-          <th>Datetime</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for message in page.object_list %}
-        <tr>
-          <td>{{ message.get_action_display }}</td>
-          <td>{{ message.account.phone_number }}</td>
-          <td>{{ message.sender }}</td>
-          <td>{{ message.text }}</td>
-          <td>{{ message.date_time }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<h3>Filter by:</h3>
+<a href="{% url admin.views.messages %}?filter_by=2">Deposit Credit</a>
+<a href="{% url admin.views.messages %}?filter_by=1">New Account</a>
+<a href="{% url admin.views.messages %}?filter_by=0">None</a>
 
-  <div class='span3'>
-    <h3>Filter by:</h3>
-    <a href="{% url admin.views.messages %}?filter_by=2">Deposit Credit</a>
-    <a href="{% url admin.views.messages %}?filter_by=1">New Account</a>
-    <a href="{% url admin.views.messages %}?filter_by=0">None</a>
-  </div>
-</div> 
+<h3>Search:</h3>
+<form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
+  <input type="text" name="search_val"/>
+  <input type="submit" value="Search" />
+</form>
+
+<table class='message-table'>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Account</th>
+      <th>Sender</th>
+      <th>Text</th>
+      <th>Datetime</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for message in page.object_list %}
+    <tr>
+      <td>{{ message.get_action_display }}</td>
+      <td>{{ message.account.phone_number }}</td>
+      <td>{{ message.sender }}</td>
+      <td>{{ message.text }}</td>
+      <td>{{ message.date_time|date:"Y-m-d H:i" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% include "admin/_paginator.html" %}
 {% endblock %}
 

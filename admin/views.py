@@ -1,6 +1,6 @@
 # coding: utf-8
 from admin.decorators import check_login
-from admin.helpers import ShortPaginator
+from admin.helpers import ShortPaginator, search
 from admin.models import Admin
 from admin.forms import AdminLoginForm
 from api.models import Sms
@@ -95,11 +95,15 @@ def messages(request):
     data = {}
     data['messages'] = Sms.objects.all()
 
+    if 'search_val' in request.GET and request.GET['search_val']:
+        data['messages'] = search(request.GET['search_val'])
+
     if 'filter_by' in request.GET:
         filter_by = request.GET['filter_by']
         data['messages'] = Sms.objects.filter(action=filter_by)
 
     data['admin_id'] = request.session['admin_id']
+    data['messages'] = data['messages'].order_by('-date_time')
     paginator = ShortPaginator(data['messages'], 20)
     data['paginator'] = paginator
 
