@@ -2,11 +2,13 @@
 from admin.decorators import check_login
 from admin.helpers import ShortPaginator
 from admin.models import Admin
-from admin.forms import AdminLoginForm
+from admin.forms import AdminLoginForm, AccountForm
 from api.models import Sms
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.shortcuts import render_to_response, redirect
+from django.http import Http404
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template import RequestContext
 from security.models import Account
 
@@ -21,6 +23,7 @@ def login(request):
                         user_name=form.cleaned_data['user_name'],
                         password=form.cleaned_data['password'])
             except Admin.DoesNotExist:
+                messages.add_message(request, messages.INFO, 'Hello world!!!')
                 msg = 'Нэр эсвэл Нууц үг буруу байна'
                 form._errors["user_name"] = form.error_class([msg])
             else:
@@ -52,11 +55,7 @@ def accounts(request):
     paginator = Paginator(qs, 20)
     data['paginator'] = paginator
 
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
+    page = request.GET['page'] if 'page' in request.GET else 1
     try:
         data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
@@ -75,11 +74,7 @@ def admins(request):
     paginator = Paginator(qs, 20)
     data['paginator'] = paginator
 
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
+    page = request.GET['page'] if 'page' in request.GET else 1
     try:
         data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
@@ -124,3 +119,68 @@ def messages(request):
 
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
+
+
+@check_login
+def add_acc(request):
+    data = {}
+    if request.POST:
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('admin.views.accounts'))
+
+    else:
+        form = AccountForm()
+
+    data['admin_id'] = request.session['admin_id']
+
+    data['form'] = form
+    return render_to_response('admin/account_form.html', data,
+                                context_instance=RequestContext(request))
+
+
+@check_login
+def update_acc(request):
+    data = {}
+    if request.POST:
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            if 'acc_id' in form.cleaned_data:
+                acc = get_object_or_404(Account, pk=form.cleaned_data['acc_id'])
+                acc.phone_number = form.cleaned_data['phone_number']
+                acc.pin_code = form.cleaned_data['pin_code']
+                acc.credit = form.cleaned_data['credit']
+                acc.save()
+            else:
+                raise Http404
+
+        return redirect(reverse('admin.views.accounts'))
+
+    else:
+        form = AccountForm()
+        if 'acc_id' in request.GET and request.GET['acc_id']:
+            acc_id = request.GET['acc_id']
+            acc = get_object_or_404(Account, pk=acc_id)
+            form = AccountForm(initial={
+                                'phone_number': acc.phone_number,
+                                'pin_code': acc.pin_code,
+                                'credit': acc.credit,
+                                'acc_id': acc_id})
+        data['form'] = form
+
+    data['acc_id'] = acc_id
+    data['admin_id'] = request.session['admin_id']
+    return render_to_response('admin/account_form.html', data,
+                                context_instance=RequestContext(request))
+
+
+@check_login
+def del_acc(request):
+    if 'acc_id' in request.GET:
+        acc = get_object_or_404(Account, pk=request.GET['acc_id'])
+        acc.delete()
+
+    return redirect(reverse('admin.views.accounts'))
+
+

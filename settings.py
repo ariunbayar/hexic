@@ -100,6 +100,12 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#    "django.contrib.messages.context_processors.messages",
+# ) 
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
 BASE_MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,5 +1,6 @@
 # coding: utf-8
 from django import forms
+from security.models import Account
 
 
 class AdminLoginForm(forms.Form):
@@ -16,3 +17,11 @@ class AdminLoginForm(forms.Form):
                 'max_length': 'Таны нууц үг 50-н тэмдэгтээс'\
                               'хэтрээгүй байх ёстой'},
                 widget=forms.PasswordInput)
+
+
+class AccountForm(forms.ModelForm):
+    acc_id = forms.IntegerField(
+            required=False,
+            widget=forms.HiddenInput)
+    class Meta:
+        model = Account

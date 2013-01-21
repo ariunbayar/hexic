@@ -12,6 +12,7 @@
     {% if admin_id %}
       <div class='clearfix'>
         <div class='right-heading'>
+          <a href="{% url admin.views.add_acc %}">Add account</a>
           <a href="{% url admin.views.logout %}">Гарах</a>
         </div>
         <div class='left-heading'>
@@ -20,6 +21,15 @@
           <a href="{% url admin.views.messages %}">Messages</a>
         </div>
       </div>
+    {% endif %}
+    {% if messages %}
+    <div>
+      <ul class='messages'>
+        {% for message in messages %}
+        <li{% if message.tags %} class='{{ message.tags }}'{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
     {% endif %}
     {% block content %}{% endblock %}
     <script src="{{ STATIC_URL }}js/jquery.js" type="text/javascript" charset="utf-8"></script>
