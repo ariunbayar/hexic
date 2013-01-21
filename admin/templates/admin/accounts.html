@@ -14,7 +14,7 @@
     {% for account in page.object_list %}
     <tr>
       <td>
-        <a href="{% url admin.views.messages %}?search_val={{ account.phone_number }}">
+        <a href="{% url admin.views.messages %}?phone={{ account.phone_number }}">
           {{ account.phone_number }}
         </a>
       </td>

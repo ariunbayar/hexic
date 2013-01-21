@@ -1,16 +1,29 @@
 {% extends "admin/base.html" %}
 {% block title %}Messages{% endblock %}
 {% block content %}
-<h3>Filter by:</h3>
-<a href="{% url admin.views.messages %}?filter_by=2">Deposit Credit</a>
-<a href="{% url admin.views.messages %}?filter_by=1">New Account</a>
-<a href="{% url admin.views.messages %}?filter_by=0">None</a>
-
-<h3>Search:</h3>
-<form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
-  <input type="text" name="search_val"/>
-  <input type="submit" value="Search" />
-</form>
+Filter by:
+<button>+</button>
+<div id='filter'>
+  <form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
+    <div class='row-fluid show-grid'>
+      <div class='span6'>
+        <label for="deposit">Deposit Credit</label>
+        <input type="radio" name="action" id='deposit' value='deposit' />
+        <label for="new_acc">New Account</label>
+        <input type="radio" name="action" id='new_acc' value='new_acc' />
+        <label for="none">None</label>
+        <input type="radio" name="action" id='none' value='none' />
+      </div>
+      <div class='span6'>
+        <label for="phone">Phone Number</label>
+        <input type="text" id='phone' name="phone" />
+        <label for="sender">Sender</label>
+        <input type="text" id='sender' name="sender" />
+      </div>
+      <input type="submit" value="Filter" />
+    </div>
+  </form>
+</div>
 
 <table class='message-table'>
   <thead>
@@ -35,6 +48,20 @@
   </tbody>
 </table>
 {% include "admin/_paginator.html" %}
+{% endblock %}
+
+{% block js-init %}
+  $('#filter').hide();
+  $('button').click(function(){
+      if($(this).html() == '+'){
+          $('#filter').show(500);
+          $(this).html('-');
+      }
+      else {
+          $('#filter').hide(500);
+          $(this).html('+');
+      }
+  });
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

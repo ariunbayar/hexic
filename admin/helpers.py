@@ -1,6 +1,4 @@
 from django.core.paginator import Paginator
-from api.models import Sms
-from itertools import chain
 
 
 class ShortPaginator(Paginator):
@@ -32,18 +30,3 @@ class ShortPaginator(Paginator):
             return left_list
         else:
             return range(self.current_page.number + 1, self.num_pages + 1)
-
-
-def search(value):
-    try:
-        sms1 = Sms.objects.filter(account__phone_number=int(value))
-    except Sms.DoesNotExist:
-        pass
-
-    try:
-        sms2 = Sms.objects.filter(sender=value)
-    except Sms.DoesNotExist:
-        pass
-
-    # converting to set then to list to be distinct
-    return list(set(chain(sms1, sms2)))

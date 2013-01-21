@@ -1,6 +1,6 @@
 # coding: utf-8
 from admin.decorators import check_login
-from admin.helpers import ShortPaginator, search
+from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm
 from api.models import Sms
@@ -48,8 +48,8 @@ def logout(request):
 @check_login
 def accounts(request):
     data = {}
-    data['accounts'] = Account.objects.all()
-    paginator = Paginator(data['accounts'], 20)
+    qs = Account.objects.all()
+    paginator = Paginator(qs, 20)
     data['paginator'] = paginator
 
     try:
@@ -70,9 +70,9 @@ def accounts(request):
 @check_login
 def admins(request):
     data = {}
-    data['admins'] = Admin.objects.all()
+    qs = Admin.objects.all()
 
-    paginator = Paginator(data['admins'], 20)
+    paginator = Paginator(qs, 20)
     data['paginator'] = paginator
 
     try:
@@ -93,29 +93,34 @@ def admins(request):
 @check_login
 def messages(request):
     data = {}
-    data['messages'] = Sms.objects.all()
+    param = request.GET
 
-    if 'search_val' in request.GET and request.GET['search_val']:
-        data['messages'] = search(request.GET['search_val'])
+    # filter objects
+    qs = Sms.objects.all()
+    if 'sender' in param and param['sender']:
+        qs = qs.filter(sender__startswith=param['sender'])
+    if 'phone' in param and param['phone']:
+        qs = qs.filter(account__phone_number__startswith=int(param['phone']))
+    if 'action' in param:
+        if 'deposit' == param['action']:
+            qs = qs.filter(action=Sms.DEPOSIT)
+        if 'new_acc' == param['action']:
+            qs = qs.filter(action=Sms.NEW_ACC)
+        if 'none' == param['action']:
+            qs = qs.filter(action=Sms.NONE)
+    qs = qs.order_by('-date_time')
 
-    if 'filter_by' in request.GET:
-        filter_by = request.GET['filter_by']
-        data['messages'] = Sms.objects.filter(action=filter_by)
-
-    data['admin_id'] = request.session['admin_id']
-    data['messages'] = data['messages'].order_by('-date_time')
-    paginator = ShortPaginator(data['messages'], 20)
-    data['paginator'] = paginator
+    # pagination
+    data['paginator'] = paginator = ShortPaginator(qs, 20)
+    page = param['page'] if 'page' in param else 1
 
     try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
-    try:
-        data['page'] = paginator.page(page)
+        data['page'] = paginator.page(int(page))
     except (EmptyPage, InvalidPage):
-        data['page'] = paginator.page(paginator.num_pages)
+        data['page'] = paginator.page(paginator.num_pages)  # last page
+
+    # admin login indicator
+    data['admin_id'] = request.session['admin_id']
 
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
