@@ -4,6 +4,7 @@ from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
+from django.contrib import messages as flash
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
@@ -22,7 +23,6 @@ def login(request):
                         user_name=form.cleaned_data['user_name'],
                         password=form.cleaned_data['password'])
             except Admin.DoesNotExist:
-                messages.add_message(request, messages.INFO, 'Hello world!!!')
                 msg = 'Нэр эсвэл Нууц үг буруу байна'
                 form._errors["user_name"] = form.error_class([msg])
             else:
@@ -59,6 +59,7 @@ def accounts(request):
         data['page'] = paginator.page(page)
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
+
 
     data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
@@ -156,6 +157,7 @@ def update_acc(request):
                 acc.pin_code = form.cleaned_data['pin_code']
                 acc.credit = form.cleaned_data['credit']
                 acc.save()
+                flash.add_message(request, flash.INFO, 'Successfully saved account!')
             else:
                 raise Http404
 
