@@ -1,7 +1,6 @@
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from decorators import render_to
 
 
+@render_to('public/index.html')
 def index(request):
-    return render_to_response("public/index.html",
-                               context_instance=RequestContext(request))
+    return {}

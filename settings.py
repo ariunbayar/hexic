@@ -1,4 +1,5 @@
 import os
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 
 DIRNAME = os.path.abspath(os.path.dirname(__file__))
@@ -102,11 +103,6 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-# TEMPLATE_CONTEXT_PROCESSORS = (
-#    "django.contrib.messages.context_processors.messages",
-# ) 
-
-MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 BASE_MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -136,6 +132,14 @@ INSTALLED_APPS = (
     'admin',
     'south',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS += (
+        'hexic.admin.context_processors.inject_globals',
+        'hexic.utils.context_processors.inject_globals',
+)
+
+# Key for SMS client to recieve any messages
+SMS_CLIENT_KEY = 'FDpLAxrP3f7yYxvu'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

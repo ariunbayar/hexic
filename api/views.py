@@ -1,14 +1,17 @@
 from api.models import Sms
 from security.models import Account
 from helpers import generate_password, is_deposit
+from settings import SMS_CLIENT_KEY
+
 from django.http import HttpResponse, Http404
 
 
 def message_received(request):
-    sender = request.GET['phone']
-    msg = request.GET['msg']
+    sender = request.GET.get('phone')
+    msg = request.GET.get('msg')
+    client_key = request.GET.get('key')
 
-    if not sender:
+    if (not sender) or (client_key != SMS_CLIENT_KEY):
         raise Http404
 
     sms = Sms()
