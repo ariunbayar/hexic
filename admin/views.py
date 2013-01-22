@@ -4,15 +4,17 @@ from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
+from hexic.decorators import render_to
+from security.models import Account
+
 from django.contrib import messages as flash
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
-from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.template import RequestContext
-from security.models import Account
+from django.shortcuts import redirect, get_object_or_404
 
 
+@render_to("admin/login.html")
 def login(request):
     data = {}
     if request.POST:
@@ -36,8 +38,7 @@ def login(request):
         form = AdminLoginForm()
 
     data['form'] = form
-    return render_to_response("admin/login.html", data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
@@ -47,6 +48,7 @@ def logout(request):
 
 
 @check_login
+@render_to("admin/accounts.html")
 def accounts(request):
     data = {}
     qs = Account.objects.all()
@@ -59,11 +61,11 @@ def accounts(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-    return render_to_response("admin/accounts.html", data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
+@render_to("admin/admins.html")
 def admins(request):
     data = {}
     qs = Admin.objects.all()
@@ -77,11 +79,11 @@ def admins(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-    return render_to_response("admin/admins.html", data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
+@render_to("admin/messages.html")
 def messages(request):
     data = {}
     param = request.GET
@@ -115,11 +117,11 @@ def messages(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)  # last page
 
-    return render_to_response("admin/messages.html", data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
+@render_to('admin/account_form.html')
 def add_acc(request):
     data = {}
     if request.POST:
@@ -133,11 +135,11 @@ def add_acc(request):
         form = AccountForm()
 
     data['form'] = form
-    return render_to_response('admin/account_form.html', data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
+@render_to('admin/account_form.html')
 def update_acc(request):
     data = {}
     if request.POST:
@@ -168,8 +170,7 @@ def update_acc(request):
         data['form'] = form
 
     data['acc_id'] = acc_id
-    return render_to_response('admin/account_form.html', data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
@@ -183,6 +184,7 @@ def del_acc(request):
 
 
 @check_login
+@render_to('admin/admin_form.html')
 def add_admin(request):
     data = {}
 
@@ -196,10 +198,11 @@ def add_admin(request):
         form = AdminForm()
 
     data['form'] = form
-    return render_to_response('admin/admin_form.html', data,
-                                context_instance=RequestContext(request))
+    return data
+
 
 @check_login
+@render_to('admin/admin_form.html')
 def update_admin(request, admin_id):
     data = {}
     admin = get_object_or_404(Admin, pk=admin_id)
@@ -213,14 +216,8 @@ def update_admin(request, admin_id):
     else:
         form = AdminForm(instance=admin)
 
-<<<<<<< HEAD
     data['form'] = form
-    data['session_admin_id'] = request.session['admin_id']
-=======
-    data['admin_id'] = admin_id
->>>>>>> 5f1eec9f3d9cc846327aa1bc0312ee9e138ff7e8
-    return render_to_response('admin/admin_form.html', data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
