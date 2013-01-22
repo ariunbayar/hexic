@@ -20,7 +20,6 @@ def login(request):
                 msg = 'Утасны дугаар эсвэл Нууц үг буруу байна'
                 form._errors["phone_number"] = form.error_class([msg])
             else:
-                request.session['account_id'] = acc.id
                 return redirect(reverse('game.views.board'))
 
     else:

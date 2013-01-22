@@ -135,6 +135,7 @@ INSTALLED_APPS = (
 
 TEMPLATE_CONTEXT_PROCESSORS += (
         'hexic.admin.context_processors.inject_globals',
+        'hexic.utils.context_processors.inject_globals',
 )
 
 # A sample logging configuration. The only tangible logging
