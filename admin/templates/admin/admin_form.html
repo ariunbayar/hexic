@@ -2,11 +2,8 @@
 {% block title %}Admin{% endblock %}
 {% block content %}
 
-{% if admin_id %}
-<form action="{% url admin.views.update_admin %}" method="POST">{% csrf_token %}
-{% else %}
-<form action="{% url admin.views.add_admin %}" method="POST">{% csrf_token %}
-{% endif %}
+<form action="" method="POST">
+  {% csrf_token %}
   <div>
     <label for="id_user_name">User name:</label>
     {{ form.user_name }}
@@ -22,8 +19,7 @@
     {{ form.email }}
     {{ form.email.errors }}
   </div>
-  {{ form.admin_id }}
-  {% if admin_id %}
+  {% if form.instance.pk %}
   <input type="submit" value="Update" />
   {% else %}
   <input type="submit" value="Register" />
@@ -35,3 +31,4 @@
 {% block js-init %}
     $('#id_user_name').focus();
 {% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

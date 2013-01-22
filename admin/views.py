@@ -186,7 +186,7 @@ def del_acc(request):
     if 'acc_id' in request.GET:
         acc = get_object_or_404(Account, pk=request.GET['acc_id'])
         acc.delete()
-        flash.add_message(request, flash.WARNING, 'Account deleted')
+        flash.add_message(request, flash.SUCCESS, 'Account deleted')
 
     return redirect(reverse('admin.views.accounts'))
 
@@ -194,13 +194,13 @@ def del_acc(request):
 @check_login
 def add_admin(request):
     data = {}
+
     if request.POST:
         form = AdminForm(request.POST)
         if form.is_valid():
             form.save()
             flash.add_message(request, flash.SUCCESS, 'Admin added')
             return redirect(reverse('admin.views.admins'))
-
     else:
         form = AdminForm()
 
@@ -211,46 +211,29 @@ def add_admin(request):
                                 context_instance=RequestContext(request))
 
 @check_login
-def update_admin(request):
+def update_admin(request, admin_id):
     data = {}
+    admin = get_object_or_404(Admin, pk=admin_id)
+
     if request.POST:
-        form = AdminForm(request.POST)
+        form = AdminForm(request.POST, instance=admin)
         if form.is_valid():
-            if 'admin_id' in form.cleaned_data:
-                admin = get_object_or_404(Admin, pk=form.cleaned_data['admin_id'])
-                admin.user_name = form.cleaned_data['user_name']
-                admin.password = form.cleaned_data['password']
-                admin.email = form.cleaned_data['email']
-                admin.save()
-                flash.add_message(request, flash.SUCCESS, 'Admin updated')
-            else:
-                raise Http404
-
-        return redirect(reverse('admin.views.admins'))
-
+            form.save()
+            flash.add_message(request, flash.SUCCESS, 'Admin updated')
+            return redirect(reverse('admin.views.admins'))
     else:
-        form = AdminForm()
-        if 'admin_id' in request.GET and request.GET['admin_id']:
-            admin_id = request.GET['admin_id']
-            admin = get_object_or_404(Admin, pk=admin_id)
-            form = AdminForm(initial={
-                                'user_name': admin.user_name,
-                                'password': admin.password,
-                                'email': admin.email,
-                                'admin_id': admin_id})
-        data['form'] = form
+        form = AdminForm(instance=admin)
 
-    data['admin_id'] = admin_id
+    data['form'] = form
     data['session_admin_id'] = request.session['admin_id']
     return render_to_response('admin/admin_form.html', data,
                                 context_instance=RequestContext(request))
 
 
 @check_login
-def del_admin(request):
-    if 'admin_id' in request.GET:
-        admin = get_object_or_404(Admin, pk=request.GET['admin_id'])
-        admin.delete()
-        flash.add_message(request, flash.WARNING, 'Admin deleted')
+def del_admin(request, admin_id):
+    admin = get_object_or_404(Admin, pk=admin_id)
+    admin.delete()
+    flash.add_message(request, flash.SUCCESS, 'Admin deleted')
 
     return redirect(reverse('admin.views.admins'))

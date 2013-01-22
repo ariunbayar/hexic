@@ -29,8 +29,5 @@ class AccountForm(forms.ModelForm):
 
 
 class AdminForm(forms.ModelForm):
-    admin_id = forms.IntegerField(
-            required=False,
-            widget=forms.HiddenInput)
     class Meta:
         model = Admin
