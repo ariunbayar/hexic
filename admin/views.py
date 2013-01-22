@@ -60,6 +60,7 @@ def accounts(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
+
     data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
                                 context_instance=RequestContext(request))

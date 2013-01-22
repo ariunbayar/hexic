@@ -6,12 +6,13 @@ Filter by:
 <form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
   <div class='row-fluid' id='filter' style='display:none'>
     <div class='span6'>
-      <label for="deposit">Deposit Credit</label>
-      <input type="radio" name="action" id='deposit' value='deposit' {% if deposit %}checked='1'{% endif %} />
-      <label for="new_acc">New Account</label>
-      <input type="radio" name="action" id='new_acc' value='new_acc' {% if new_acc %}checked='1'{% endif %} />
-      <label for="none">None</label>
-      <input type="radio" name="action" id='none' value='none' {% if none %}checked='1'{% endif %} />
+      <label for="id_action">Action</label>
+      <select name="action" id="id_action">
+        <option value="">--</option>
+        <option value="deposit" {% if deposit %}selected='selected'{% endif %}>Deposit Credit</option>
+        <option value="new_acc" {% if new_acc %}selected='selected'{% endif %}>New Account</option>
+        <option value="none" {% if none %}selected='selected'{% endif %}>None</option>
+      </select>
     </div>
     <div class='span6'>
       <label for="phone">Phone Number</label>
@@ -53,9 +54,11 @@ Filter by:
 {% endblock %}
 
 {% block js-init %}
-  $('button').click(function(){
-    $('#filter').toggle();
+$('button').click(function(e){
+  $('#filter').toggle(200, function(){
+    $(e.target).html($(e.target).html() == '+' ?  '-' : '+');
   });
+});
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
