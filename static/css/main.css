@@ -1,4 +1,4 @@
-body, input { font-family: 'Comfortaa'; }
+body, input, select { font-family: 'Comfortaa'; }
 
 .content {
     width: 960px;
