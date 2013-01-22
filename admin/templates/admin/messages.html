@@ -53,9 +53,11 @@ Filter by:
 {% endblock %}
 
 {% block js-init %}
-  $('button').click(function(){
-    $('#filter').toggle();
+$('button').click(function(e){
+  $('#filter').toggle(200, function(){
+    $(e.target).html($(e.target).html() == '+' ?  '-' : '+');
   });
+});
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
