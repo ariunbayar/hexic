@@ -4,6 +4,7 @@ from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
+from django.contrib import messages as flash
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
@@ -22,7 +23,6 @@ def login(request):
                         user_name=form.cleaned_data['user_name'],
                         password=form.cleaned_data['password'])
             except Admin.DoesNotExist:
-                messages.add_message(request, messages.INFO, 'Hello world!!!')
                 msg = 'Нэр эсвэл Нууц үг буруу байна'
                 form._errors["user_name"] = form.error_class([msg])
             else:
@@ -132,6 +132,7 @@ def add_acc(request):
         form = AccountForm(request.POST)
         if form.is_valid():
             form.save()
+            flash.add_message(request, flash.SUCCESS, 'Account added')
             return redirect(reverse('admin.views.accounts'))
 
     else:
@@ -156,6 +157,7 @@ def update_acc(request):
                 acc.pin_code = form.cleaned_data['pin_code']
                 acc.credit = form.cleaned_data['credit']
                 acc.save()
+                flash.add_message(request, flash.SUCCESS, 'Account updated')
             else:
                 raise Http404
 
@@ -184,6 +186,7 @@ def del_acc(request):
     if 'acc_id' in request.GET:
         acc = get_object_or_404(Account, pk=request.GET['acc_id'])
         acc.delete()
+        flash.add_message(request, flash.WARNING, 'Account deleted')
 
     return redirect(reverse('admin.views.accounts'))
 
@@ -195,6 +198,7 @@ def add_admin(request):
         form = AdminForm(request.POST)
         if form.is_valid():
             form.save()
+            flash.add_message(request, flash.SUCCESS, 'Admin added')
             return redirect(reverse('admin.views.admins'))
 
     else:
@@ -218,6 +222,7 @@ def update_admin(request):
                 admin.password = form.cleaned_data['password']
                 admin.email = form.cleaned_data['email']
                 admin.save()
+                flash.add_message(request, flash.SUCCESS, 'Admin updated')
             else:
                 raise Http404
 
@@ -246,5 +251,6 @@ def del_admin(request):
     if 'admin_id' in request.GET:
         admin = get_object_or_404(Admin, pk=request.GET['admin_id'])
         admin.delete()
+        flash.add_message(request, flash.WARNING, 'Admin deleted')
 
     return redirect(reverse('admin.views.admins'))

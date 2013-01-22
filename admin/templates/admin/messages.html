@@ -4,7 +4,7 @@
 Filter by:
 <button>+</button>
 <form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
-  <div class='row-fluid show-grid' id='filter' style='display:none'>
+  <div class='row-fluid' id='filter' style='display:none'>
     <div class='span6'>
       <label for="deposit">Deposit Credit</label>
       <input type="radio" name="action" id='deposit' value='deposit' {% if deposit %}checked='1'{% endif %} />

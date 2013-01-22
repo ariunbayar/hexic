@@ -10,7 +10,7 @@
   </head>
   <body class='content'>
     {% if session_admin_id %}
-      <div class='clearfix'>
+      <div class='clearfix row-fluid'>
         <div class='right-heading'>
           <a href="{% url admin.views.add_admin %}">Add admin</a>
           <a href="{% url admin.views.add_acc %}">Add account</a>
@@ -24,11 +24,11 @@
       </div>
     {% endif %}
     {% if messages %}
-    <div>
-      <ul class='messages'>
-        {% for message in messages %}
-        <li{% if message.tags %} class='{{ message.tags }}'{% endif %}>{{ message }}</li>
-        {% endfor %}
+      {% for message in messages %}
+        <div{% if message.tags %} class='{{ message.tags }} alert'{% endif %}>
+          <button class='close' type="button">&times;</button>
+          {{ message }}
+      {% endfor %}
       </ul>
     </div>
     {% endif %}

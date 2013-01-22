@@ -72,7 +72,10 @@ tbody tr:hover {
     margin: auto;
 }
 
-.row-fluid {width: 940px;}
+.row-fluid {
+    width: 100%;
+    padding: 0px;
+}
 
 .row-fluid::before, .row-fluid::after {
     display: table;
@@ -90,14 +93,17 @@ tbody tr:hover {
 .row-fluid [class*="span"] {
     display: block;
     float: left;
-    margin-left: 2%;
+    margin-left: 2.5%;
 }
 
 .row-fluid [class*="span"]:first-child {margin-left: 0px;}
 
 .span1 {width: 8.33%;}
 
-.span6 {width: 46.98%;}
+.span6 {
+    width: 48.717948717948715%;
+    padding: 0px;
+}
 
 .span12 {width: 100%;}
 
@@ -125,7 +131,6 @@ input[type="password"]
 }
 
 form div {
-    width: 90%;
     margin: auto;
 }
 
@@ -138,6 +143,48 @@ ul.errorlist {
     list-style: none;
     height: 15px;
     margin: 5px;
+}
+/* }}} */
+
+/* flash-messages {{{ */
+.alert {
+    margin-bottom: 5px;
+    padding: 8px 35px 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid #fbeed5;
+    border-radius: 4px;
+    line-height: 20px;
+    color: #c09853;
+    background-color: #fcf8e3;
+}
+
+.success {
+    color: #468847;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    line-height: 20px;
+    padding: 0px;
+    background: transparent;
+    border: 0px;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #fff;
+    margin: 0px;
+    vertical-align: middle;
+}
+
+.alert .close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0.4;
 }
 /* }}} */
 
