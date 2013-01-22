@@ -1,12 +1,12 @@
 # coding: utf-8
-from decorators import check_login
+from decorators import check_login, render_to
 from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.shortcuts import redirect
 from forms import AccountForm
 from models import Account
 
 
+@render_to('security/index.html')
 def login(request):
     data = {}
     if request.POST:
@@ -20,14 +20,14 @@ def login(request):
                 msg = 'Утасны дугаар эсвэл Нууц үг буруу байна'
                 form._errors["phone_number"] = form.error_class([msg])
             else:
+                request.session['account_id'] = acc.id
                 return redirect(reverse('game.views.board'))
 
     else:
         form = AccountForm()
 
     data['form'] = form
-    return render_to_response("security/index.html", data,
-                                context_instance=RequestContext(request))
+    return data
 
 
 @check_login
