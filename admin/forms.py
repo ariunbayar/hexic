@@ -1,4 +1,5 @@
 # coding: utf-8
+from admin.models import Admin
 from django import forms
 from security.models import Account
 
@@ -25,3 +26,11 @@ class AccountForm(forms.ModelForm):
             widget=forms.HiddenInput)
     class Meta:
         model = Account
+
+
+class AdminForm(forms.ModelForm):
+    admin_id = forms.IntegerField(
+            required=False,
+            widget=forms.HiddenInput)
+    class Meta:
+        model = Admin

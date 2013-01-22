@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+{% if admin_id %}
+<form action="{% url admin.views.update_admin %}" method="POST">{% csrf_token %}
+{% else %}
+<form action="{% url admin.views.add_admin %}" method="POST">{% csrf_token %}
+{% endif %}
+  <div>
+    <label for="id_user_name">User name:</label>
+    {{ form.user_name }}
+    {{ form.user_name.errors }}
+  </div>
+  <div>
+    <label for="id_password">Password:</label>
+    {{ form.password }}
+    {{ form.password.errors }}
+  </div>
+  <div>
+    <label for="id_email">Email:</label>
+    {{ form.email }}
+    {{ form.email.errors }}
+  </div>
+  {{ form.admin_id }}
+  {% if admin_id %}
+  <input type="submit" value="Update" />
+  {% else %}
+  <input type="submit" value="Register" />
+  {% endif %}
+</form>
+
+{% endblock %}
+
+{% block js-init %}
+    $('#id_user_name').focus();
+{% endblock %}

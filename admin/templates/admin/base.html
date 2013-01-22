@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font.css" type="text/css"/>
   </head>
   <body class='content'>
-    {% if admin_id %}
+    {% if session_admin_id %}
       <div class='clearfix'>
         <div class='right-heading'>
+          <a href="{% url admin.views.add_admin %}">Add admin</a>
           <a href="{% url admin.views.add_acc %}">Add account</a>
           <a href="{% url admin.views.logout %}">Гарах</a>
         </div>

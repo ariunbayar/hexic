@@ -2,9 +2,8 @@
 from admin.decorators import check_login
 from admin.helpers import ShortPaginator
 from admin.models import Admin
-from admin.forms import AdminLoginForm, AccountForm
+from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
@@ -28,7 +27,7 @@ def login(request):
                 form._errors["user_name"] = form.error_class([msg])
             else:
                 request.session['admin_id'] = admin.id
-                data['admin_id'] = request.session['admin_id']
+                data['session_admin_id'] = request.session['admin_id']
                 return redirect(reverse('admin.views.accounts'))
 
     else:
@@ -61,7 +60,7 @@ def accounts(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-    data['admin_id'] = request.session['admin_id']
+    data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
                                 context_instance=RequestContext(request))
 
@@ -80,7 +79,7 @@ def admins(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-    data['admin_id'] = request.session['admin_id']
+    data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/admins.html", data,
                                 context_instance=RequestContext(request))
 
@@ -115,7 +114,7 @@ def messages(request):
         data['page'] = paginator.page(paginator.num_pages)  # last page
 
     # admin login indicator
-    data['admin_id'] = request.session['admin_id']
+    data['session_admin_id'] = request.session['admin_id']
 
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
@@ -133,7 +132,7 @@ def add_acc(request):
     else:
         form = AccountForm()
 
-    data['admin_id'] = request.session['admin_id']
+    data['session_admin_id'] = request.session['admin_id']
 
     data['form'] = form
     return render_to_response('admin/account_form.html', data,
@@ -170,7 +169,7 @@ def update_acc(request):
         data['form'] = form
 
     data['acc_id'] = acc_id
-    data['admin_id'] = request.session['admin_id']
+    data['session_admin_id'] = request.session['admin_id']
     return render_to_response('admin/account_form.html', data,
                                 context_instance=RequestContext(request))
 
@@ -184,3 +183,63 @@ def del_acc(request):
     return redirect(reverse('admin.views.accounts'))
 
 
+@check_login
+def add_admin(request):
+    data = {}
+    if request.POST:
+        form = AdminForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('admin.views.admins'))
+
+    else:
+        form = AdminForm()
+
+    data['session_admin_id'] = request.session['admin_id']
+
+    data['form'] = form
+    return render_to_response('admin/admin_form.html', data,
+                                context_instance=RequestContext(request))
+
+@check_login
+def update_admin(request):
+    data = {}
+    if request.POST:
+        form = AdminForm(request.POST)
+        if form.is_valid():
+            if 'admin_id' in form.cleaned_data:
+                admin = get_object_or_404(Admin, pk=form.cleaned_data['admin_id'])
+                admin.user_name = form.cleaned_data['user_name']
+                admin.password = form.cleaned_data['password']
+                admin.email = form.cleaned_data['email']
+                admin.save()
+            else:
+                raise Http404
+
+        return redirect(reverse('admin.views.admins'))
+
+    else:
+        form = AdminForm()
+        if 'admin_id' in request.GET and request.GET['admin_id']:
+            admin_id = request.GET['admin_id']
+            admin = get_object_or_404(Admin, pk=admin_id)
+            form = AdminForm(initial={
+                                'user_name': admin.user_name,
+                                'password': admin.password,
+                                'email': admin.email,
+                                'admin_id': admin_id})
+        data['form'] = form
+
+    data['admin_id'] = admin_id
+    data['session_admin_id'] = request.session['admin_id']
+    return render_to_response('admin/admin_form.html', data,
+                                context_instance=RequestContext(request))
+
+
+@check_login
+def del_admin(request):
+    if 'admin_id' in request.GET:
+        admin = get_object_or_404(Admin, pk=request.GET['admin_id'])
+        admin.delete()
+
+    return redirect(reverse('admin.views.admins'))

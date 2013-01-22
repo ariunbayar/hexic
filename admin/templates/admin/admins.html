@@ -16,6 +16,10 @@
       <td>{{ admin.user_name }}</td>
       <td>{{ admin.email }}</td>
       <td>{{ admin.password }}</td>
+      <td>
+        <a href="{% url admin.views.update_admin %}?admin_id={{ admin.id }}">edit</a>
+        <a href="{% url admin.views.del_admin %}?admin_id={{ admin.id }}">delete</a>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
