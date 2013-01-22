@@ -27,7 +27,6 @@ def login(request):
                 form._errors["user_name"] = form.error_class([msg])
             else:
                 request.session['admin_id'] = admin.id
-                data['session_admin_id'] = request.session['admin_id']
                 return redirect(reverse('admin.views.accounts'))
 
     else:
@@ -60,8 +59,6 @@ def accounts(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-
-    data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/accounts.html", data,
                                 context_instance=RequestContext(request))
 
@@ -80,7 +77,6 @@ def admins(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)
 
-    data['session_admin_id'] = request.session['admin_id']
     return render_to_response("admin/admins.html", data,
                                 context_instance=RequestContext(request))
 
@@ -119,9 +115,6 @@ def messages(request):
     except (EmptyPage, InvalidPage):
         data['page'] = paginator.page(paginator.num_pages)  # last page
 
-    # admin login indicator
-    data['session_admin_id'] = request.session['admin_id']
-
     return render_to_response("admin/messages.html", data,
                                 context_instance=RequestContext(request))
 
@@ -138,8 +131,6 @@ def add_acc(request):
 
     else:
         form = AccountForm()
-
-    data['session_admin_id'] = request.session['admin_id']
 
     data['form'] = form
     return render_to_response('admin/account_form.html', data,
@@ -177,7 +168,6 @@ def update_acc(request):
         data['form'] = form
 
     data['acc_id'] = acc_id
-    data['session_admin_id'] = request.session['admin_id']
     return render_to_response('admin/account_form.html', data,
                                 context_instance=RequestContext(request))
 
@@ -204,8 +194,6 @@ def add_admin(request):
 
     else:
         form = AdminForm()
-
-    data['session_admin_id'] = request.session['admin_id']
 
     data['form'] = form
     return render_to_response('admin/admin_form.html', data,
@@ -242,7 +230,6 @@ def update_admin(request):
         data['form'] = form
 
     data['admin_id'] = admin_id
-    data['session_admin_id'] = request.session['admin_id']
     return render_to_response('admin/admin_form.html', data,
                                 context_instance=RequestContext(request))
 

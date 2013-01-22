@@ -1,4 +1,5 @@
 import os
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 
 DIRNAME = os.path.abspath(os.path.dirname(__file__))
@@ -130,6 +131,10 @@ INSTALLED_APPS = (
     'api',
     'admin',
     'south',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS += (
+        'hexic.admin.context_processors.inject_globals',
 )
 
 # A sample logging configuration. The only tangible logging
