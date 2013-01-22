@@ -99,15 +99,20 @@ def messages(request):
     qs = Sms.objects.all()
     if 'sender' in param and param['sender']:
         qs = qs.filter(sender__startswith=param['sender'])
+        data['sender'] = param['sender']
     if 'phone' in param and param['phone']:
         qs = qs.filter(account__phone_number__startswith=int(param['phone']))
+        data['phone'] = param['phone']
     if 'action' in param:
         if 'deposit' == param['action']:
             qs = qs.filter(action=Sms.DEPOSIT)
+            data['deposit'] = param['action']
         if 'new_acc' == param['action']:
             qs = qs.filter(action=Sms.NEW_ACC)
+            data['new_acc'] = param['action']
         if 'none' == param['action']:
             qs = qs.filter(action=Sms.NONE)
+            data['none'] = param['action']
     qs = qs.order_by('-date_time')
 
     # pagination

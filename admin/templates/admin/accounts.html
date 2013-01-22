@@ -25,7 +25,9 @@
   </tbody>
 </table>
 
-{% include "admin/_paginator.html" %}
+{% if paginator.num_pages > 1 %}
+  {% include "admin/_paginator.html" %}
+{% endif %}
 
 {% endblock %}
 
