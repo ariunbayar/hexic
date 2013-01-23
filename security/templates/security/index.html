@@ -5,22 +5,24 @@
 <div class='row-fluid show-grid'>
   <div class='span6'>
     <h2>Нэвтрэx</h2>
-    <div class="errorlist">
-      {{ form.phone_number.errors }}<br />
-      {{ form.pin_code.errors }}
-    </div>
-    <form action="{% url security.views.login %}" method="POST">{% csrf_token %}
-      {% if form.phone_number.errors %}
-      <div class='errors'>
-      {% else %}
-      <div>
+    <form id='login-form' action="" method="POST">
+      {% csrf_token %}
+      {% if form.errors %}
+        <div class='errorlist'>
+          Утас эсвэл нууц үг буруу байна
+        </div>
       {% endif %}
-        <label for="id_phone_number">Утасны дугаар: </label>
-        {{ form.phone_number }}
+      <div>
+        <label for="id_phone_number">Утас</label>
+        <div class='controls'>
+          {{ form.phone_number }}
+        </div>
       </div>
       <div>
-        <label for="id_pin_code">Нууц дугаар: </label>
-        {{ form.pin_code }}
+        <label for="id_pin_code">Нууц үг</label>
+          <div class='controls'>
+            {{ form.pin_code }}
+        </div>
       </div>
       <input type="submit" value="Нэвтрэх" />
     </form>

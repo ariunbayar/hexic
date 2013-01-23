@@ -154,7 +154,7 @@ form {
     margin-top: 10px;
 }
 form label {
-    width: 40%;
+    width: 160px;
     float: left;
     display: inline-block;
     padding: 0px;
@@ -166,7 +166,7 @@ form label {
 
 form div .controls {
     width: auto;
-    margin-left: 41%;
+    margin-left: 180px;
 }
 
 form .controls input {
@@ -202,7 +202,7 @@ form div {
 }
 
 form input[type="submit"] {
-    margin-left: 41%;
+    margin-left: 180px;
 }
 /* }}} */
 
@@ -224,11 +224,24 @@ form .errors .controls input {
 
 .errorlist {
     color: #b94a48;
-    margin: 0px;
+    margin: auto;
     padding-left: 5px;
+    width: 400px;
     display: inline-block;
     vertical-align: middle;
     list-style: none;
+}
+/* }}} */
+
+/* login-form {{{ */
+#login-form {
+    display: block;
+    margin: auto;
+    width: 400px;
+}
+
+#login-form .errorlist {
+    text-align: center;
 }
 /* }}} */
 

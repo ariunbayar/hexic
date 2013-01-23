@@ -2,20 +2,25 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 
-<p class="errorlist">
-{% if form.errors %}
-{{ form.user_name.errors }}
-{{ form.password.errors }}
-{% endif %}
-</p>
-<form action="{% url admin.views.login %}" method="POST">{% csrf_token %}
+
+<form id='login-form' action="" method="POST">
+  {% csrf_token %}
+  {% if form.errors %}
+    <div class="errorlist">
+      Invalid username or password
+    </div>
+  {% endif %}
   <div>
-    <label for="id_user_name">User name:</label>
-    {{ form.user_name }}
+    <label for="id_user_name">User name</label>
+    <div class='controls'>
+      {{ form.user_name }}
+    </div>
   </div>
   <div>
-    <label for="id_password">Password:</label>
-    {{ form.password }}
+    <label for="id_password">Password</label>
+    <div class='controls'>
+      {{ form.password }}
+    </div>
   </div>
   <input type="submit" value="Нэвтрэх" />
 </form>
@@ -23,5 +28,7 @@
 {% endblock %}
 
 {% block js-init %}
-    $('#id_user_name').focus();
+  $('#id_user_name').focus();
 {% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
