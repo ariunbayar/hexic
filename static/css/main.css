@@ -107,38 +107,6 @@ tbody tr:hover {
 .span* {display: inline-block;}
 /* }}} */
 
-/* form {{{ */
-form label{
-    width: 40%;
-    display: inline-block;
-    padding: 0px;
-    text-align: right;
-}
-
-input[type="text"],
-input[type="password"]
-{
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    box-shadow: 0px 1px 3px #ddd inset;
-}
-
-form div {
-    margin: auto;
-}
-
-form input[type="submit"] {
-    margin-left: 42.4%;
-}
-
-ul.errorlist {
-    color: red;
-    list-style: none;
-    height: 15px;
-    margin: 5px;
-}
-/* }}} */
-
 /* flash-messages {{{ */
 .alert {
     margin-bottom: 5px;
@@ -178,6 +146,89 @@ ul.errorlist {
     text-decoration: none;
     cursor: pointer;
     opacity: 0.4;
+}
+/* }}} */
+
+/* form {{{ */
+form {
+    margin-top: 10px;
+}
+form label {
+    width: 40%;
+    float: left;
+    display: inline-block;
+    padding: 0px;
+    padding-top: 5px;
+    margin: auto;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+form div .controls {
+    width: auto;
+    margin-left: 41%;
+}
+
+form .controls input {
+    border-color: #b94a48;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+form .controls input:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+
+form input[type='text'],
+form input[type='password']{
+    display: inline-block;
+    margin: 0px;
+    vertical-align: middle;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    height: 20px;
+    padding: 4px 6px;
+    line-height: 20px;
+    border-radius: 4px;
+    width: 206px;
+    box-shadow: 0px 1px 3px #ddd inset;
+}
+
+form div {
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+form input[type="submit"] {
+    margin-left: 41%;
+}
+/* }}} */
+
+/* form error {{{ */
+form .errors .controls input:focus {
+    border-color: #953b39;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+    outline: 0px;
+}
+
+form .errors label {
+    color: #b94a48;
+}
+
+form .errors .controls input {
+    border-color: #b94a48;
+    color: #b94a48;
+}
+
+.errorlist {
+    color: #b94a48;
+    margin: 0px;
+    padding-left: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    list-style: none;
 }
 /* }}} */
 

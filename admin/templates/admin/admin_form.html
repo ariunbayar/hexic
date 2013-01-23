@@ -4,20 +4,38 @@
 
 <form action="" method="POST">
   {% csrf_token %}
+  {% if form.user_name.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
+  {% endif %}
     <label for="id_user_name">User name:</label>
-    {{ form.user_name }}
-    {{ form.user_name.errors }}
+    <div class='controls'>
+      {{ form.user_name }}
+      {{ form.user_name.errors }}
+    </div>
   </div>
+  {% if form.password.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
+  {% endif %}
     <label for="id_password">Password:</label>
-    {{ form.password }}
-    {{ form.password.errors }}
+    <div class='controls'>
+      {{ form.password }}
+      {{ form.password.errors }}
+    </div>
   </div>
+  {% if form.email.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
+  {% endif %}
     <label for="id_email">Email:</label>
-    {{ form.email }}
-    {{ form.email.errors }}
+    <div class='controls'>
+      {{ form.email }}
+      {{ form.email.errors }}
+    </div>
   </div>
   {% if form.instance.pk %}
   <input type="submit" value="Update" />

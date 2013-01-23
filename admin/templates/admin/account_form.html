@@ -1,27 +1,46 @@
-{% extends "admin/base.html" %}
+{% extends 'admin/base.html' %}
 {% block title %}Account{% endblock %}
 {% block content %}
-<form action="" method="POST">{% csrf_token %}
+<form action="" method='POST'>
+  {% csrf_token %}
+  {% if form.phone_number.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
-    <label for="id_phone_number">Phone Number:</label>
-    {{ form.phone_number }}
-    {{ form.phone_number.errors }}
+  {% endif %}
+    <label for='id_phone_number'>Phone Number:</label>
+    <div class='controls'>
+      {{ form.phone_number }}
+      {{ form.phone_number.errors }}
+    </div>
   </div>
+  {% if form.pin_code.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
-    <label for="id_pin_code">Pin code:</label>
-    {{ form.pin_code }}
-    {{ form.pin_code.errors }}
+  {% endif %}
+    <label for='id_pin_code'>Pin code:</label>
+    <div class='controls'>
+      {{ form.pin_code }}
+      {{ form.pin_code.errors }}
+    </div>
   </div>
+  {% if form.credit.errors %}
+  <div class='errors'>
+  {% else %}
   <div>
-    <label for="id_credit">Credits:</label>
-    {{ form.credit }}
-    {{ form.credit.errors }}
+  {% endif %}
+    <label for='id_credit'>Credits:</label>
+    <div class='controls'>
+      {{ form.credit }}
+      {{ form.credit.errors }}
+    </div>
   </div>
   {{ form.acc_id }}
   {% if form.instance.pk %}
-  <input type="submit" value="Update" />
+  <input type='submit' value='Update' />
   {% else %}
-  <input type="submit" value="Register" />
+  <input type='submit' value='Register' />
   {% endif %}
 </form>
 
@@ -30,3 +49,5 @@
 {% block js-init %}
     $('#id_phone_number').focus();
 {% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

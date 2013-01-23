@@ -16,9 +16,13 @@ Filter by:
     </div>
     <div class='span6'>
       <label for="phone">Phone Number</label>
-      <input type="text" id='phone' name="phone" value='{{ phone }}' />
+      <div class='controls'>
+        <input type="text" id='phone' name="phone" value='{{ phone }}' />
+      </div>
       <label for="sender">Sender</label>
-      <input type="text" id='sender' name="sender" value='{{ sender }}' />
+      <div class='controls'>
+        <input type="text" id='sender' name="sender" value='{{ sender }}' />
+      </div>
     </div>
     <input type="submit" value="Filter" />
   </div>

@@ -6,13 +6,15 @@
   <div class='span6'>
     <h2>Нэвтрэx</h2>
     <div class="errorlist">
-      {% if form.errors %}
-      {{ form.phone_number.errors }}
+      {{ form.phone_number.errors }}<br />
       {{ form.pin_code.errors }}
-      {% endif %}
     </div>
     <form action="{% url security.views.login %}" method="POST">{% csrf_token %}
+      {% if form.phone_number.errors %}
+      <div class='errors'>
+      {% else %}
       <div>
+      {% endif %}
         <label for="id_phone_number">Утасны дугаар: </label>
         {{ form.phone_number }}
       </div>
