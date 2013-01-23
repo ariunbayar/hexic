@@ -10,7 +10,6 @@ from security.models import Account
 from django.contrib import messages as flash
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 
 
@@ -140,45 +139,28 @@ def add_acc(request):
 
 @check_login
 @render_to('admin/account_form.html')
-def update_acc(request):
+def update_acc(request, acc_id):
     data = {}
-    if request.POST:
-        form = AccountForm(request.POST)
-        if form.is_valid():
-            if 'acc_id' in form.cleaned_data:
-                acc = get_object_or_404(Account, pk=form.cleaned_data['acc_id'])
-                acc.phone_number = form.cleaned_data['phone_number']
-                acc.pin_code = form.cleaned_data['pin_code']
-                acc.credit = form.cleaned_data['credit']
-                acc.save()
-                flash.add_message(request, flash.SUCCESS, 'Account updated')
-            else:
-                raise Http404
+    acc = get_object_or_404(Account, pk=acc_id)
 
-        return redirect(reverse('admin.views.accounts'))
+    if request.POST:
+        form = AccountForm(request.POST, instance=acc)
+        if form.is_valid():
+            form.save()
+            flash.add_message(request, flash.SUCCESS, 'Account updated')
+            return redirect(reverse('admin.views.accounts'))
 
     else:
-        form = AccountForm()
-        if 'acc_id' in request.GET and request.GET['acc_id']:
-            acc_id = request.GET['acc_id']
-            acc = get_object_or_404(Account, pk=acc_id)
-            form = AccountForm(initial={
-                                'phone_number': acc.phone_number,
-                                'pin_code': acc.pin_code,
-                                'credit': acc.credit,
-                                'acc_id': acc_id})
-        data['form'] = form
-
-    data['acc_id'] = acc_id
+        form = AccountForm(instance=acc)
+    data['form'] = form
     return data
 
 
 @check_login
-def del_acc(request):
-    if 'acc_id' in request.GET:
-        acc = get_object_or_404(Account, pk=request.GET['acc_id'])
-        acc.delete()
-        flash.add_message(request, flash.SUCCESS, 'Account deleted')
+def del_acc(request, acc_id):
+    acc = get_object_or_404(Account, pk=acc_id)
+    acc.delete()
+    flash.add_message(request, flash.SUCCESS, 'Account deleted')
 
     return redirect(reverse('admin.views.accounts'))
 

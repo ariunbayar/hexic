@@ -1,12 +1,7 @@
 {% extends "admin/base.html" %}
 {% block title %}Account{% endblock %}
 {% block content %}
-
-{% if acc_id %}
-<form action="{% url admin.views.update_acc %}" method="POST">{% csrf_token %}
-{% else %}
-<form action="{% url admin.views.add_acc %}" method="POST">{% csrf_token %}
-{% endif %}
+<form action="" method="POST">{% csrf_token %}
   <div>
     <label for="id_phone_number">Phone Number:</label>
     {{ form.phone_number }}

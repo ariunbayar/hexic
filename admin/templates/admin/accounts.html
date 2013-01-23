@@ -20,8 +20,8 @@
       <td>{{ account.created_at }}</td>
       <td>
         <a href="{% url admin.views.messages %}?phone={{ account.phone_number }}">show messages</a>
-        <a href="{% url admin.views.update_acc %}?acc_id={{ account.id }}">edit</a>
-        <a href="{% url admin.views.del_acc %}?acc_id={{ account.id }}">delete</a>
+        <a href="{% url admin.views.update_acc account.id %}">edit</a>
+        <a href="{% url admin.views.del_acc account.id %}">delete</a>
       </td>
     </tr>
     {% endfor %}
