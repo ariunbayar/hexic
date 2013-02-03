@@ -105,17 +105,17 @@ TEMPLATE_LOADERS = (
 
 
 BASE_MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'hexic.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
-        "templates"
+        rel('templates'),
 )
 
 INSTALLED_APPS = (
@@ -134,8 +134,8 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS += (
-        'hexic.admin.context_processors.inject_globals',
-        'hexic.utils.context_processors.inject_globals',
+        'admin.context_processors.inject_globals',
+        'utils.context_processors.inject_globals',
 )
 
 # Key for SMS client to recieve any messages
@@ -164,6 +164,9 @@ LOGGING = {
     }
 }
 
+LOCAL_INSTALLED_APPS = ()
+PREPEND_MIDDLEWARE_CLASSES = ()
+APPEND_MIDDLEWARE_CLASSES = ()
 
 try:
     from local_settings import *
