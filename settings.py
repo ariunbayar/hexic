@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'api',
     'admin',
     'south',
+    'utils',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS += (

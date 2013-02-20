@@ -75,5 +75,8 @@ South commands
 
 Coffee Scripts
 ===============
-- Rebuild js files::
-    coffee --join static/js/packed.js --compile coffee/*.coffee
+- To rebuild js files::
+
+    ./manage.py buildjs
+
+  Make sure you have installed [coffeescript](http://coffeescript.org/)
