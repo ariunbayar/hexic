@@ -75,8 +75,9 @@ South commands
 
 Coffee Scripts
 ===============
-- To rebuild js files::
+- To rebuild/watch js files::
 
-    ./manage.py buildjs
+    ./manage.py jsbuild
+    ./manage.py jswatch
 
   Make sure you have installed [coffeescript](http://coffeescript.org/)

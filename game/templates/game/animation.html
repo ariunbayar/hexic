@@ -2,11 +2,11 @@
 {% block title %}Animation{% endblock %}
 
 {% block content %}
-<canvas id="canvas" width="1024" height="768"></canvas> 
+<div id="playground" style="width: 800px; height: 600px;"></div>
 {% endblock %}
 
 {% block js-init %}
-hex.init()
+hex.init('#playground')
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

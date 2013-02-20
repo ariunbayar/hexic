@@ -1,5 +1,3 @@
-stageWidth = 1024
-stageHeight = 768
 update = true
 
 colors =
@@ -94,12 +92,22 @@ hex =
   temp_arrow: null
   arrow: null
   hexagon: null
+  width: null
+  height: null
 
 window.hex = hex
 
-hex.init = ->
+hex.init = (container_id) ->
+  # create canvas in container element
+  $canvas = $('<canvas></canvas>')
+  $container = $(container_id).append($canvas)
+  hex.width = $container.width()
+  hex.height = $container.height()
+  $canvas.attr(width: hex.width, height: hex.height)
+
+  # initialize Stage
   stage = undefined
-  stage = new createjs.Stage(document.getElementById("canvas"))
+  stage = new createjs.Stage($canvas.get(0))
   stage.enableMouseOver()
   hex.stage = stage
   hex.drawBackground()
@@ -141,11 +149,10 @@ hex.init = ->
   createjs.Ticker.setFPS 50
 
 hex.drawBackground = ->
-  
   # fill background
   shape = new createjs.Shape()
   shape.graphics.beginFill colors.background
-  shape.graphics.rect 0, 0, stageWidth, stageHeight
+  shape.graphics.rect(0, 0, hex.width, hex.height)
   hex.stage.addChild shape
 
 hex.showArrow = (point_start, point_end) ->
