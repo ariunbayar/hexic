@@ -71,3 +71,9 @@ South commands
 .. image:: http://coolmotivator.com/wp-content/gallery/coolmotivator-corporate-memes/meme-great-work.jpg
     :width: 40
     :height: 40
+
+
+Coffee Scripts
+===============
+- Rebuild js files::
+    coffee --join static/js/packed.js --compile coffee/*.coffee
