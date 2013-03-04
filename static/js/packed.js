@@ -193,4 +193,8 @@
     }
   };
 
+  document.getElementById("playground").ondragstart = function() {
+    return false;
+  };
+
 }).call(this);
