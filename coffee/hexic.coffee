@@ -101,6 +101,12 @@ hex.init = (container_id) ->
   # create canvas in container element
   $canvas = $('<canvas></canvas>')
   $container = $(container_id).append($canvas)
+  # set our playground non-draggable
+  $container.on('dragstart',
+    (e)->
+      e.preventDefault()
+      return
+  )
   hex.width = $container.width()
   hex.height = $container.height()
   $canvas.attr(width: hex.width, height: hex.height)

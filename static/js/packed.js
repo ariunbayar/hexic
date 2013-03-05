@@ -110,6 +110,9 @@
     var $canvas, $container, cell, cell_rows, offset_x, offset_y, pos_x, pos_y, shape, stage, x, y;
     $canvas = $('<canvas></canvas>');
     $container = $(container_id).append($canvas);
+    $container.on('dragstart', function(e) {
+      e.preventDefault();
+    });
     hex.width = $container.width();
     hex.height = $container.height();
     $canvas.attr({
@@ -193,8 +196,6 @@
     }
   };
 
-  document.getElementById("playground").ondragstart = function() {
-    return false;
-  };
+  $(function() {});
 
 }).call(this);

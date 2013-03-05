@@ -1,2 +1,3 @@
-document.getElementById("playground").ondragstart = ->
-  false
+$(->
+  # run when document finishes loading
+)
