@@ -3,8 +3,8 @@ import time
 import logging
 # http://docs.python.org/library/collections.html to optimize
 
-from game.utils import memval
-from player.helpers import get_design_by_player
+from game_old.utils import memval
+
 
 CELL_LIMIT = 50
 DEC_GRAPH = [
@@ -101,7 +101,7 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
                     decrementer = n
         if winner_id:
             moves[k][1] = []  # remove the move
-            design = get_design_by_player(winner_id)
+            design = winner_id
             users[y][x] = [winner_id, design]
             board[y][x] = winner_score - orig
         else:
@@ -138,7 +138,3 @@ if __name__ == '__main__':
             logging.exception(msg)
             logging.warn("Restarting the thread in %s seconds" % retry_sec)
         time.sleep(retry_sec)
-
-
-
-

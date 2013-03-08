@@ -38,8 +38,6 @@ def memval(name, value='__empty__', duration=30, allow_empty=False):
         if allow_empty == False and value is None:
             msg = '%s is empty while game is active. Restarting...'
             logging.error(msg % name)
-            game_restart()
-            value = cache.get(name, None)
 
         return value
     else:

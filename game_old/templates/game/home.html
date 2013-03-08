@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}a game{% endblock %}
+{% block title %}Playing old hex game{% endblock %}
 
 {% block content %}
 
 <a href="{% url game-restart %}">Click here to restart</a>
+<a href="{% url select_cell %}">Select New Cell</a>
 <h2>User ID: {{ user_id }}</h2>
 <div id="{{ board_id }}" class="hexboard" style="height: 500px; width: 700px;"> </div>
 <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}"/>
