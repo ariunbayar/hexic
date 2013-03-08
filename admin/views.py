@@ -1,10 +1,9 @@
 # coding: utf-8
-from decorators import check_admin
 from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
-from hexic.decorators import render_to
+from hexic.decorators import render_to, check_admin
 from security.models import Account
 
 from django.contrib import messages as flash
