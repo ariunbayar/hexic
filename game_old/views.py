@@ -1,10 +1,10 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.utils import simplejson
-from decorators import check_login
+from decorators import check_login, render_to
 
 from security.models import Account
 from game_old.utils import memval, move_valid, game_restart as game_start
@@ -89,6 +89,7 @@ def get_account(session):
 
 
 @check_login
+@render_to("game/select_cell.html")
 def select_cell(request):
     if 'x' in request.GET and 'y' in request.GET:
         x = int(request.GET['x'])
@@ -102,7 +103,6 @@ def select_cell(request):
             users[y][x] = [acc.id, acc.id]
             memval('board', board)
             memval('board_users', users)
-            return HttpResponseRedirect(reverse('homepage'))
+            return redirect('homepage')
 
-    cxt = {'board': memval('board')}
-    return render_to_response('game/select_cell.html', cxt)
+    return {'board': memval('board')}
