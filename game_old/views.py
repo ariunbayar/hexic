@@ -75,8 +75,7 @@ def move(request):
     bx = request.GET['tx'];
     by = request.GET['ty'];
     move = (int(ax), int(ay), int(bx), int(by))
-    board_id = request.GET['board_id'];
-    user_id = int(request.GET['user_id']);  # TODO change this to session
+    user_id = int(request.session.get('account_id'));
 
     # TODO apply board_id
     queue = memval('move_queue')
