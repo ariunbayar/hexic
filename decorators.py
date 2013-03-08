@@ -13,6 +13,15 @@ def check_login(function):
     return wraps(function)(check)
 
 
+def check_admin(function):
+    def check(request, *args, **kwargs):
+        if 'admin_id' in request.session:
+            return function(request, *args, **kwargs)
+        else:
+            return redirect(reverse('admin.views.login'))
+    return wraps(function)(check)
+
+
 def render_to(template=None, mimetype=None):
     def renderer(function):
         @wraps(function)

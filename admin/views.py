@@ -1,5 +1,5 @@
 # coding: utf-8
-from admin.decorators import check_login
+from decorators import check_admin
 from admin.helpers import ShortPaginator
 from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
@@ -40,13 +40,13 @@ def login(request):
     return data
 
 
-@check_login
+@check_admin
 def logout(request):
     del request.session['admin_id']
     return redirect(reverse('admin.views.login'))
 
 
-@check_login
+@check_admin
 @render_to("admin/accounts.html")
 def accounts(request):
     data = {}
@@ -63,7 +63,7 @@ def accounts(request):
     return data
 
 
-@check_login
+@check_admin
 @render_to("admin/admins.html")
 def admins(request):
     data = {}
@@ -81,7 +81,7 @@ def admins(request):
     return data
 
 
-@check_login
+@check_admin
 @render_to("admin/messages.html")
 def messages(request):
     data = {}
@@ -119,7 +119,7 @@ def messages(request):
     return data
 
 
-@check_login
+@check_admin
 @render_to('admin/account_form.html')
 def add_acc(request):
     data = {}
@@ -137,7 +137,7 @@ def add_acc(request):
     return data
 
 
-@check_login
+@check_admin
 @render_to('admin/account_form.html')
 def update_acc(request, acc_id):
     data = {}
@@ -156,7 +156,7 @@ def update_acc(request, acc_id):
     return data
 
 
-@check_login
+@check_admin
 def del_acc(request, acc_id):
     acc = get_object_or_404(Account, pk=acc_id)
     acc.delete()
@@ -165,7 +165,7 @@ def del_acc(request, acc_id):
     return redirect(reverse('admin.views.accounts'))
 
 
-@check_login
+@check_admin
 @render_to('admin/admin_form.html')
 def add_admin(request):
     data = {}
@@ -183,7 +183,7 @@ def add_admin(request):
     return data
 
 
-@check_login
+@check_admin
 @render_to('admin/admin_form.html')
 def update_admin(request, admin_id):
     data = {}
@@ -202,7 +202,7 @@ def update_admin(request, admin_id):
     return data
 
 
-@check_login
+@check_admin
 def del_admin(request, admin_id):
     admin = get_object_or_404(Admin, pk=admin_id)
     admin.delete()
