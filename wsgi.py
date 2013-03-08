@@ -1,7 +1,9 @@
 #!/usr/local/bin/python
 import os, sys
-sys.path.append('/var/www/')
-sys.path.append('/var/www/hexic/')
+
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(cur_dir)
+sys.path.append(cur_dir + '/..')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
  
 import django.core.handlers.wsgi

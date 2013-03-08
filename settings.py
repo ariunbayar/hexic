@@ -9,7 +9,8 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Ariunbayar Bat-Erdene', 'admin@example.com'),
+    ('Bulgantamir', 'bulgaa@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -35,7 +36,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Asia/Ulaanbaatar'
 
 DATETIME_FORMAT = 'Y-m-d H:i'
 
@@ -125,13 +126,14 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'public',
-    'security',
-    'game',
-    'api',
-    'admin',
     'south',
-    'utils',
+
+    'public',  # pages that everyone can access
+    'security',  # user login and stuff
+    'game',
+    'api',  # sms and stuff
+    'admin',  # admin control panel
+    'utils',  # for context processor use
 )
 
 TEMPLATE_CONTEXT_PROCESSORS += (

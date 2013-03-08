@@ -14,6 +14,13 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/run/shm/django_cache',
+    }
+}
+
 LOCAL_INSTALLED_APPS = (
     'debug_toolbar',
 )
