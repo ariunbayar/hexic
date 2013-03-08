@@ -50,7 +50,7 @@ def home(request):
     |  5 6 c  | 5 6 c  | [x-1][y+1]  [x][y+1]
     """
     board_id = 'board1'
-    cxt = {'user_id': request.session.get('id'), 'board_id': board_id}
+    cxt = {'user_id': request.session.get('account_id'), 'board_id': board_id}
     return render_to_response('game/home.html', RequestContext(request, cxt))
 
 def progress(request):
