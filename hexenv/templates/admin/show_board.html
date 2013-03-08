@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load extratags %}
+{% block content %}
+
+
+{% include "admin/_links.html" %}
+{% block extrahead %}
+<style>
+    table.board-table td{ border: 1px solid; width: 30px; text-align: center; text-shadow: 1px 1px 0 white; }
+    table.board-table td div{ background-position: 0 -15px; }
+</style>
+{% endblock %}
+
+<table class="board-table">
+{% for row in board %}
+    {% if not forloop.counter0 %}
+    <tr>
+        <th></th>
+        {% for i in row %}
+        <th colspan=2>{{ forloop.counter0 }}</th>
+        {% endfor %}
+    </tr>
+    {% endif %}
+    <tr>
+        <th>{{ forloop.counter0 }}</th>
+        {{ forloop.counter0|even:"<th></th>" }}
+        {% for i in row %}
+        <td colspan=2><div class="cell{% array_get users forloop.parentloop.counter0 forloop.counter0 1 %}">{{ i|default:'' }}</div></td>
+        {% endfor %}
+        {{ forloop.counter0|odd:"<th></th>" }}
+    </tr>
+{% endfor %}
+</table>
+
+
+{% endblock %}

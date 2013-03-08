@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW"></META>
+    <title>{% block title %}{% endblock %}</title>
+    <!--<link
+    href='http://fonts.googleapis.com/css?family=Open+Sans:800italic,800,700italic,700,600italic,600,400italic,400,300italic,300&subset=cyrillic-ext,latin,latin-ext,cyrillic' rel='stylesheet' type='text/css'></link>-->
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <script src="/static/js/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/js/main.js" type="text/javascript" charset="utf-8"></script>
+    {% block extrahead %}{% endblock %}
+</head>
+{% load i18n %}
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <ul class="nav">
+                        <li class="active"> <a href="/">{% trans "Home" %}</a> </li>
+                        <li> <a href="{% url settings %}">{% trans "Settings" %}</a> </li>
+                        <li> <a href="{% url select_cell %}">{% trans "Jump to board" %}</a> </li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li> <a href="{% url logout %}">{% trans "Logout" %}</a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                            {{ LANGUAGE_CODE }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" id="language-select">
+                            <li><a href="#" lang="en-us">English</a></li>
+                            <li><a href="#" lang="mn">Монгол</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="language-submit" method="post" action="/i18n/setlang/" style="display:none">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="{% url homepage %}" />
+        <input name="language" type="hidden"/>
+    </form>
+</body>
+</html>

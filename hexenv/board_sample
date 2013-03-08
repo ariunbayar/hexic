@@ -1,0 +1,11 @@
+board
+[
+    [
+        {'type': 'jump_start', 'jump_to': {'board': {x: 4, y: 3}, 'cell': {x: 3, y: 1}}},
+        {'type': 'jump_end', 'jump_from': {'board': {x: 2, y: 4}, 'cell': {x: 0, y: 4}}},
+        {'type': 'off'},
+        {'type': 'on', 'count': 5000000, 'user': 403},
+        {'type': 'on', 'count': 100, 'user': 0},
+    ],
+    ...
+]
