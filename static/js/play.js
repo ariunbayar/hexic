@@ -3,9 +3,6 @@ var retrieveProgressURL = '/game/progress/';
 var moveURL = '/game/move/';
 var progressInterval = 1000;
 
-$(document).ready(function(){
-    $(".hexboard").each(initBoard);
-});
 
 function initBoard() {
     var me = $(this);

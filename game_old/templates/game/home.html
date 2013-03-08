@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 {% block title %}a game{% endblock %}
 
-{% block extrahead %}
-    <script src="/static/js/play.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/static/js/hexEnv.js" type="text/javascript" charset="utf-8"></script>
-{% endblock %}
-
 {% block content %}
 
 <a href="{% url game-restart %}">Click here to restart</a>
@@ -13,5 +8,9 @@
 <div id="{{ board_id }}" class="hexboard" style="height: 500px; width: 700px;"> </div>
 <input type="hidden" id="user_id" name="user_id" value="{{ user_id }}"/>
 
-{{ foo }}
+{% endblock %}
+
+
+{% block js-init %}
+    $(".hexboard").each(initBoard);
 {% endblock %}
