@@ -134,6 +134,9 @@ INSTALLED_APPS = (
     'api',  # sms and stuff
     'admin',  # admin control panel
     'utils',  # for context processor use
+
+    # old game apps
+    'game_old',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS += (

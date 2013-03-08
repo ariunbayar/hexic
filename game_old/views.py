@@ -8,6 +8,7 @@ from django.utils import simplejson
 from player.decorators import login_required
 from player.helpers import get_player
 
+from security import Account
 from game.utils import memval, move_valid
 
 def get_new_board():
@@ -101,17 +102,30 @@ def data_board(request):
                             'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
+
+def get_account(session):
+    if 'account_id' in session:
+        try:
+            acc = Account.objects.get(pk=session['account_id'])
+        except Account.DoesNotExist:
+            pass
+        else:
+            return acc
+    return None
+
+
 @login_required
 def select_cell(request):
     if 'x' in request.GET and 'y' in request.GET:
         x = int(request.GET['x'])
         y = int(request.GET['y'])
-        player = get_player(request.session)
+        acc = get_account(request.session)
         board = memval('board')
         users = memval('board_users')
-        if board[y][x] < player.bytes:
-            board[y][x] = player.bytes - board[y][x]
-            users[y][x] = [player.id, player.design]
+        default_bytes = 20
+        if board[y][x] < default_bytes:
+            board[y][x] = default_bytes - board[y][x]
+            users[y][x] = [acc.id, acc.id]
             memval('board', board)
             memval('board_users', users)
             return HttpResponseRedirect(reverse('homepage'))
