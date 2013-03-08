@@ -5,10 +5,10 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.utils import simplejson
-from player.decorators import login_required
-from player.helpers import get_player
+from decorators import check_login
 
 from game.utils import memval, move_valid
+
 
 def get_new_board():
     board = []
@@ -40,7 +40,7 @@ def game_stop():
     cache.delete('move_queue')
     cache.delete('simple_moves')
 
-@login_required
+@check_login
 def home(request):
     """adjacencies:
     |  board  | matrix | expression
@@ -101,7 +101,7 @@ def data_board(request):
                             'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
-@login_required
+@check_login
 def select_cell(request):
     if 'x' in request.GET and 'y' in request.GET:
         x = int(request.GET['x'])
