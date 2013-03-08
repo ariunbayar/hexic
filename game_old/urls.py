@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('game_old.views',
-    url(r'^$', 'home', name='homepage'),
+    url(r'^game/$', 'home', name='homepage'),
     url(r'^game/restart$', 'game_restart', name='game-restart'),
     url(r'^game/progress/$', 'progress', name='game-progress'),
     url(r'^game/board/$', 'data_board', name='game-board'),
