@@ -7,8 +7,8 @@ from django.template import RequestContext
 from django.utils import simplejson
 from decorators import check_login
 
-from security import Account
-from game.utils import memval, move_valid
+from security.models import Account
+from game_old.utils import memval, move_valid
 
 
 def get_new_board():
