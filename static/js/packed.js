@@ -335,44 +335,30 @@
     };
 
     HexController.prototype.new_hexagon = function(x, y, coord) {
-      var from, hex_game, hexagon, innerRadius, n, numPoints, numTeeth, outerRadius, radius, teeth, to, x1, y1;
+      var from, hex_game, hexagon, innerRadius, n, numTeeth, number_of_nodes, outerRadius, radius, teeth, to;
+      number_of_nodes = Math.random() * 1000000;
       hexagon = new createjs.Shape();
-      hexagon.graphics.setStrokeStyle(10, "round");
+      hexagon.graphics.setStrokeStyle(this.hexagon_radius * 0.1, "round");
       hexagon.graphics.beginStroke(this.colors.hex_border);
       hexagon.graphics.beginFill(this.colors.hex_fill);
       hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
       hexagon.graphics.setStrokeStyle(1, "round");
       radius = 0;
-      outerRadius = 30;
-      innerRadius = 25;
+      outerRadius = this.hexagon_radius * 0.6;
+      innerRadius = this.hexagon_radius * 0.5;
       numTeeth = 20;
-      numPoints = numTeeth * 2;
       from = 0;
       to = 0;
-      teeth = -1.9 * Math.PI;
+      teeth = 1 / (numTeeth / 2) * Math.PI;
       n = 0;
       while (n < numTeeth) {
         to = from + teeth;
-        if (radius === outerRadius) {
-          x1 = Math.round(innerRadius * Math.cos(to));
-          y1 = Math.round(innerRadius * Math.sin(to));
-          if (parseInt(Math.random() * 19) % 2 === 0) {
-            radius = outerRadius;
-          } else {
-            radius = innerRadius;
-          }
-          hexagon.graphics.arc(0, 0, radius, from, to, 0);
+        if (parseInt(Math.random() * 20) % 2 === 0) {
+          radius = outerRadius;
         } else {
-          x1 = Math.round(outerRadius * Math.cos(to));
-          y1 = Math.round(outerRadius * Math.sin(to));
-          if (parseInt(Math.random() * 19) % 2 === 0) {
-            radius = outerRadius;
-          } else {
-            radius = innerRadius;
-          }
-          hexagon.graphics.arc(0, 0, radius, from, to, 0);
+          radius = innerRadius;
         }
-        hexagon.graphics.lineTo(x1, y1);
+        hexagon.graphics.arc(0, 0, radius, from, to, 0);
         from += teeth;
         n++;
       }
