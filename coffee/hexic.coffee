@@ -9,6 +9,7 @@ class HexController
 
   point_start: null
   point_end: null
+  is_ready: false
   colors:
     background: createjs.Graphics.getRGB(32, 38, 35)
     hex_border: createjs.Graphics.getRGB(63, 159, 112)
@@ -16,6 +17,7 @@ class HexController
 
   constructor: (container_id) ->
     @container_id = container_id
+    @time_left_to_update = 0
 
   drawBackground: ->
     # fill background
@@ -45,24 +47,29 @@ class HexController
     hexagon.y = y
     hexagon.coord = coord
 
-    hex_game = @
+    self = @
     
     # attach handlers
     hexagon.onMouseOver = (e) ->
-      if hex_game.point_start
-        hex_game.point_end = e.target
-        hex_game.temp_arrow.visible = true
-        hex_game.update = true
+      if self.point_start
+        self.point_end = e.target
+        self.temp_arrow.visible = true
+        self.update = true
 
     hexagon.onPress = (e) ->
-      hex_game.point_start = e.target
+      self.point_start = e.target
       e.onMouseUp = (ev) ->
-        hex_game.move(hex_game.point_start.coord, hex_game.point_end.coord)
-        hex_game.point_start = null
-        hex_game.point_end = null
-        hex_game.update = true
+        self.move(self.point_start.coord, self.point_end.coord)
+        self.point_start = null
+        self.point_end = null
+        self.update = true
+
+    hexagon.update = (n, user_id) -> self.update_hexagon(hexagon, n, user_id)
 
     return hexagon
+
+  update_hexagon: (hexagon, n, user_id) ->
+    console.log('please implement')
 
   move: (from, to) ->
     params = {
@@ -72,7 +79,6 @@ class HexController
       ty: to.y
     }
     @ajax(@url_move, 3000, params)
-
 
   new_arrow: (x, y, rotation) ->
     arrow = new createjs.Shape()
@@ -98,7 +104,7 @@ class HexController
     arrow.y = y
     return arrow
 
-  init_board: (hex_game, json) ->
+  init_board: (self, json) ->
     ###
     A callback function for board details
     Initialize board by drawing into stage
@@ -107,25 +113,73 @@ class HexController
     board = json[json.board_id]
 
     # draw the board
-    hex_game.cells = []
+    self.cells = []
     offset_x = 100
     offset_y = 100
     for y of board
       cell_rows = new Array()
       for x of board[y]
         continue unless board[y][x]
-        pos_x = hex_game.hexagon_width * x - (y % 2) * hex_game.hexagon_width / 2
-        pos_y = hex_game.hexagon_radius * 1.5 * y
-        shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y, {x: x, y: y})
+        pos_x = self.hexagon_width * x - (y % 2) * self.hexagon_width / 2
+        pos_y = self.hexagon_radius * 1.5 * y
+        shape = self.new_hexagon(offset_x + pos_x, offset_y + pos_y, {x: x, y: y})
         cell =
           arrow: null
           hexagon: shape
 
-        hex_game.stage.addChildAt(shape, 1)
+        self.stage.addChildAt(shape, 1)
         cell_rows[x] = cell
-      hex_game.cells.push(cell_rows)
+      self.cells.push(cell_rows)
 
+    @is_ready = true
     return
+
+  draw_updated_data: (self, data) ->
+    self.is_ready = false
+    self.users = data.board_users
+    cells = self.cells
+    
+    # show board values and user colors
+    board_data = data[data.board_id]
+    for y of board_data
+      for x of board_data[y]
+        if board_data[y][x]
+          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][0])
+
+    # TODO allow it to show arrows
+    return
+    
+    # show moves in arrows
+    mentions = []
+    tmparr = []
+    if "temp" of @arrows
+      tmparr = @arrows["temp"]
+      mentions[0] = tmparr
+    i = 0
+
+    while i < moves.length
+      move = moves[i]
+      arr = @drawArrow(
+        x: move[0]
+        y: move[1]
+      ,
+        x: move[2]
+        y: move[3]
+      )
+      key = move[0] + "_" + move[1]
+      if tmparr.lenght
+        tmparr.hide() if tmparr.data('pos') is (key)
+      mentions[mentions.length] = key
+      i++
+    arrows = @arrows
+    $.each(arrows, (k, arr) ->
+      if mentions.indexOf(k) is -1
+        arr.remove()
+        delete arrows[k]
+        return
+    )
+
+    @is_ready = true
 
   start: ->
     @hexagon_width = @hexagon_radius * Math.sqrt(3)
@@ -163,7 +217,7 @@ class HexController
     createjs.Ticker.addListener(@)
     createjs.Ticker.setFPS(50)
 
-  tick: ->
+  tick: (time_passed) ->
     if @update
       if @point_start and @point_end
         if @point_start.x isnt @point_end.x or @point_start.y isnt @point_end.y
@@ -173,6 +227,13 @@ class HexController
       @fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps"
       @update = false
       @stage.update()
+
+    # load and show the progress every interval
+    @time_left_to_update -= time_passed
+    if @time_left_to_update <= 0
+      # reset the time to update
+      @time_left_to_update += @update_interval
+      @ajax(@url_progress, @update_interval, {}, @draw_updated_data)
 
   set_nondraggable: (element) ->
     $(element).on('dragstart',
@@ -199,7 +260,8 @@ class HexController
       cache: false
       timeout: timeout
       error: (xhr, msg) ->
-      success: (json) -> successFunc(self, json)
+      success: (json) ->
+        successFunc(self, json)
     })
 
 

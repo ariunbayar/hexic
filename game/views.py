@@ -17,13 +17,12 @@ def board(request):
 
 def progress(request):
     """ dumps game progress in json """
-    board_id = request.GET['board_id']
     # TODO apply board id
     board = memval('board')
     board_users = memval('board_users')
     simple_moves = memval('simple_moves')
-    val = simplejson.dumps({'moves': simple_moves, board_id: board,
-                            'board_id': board_id, 'board_users': board_users})
+    val = simplejson.dumps({'moves': simple_moves, 'board1': board,
+                            'board_id': 'board1', 'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
 

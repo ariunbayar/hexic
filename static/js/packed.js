@@ -299,11 +299,11 @@
 
     HexController.prototype.update = true;
 
-    HexController.prototype.is_ready = false;
-
     HexController.prototype.point_start = null;
 
     HexController.prototype.point_end = null;
+
+    HexController.prototype.is_ready = false;
 
     HexController.prototype.colors = {
       background: createjs.Graphics.getRGB(32, 38, 35),
@@ -313,6 +313,7 @@
 
     function HexController(container_id) {
       this.container_id = container_id;
+      this.time_left_to_update = 0;
     }
 
     HexController.prototype.drawBackground = function() {
@@ -337,7 +338,7 @@
     };
 
     HexController.prototype.new_hexagon = function(x, y, coord) {
-      var hex_game, hexagon;
+      var hexagon, self;
       hexagon = new createjs.Shape();
       hexagon.graphics.setStrokeStyle(10, "round");
       hexagon.graphics.beginStroke(this.colors.hex_border);
@@ -346,24 +347,31 @@
       hexagon.x = x;
       hexagon.y = y;
       hexagon.coord = coord;
-      hex_game = this;
+      self = this;
       hexagon.onMouseOver = function(e) {
-        if (hex_game.point_start) {
-          hex_game.point_end = e.target;
-          hex_game.temp_arrow.visible = true;
-          return hex_game.update = true;
+        if (self.point_start) {
+          self.point_end = e.target;
+          self.temp_arrow.visible = true;
+          return self.update = true;
         }
       };
       hexagon.onPress = function(e) {
-        hex_game.point_start = e.target;
+        self.point_start = e.target;
         return e.onMouseUp = function(ev) {
-          hex_game.move(hex_game.point_start.coord, hex_game.point_end.coord);
-          hex_game.point_start = null;
-          hex_game.point_end = null;
-          return hex_game.update = true;
+          self.move(self.point_start.coord, self.point_end.coord);
+          self.point_start = null;
+          self.point_end = null;
+          return self.update = true;
         };
       };
+      hexagon.update = function(n, user_id) {
+        return self.update_hexagon(hexagon, n, user_id);
+      };
       return hexagon;
+    };
+
+    HexController.prototype.update_hexagon = function(hexagon, n, user_id) {
+      return console.log('please implement');
     };
 
     HexController.prototype.move = function(from, to) {
@@ -403,7 +411,7 @@
       return arrow;
     };
 
-    HexController.prototype.init_board = function(hex_game, json) {
+    HexController.prototype.init_board = function(self, json) {
       /*
           A callback function for board details
           Initialize board by drawing into stage
@@ -412,7 +420,7 @@
       var board, cell, cell_rows, offset_x, offset_y, pos_x, pos_y, shape, user_id, x, y;
       user_id = $("#user_id").val();
       board = json[json.board_id];
-      hex_game.cells = [];
+      self.cells = [];
       offset_x = 100;
       offset_y = 100;
       for (y in board) {
@@ -421,9 +429,9 @@
           if (!board[y][x]) {
             continue;
           }
-          pos_x = hex_game.hexagon_width * x - (y % 2) * hex_game.hexagon_width / 2;
-          pos_y = hex_game.hexagon_radius * 1.5 * y;
-          shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y, {
+          pos_x = self.hexagon_width * x - (y % 2) * self.hexagon_width / 2;
+          pos_y = self.hexagon_radius * 1.5 * y;
+          shape = self.new_hexagon(offset_x + pos_x, offset_y + pos_y, {
             x: x,
             y: y
           });
@@ -431,12 +439,61 @@
             arrow: null,
             hexagon: shape
           };
-          hex_game.stage.addChildAt(shape, 1);
+          self.stage.addChildAt(shape, 1);
           cell_rows[x] = cell;
         }
-        hex_game.cells.push(cell_rows);
+        self.cells.push(cell_rows);
       }
       this.is_ready = true;
+    };
+
+    HexController.prototype.draw_updated_data = function(self, data) {
+      var arr, arrows, board_data, cells, i, key, mentions, move, tmparr, x, y;
+      self.is_ready = false;
+      self.users = data.board_users;
+      cells = self.cells;
+      board_data = data[data.board_id];
+      for (y in board_data) {
+        for (x in board_data[y]) {
+          if (board_data[y][x]) {
+            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][0]);
+          }
+        }
+      }
+      return;
+      mentions = [];
+      tmparr = [];
+      if ("temp" in this.arrows) {
+        tmparr = this.arrows["temp"];
+        mentions[0] = tmparr;
+      }
+      i = 0;
+      while (i < moves.length) {
+        move = moves[i];
+        arr = this.drawArrow({
+          x: move[0],
+          y: move[1]
+        }, {
+          x: move[2],
+          y: move[3]
+        });
+        key = move[0] + "_" + move[1];
+        if (tmparr.lenght) {
+          if (tmparr.data('pos') === key) {
+            tmparr.hide();
+          }
+        }
+        mentions[mentions.length] = key;
+        i++;
+      }
+      arrows = this.arrows;
+      $.each(arrows, function(k, arr) {
+        if (mentions.indexOf(k) === -1) {
+          arr.remove();
+          delete arrows[k];
+        }
+      });
+      return this.is_ready = true;
     };
 
     HexController.prototype.start = function() {
@@ -468,7 +525,7 @@
       return createjs.Ticker.setFPS(50);
     };
 
-    HexController.prototype.tick = function() {
+    HexController.prototype.tick = function(time_passed) {
       if (this.update) {
         if (this.point_start && this.point_end) {
           if (this.point_start.x !== this.point_end.x || this.point_start.y !== this.point_end.y) {
@@ -479,7 +536,12 @@
         }
         this.fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
         this.update = false;
-        return this.stage.update();
+        this.stage.update();
+      }
+      this.time_left_to_update -= time_passed;
+      if (this.time_left_to_update <= 0) {
+        this.time_left_to_update += this.update_interval;
+        return this.ajax(this.url_progress, this.update_interval, {}, this.draw_updated_data);
       }
     };
 
