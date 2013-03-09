@@ -92,7 +92,6 @@ class HexController
     board = json[json.board_id]
 
     # draw the board
-    
     hex_game.cells = []
     offset_x = 100
     offset_y = 100
@@ -120,9 +119,6 @@ class HexController
     $canvas = $('<canvas></canvas>')
     $container = $(@container_id).append($canvas)
 
-    # TODO change the board id
-    hexEnv.ajax(@url_board, 2000, {board_id: 'board1'}, @init_board)
-
     # set our playground non-draggable
     @set_nondraggable($container)
 
@@ -134,6 +130,8 @@ class HexController
     # initialize Stage
     @stage = new createjs.Stage($canvas.get(0))
     @stage.enableMouseOver()
+    # TODO change the board id
+    @ajax(@url_board, 2000, {board_id: 'board1'}, @init_board)
     @drawBackground()
 
     # fpsLabel
@@ -184,8 +182,7 @@ class HexController
       data: data
       cache: false
       timeout: timeout
-      done: (json) ->
-        console.log(json)
+      success: (json) ->
         successFunc(@, json)
       error: (xhr, msg) ->
     })
