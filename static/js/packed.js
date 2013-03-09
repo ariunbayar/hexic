@@ -338,33 +338,9 @@
     };
 
     HexController.prototype.new_hexagon = function(x, y, coord) {
-      var from, hexagon, innerRadius, n, numTeeth, number_of_nodes, outerRadius, radius, self, teeth, to;
+      var hexagon, number_of_nodes, self;
       number_of_nodes = Math.random() * 1000000;
       hexagon = new createjs.Shape();
-      hexagon.graphics.setStrokeStyle(this.hexagon_radius * 0.1, "round");
-      hexagon.graphics.beginStroke(this.colors.hex_border);
-      hexagon.graphics.beginFill(this.colors.hex_fill);
-      hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
-      hexagon.graphics.setStrokeStyle(1, "round");
-      radius = 0;
-      outerRadius = this.hexagon_radius * 0.6;
-      innerRadius = this.hexagon_radius * 0.5;
-      numTeeth = 20;
-      from = 0;
-      to = 0;
-      teeth = 1 / (numTeeth / 2) * Math.PI;
-      n = 0;
-      while (n < numTeeth) {
-        to = from + teeth;
-        if (parseInt(Math.random() * 20) % 2 === 0) {
-          radius = outerRadius;
-        } else {
-          radius = innerRadius;
-        }
-        hexagon.graphics.arc(0, 0, radius, from, to, 0);
-        from += teeth;
-        n++;
-      }
       hexagon.x = x;
       hexagon.y = y;
       hexagon.coord = coord;
@@ -392,7 +368,37 @@
     };
 
     HexController.prototype.update_hexagon = function(hexagon, n, user_id) {
-      return console.log('please implement');
+      var i, inner_radius, level, outer_radius, size, total_teeth, _i, _ref;
+      hexagon.graphics.clear();
+      hexagon.graphics.setStrokeStyle(this.hexagon_radius * 0.1, "round");
+      hexagon.graphics.beginStroke(this.colors.hex_border);
+      hexagon.graphics.beginFill(this.colors.hex_fill);
+      hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
+      hexagon.graphics.setStrokeStyle(1, "round");
+      level = Math.floor(Math.log(n) / Math.LN10) + 1;
+      total_teeth = level * 10;
+      inner_radius = this.hexagon_radius / 10 * level;
+      outer_radius = this.hexagon_radius / 10 * (level + 1);
+      for (i = _i = 0, _ref = level - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (i) {
+          hexagon.graphics.drawCircle(0, 0, this.hexagon_radius / 10 * i);
+        }
+      }
+      /*
+          # prepare random array
+          num_teeth = n / Math.pow(10, level - 1) * level
+      
+          from = 0
+          to = 0
+          size = 1 / (total_teeth / 2) * Math.PI
+          for i in [0..total_teeth]
+            radius = if i <= num_teeth then outer_radius else inner_radius
+            hexagon.graphics.arc(0, 0, radius, from, from + size, 0)
+            from += size
+      */
+
+      size = Math.PI * 2 * n / Math.pow(10, level);
+      return hexagon.graphics.arc(0, 0, inner_radius, 0, size, 0);
     };
 
     HexController.prototype.move = function(from, to) {
@@ -469,7 +475,7 @@
     };
 
     HexController.prototype.draw_updated_data = function(self, data) {
-      var arr, arrows, board_data, cells, i, key, mentions, move, tmparr, x, y;
+      var board_data, cells, x, y;
       self.is_ready = false;
       self.users = data.board_users;
       cells = self.cells;
@@ -481,40 +487,39 @@
           }
         }
       }
-      return;
-      mentions = [];
-      tmparr = [];
-      if ("temp" in this.arrows) {
-        tmparr = this.arrows["temp"];
-        mentions[0] = tmparr;
-      }
-      i = 0;
-      while (i < moves.length) {
-        move = moves[i];
-        arr = this.drawArrow({
-          x: move[0],
-          y: move[1]
-        }, {
-          x: move[2],
-          y: move[3]
-        });
-        key = move[0] + "_" + move[1];
-        if (tmparr.lenght) {
-          if (tmparr.data('pos') === key) {
-            tmparr.hide();
-          }
-        }
-        mentions[mentions.length] = key;
-        i++;
-      }
-      arrows = this.arrows;
-      $.each(arrows, function(k, arr) {
-        if (mentions.indexOf(k) === -1) {
-          arr.remove();
-          delete arrows[k];
-        }
-      });
-      return this.is_ready = true;
+      /*
+          mentions = []
+          tmparr = []
+          if "temp" of @arrows
+            tmparr = @arrows["temp"]
+            mentions[0] = tmparr
+          i = 0
+      
+          while i < moves.length
+            move = moves[i]
+            arr = @drawArrow(
+              x: move[0]
+              y: move[1]
+            ,
+              x: move[2]
+              y: move[3]
+            )
+            key = move[0] + "_" + move[1]
+            if tmparr.lenght
+              tmparr.hide() if tmparr.data('pos') is (key)
+            mentions[mentions.length] = key
+            i++
+          arrows = @arrows
+          $.each(arrows, (k, arr) ->
+            if mentions.indexOf(k) is -1
+              arr.remove()
+              delete arrows[k]
+              return
+          )
+      */
+
+      self.is_ready = true;
+      self.update = true;
     };
 
     HexController.prototype.start = function() {

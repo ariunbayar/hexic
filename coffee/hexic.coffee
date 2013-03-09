@@ -40,32 +40,6 @@ class HexController
     number_of_nodes = Math.random() * 1000000
 
     hexagon = new createjs.Shape()
-    hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
-    hexagon.graphics.beginStroke(@colors.hex_border)
-    hexagon.graphics.beginFill(@colors.hex_fill)
-    hexagon.graphics.drawPolyStar(0, 0, @hexagon_radius, 6, 0, -90)
-
-    hexagon.graphics.setStrokeStyle(1, "round")
-    
-    radius = 0
-    outerRadius = @hexagon_radius * 0.6
-    innerRadius = @hexagon_radius * 0.5
-    numTeeth = 20
-    from = 0
-    to = 0
-    teeth = 1/(numTeeth/2) * Math.PI
-
-    n = 0
-    while n < numTeeth # draw gear
-      to = from + teeth
-      if parseInt(Math.random() * 20) % 2 is 0
-        radius = outerRadius
-      else
-        radius = innerRadius
-
-      hexagon.graphics.arc(0, 0, radius, from, to, 0)
-      from += teeth 
-      n++ # end of draw gear
 
     hexagon.x = x
     hexagon.y = y
@@ -93,7 +67,39 @@ class HexController
     return hexagon
 
   update_hexagon: (hexagon, n, user_id) ->
-    console.log('please implement')
+    # draw the basic hexagon
+    hexagon.graphics.clear()
+    hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
+    hexagon.graphics.beginStroke(@colors.hex_border)
+    hexagon.graphics.beginFill(@colors.hex_fill)
+    hexagon.graphics.drawPolyStar(0, 0, @hexagon_radius, 6, 0, -90)
+
+    # draw toothed progress shape
+    hexagon.graphics.setStrokeStyle(1, "round")
+    level = Math.floor(Math.log(n) / Math.LN10) + 1
+    total_teeth = level * 10
+
+    inner_radius = @hexagon_radius / 10 * level
+    outer_radius = @hexagon_radius / 10 * (level + 1)
+    for i in [0..(level-1)]
+      if i
+        hexagon.graphics.drawCircle(0, 0, @hexagon_radius / 10 * i)
+
+    ###
+    # prepare random array
+    num_teeth = n / Math.pow(10, level - 1) * level
+
+    from = 0
+    to = 0
+    size = 1 / (total_teeth / 2) * Math.PI
+    for i in [0..total_teeth]
+      radius = if i <= num_teeth then outer_radius else inner_radius
+      hexagon.graphics.arc(0, 0, radius, from, from + size, 0)
+      from += size
+    ###
+
+    size = Math.PI * 2 * n / Math.pow(10, level)
+    hexagon.graphics.arc(0, 0, inner_radius, 0, size, 0)
 
   move: (from, to) ->
     params = {
@@ -171,9 +177,9 @@ class HexController
           cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][0])
 
     # TODO allow it to show arrows
-    return
     
     # show moves in arrows
+    ###
     mentions = []
     tmparr = []
     if "temp" of @arrows
@@ -202,8 +208,12 @@ class HexController
         delete arrows[k]
         return
     )
+    ###
 
-    @is_ready = true
+    self.is_ready = true
+    self.update = true
+    return
+
 
   start: ->
     @hexagon_width = @hexagon_radius * Math.sqrt(3)
