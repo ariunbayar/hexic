@@ -15,7 +15,6 @@ class HexController
 
   constructor: (container_id) ->
     @container_id = container_id
-    @hexagon_width = @hexagon_radius * Math.sqrt(3)
 
   drawBackground: ->
     # fill background
@@ -115,6 +114,8 @@ class HexController
     return
 
   start: ->
+    @hexagon_width = @hexagon_radius * Math.sqrt(3)
+
     # create canvas in container element
     $canvas = $('<canvas></canvas>')
     $container = $(@container_id).append($canvas)

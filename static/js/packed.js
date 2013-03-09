@@ -311,7 +311,6 @@
 
     function HexController(container_id) {
       this.container_id = container_id;
-      this.hexagon_width = this.hexagon_radius * Math.sqrt(3);
     }
 
     HexController.prototype.drawBackground = function() {
@@ -423,6 +422,7 @@
 
     HexController.prototype.start = function() {
       var $canvas, $container;
+      this.hexagon_width = this.hexagon_radius * Math.sqrt(3);
       $canvas = $('<canvas></canvas>');
       $container = $(this.container_id).append($canvas);
       this.set_nondraggable($container);
