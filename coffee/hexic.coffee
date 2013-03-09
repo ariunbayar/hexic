@@ -39,6 +39,44 @@ class HexController
     hexagon.graphics.beginStroke(@colors.hex_border)
     hexagon.graphics.beginFill(@colors.hex_fill)
     hexagon.graphics.drawPolyStar(0, 0, @hexagon_radius, 6, 0, -90)
+
+    
+    hexagon.graphics.setStrokeStyle(1, "round")
+    
+    radius = 0
+    outerRadius = 30
+    innerRadius = 25
+    numTeeth = 20
+    numPoints = numTeeth * 2
+    from = 0
+    to = 0
+    teeth = -1.9 * Math.PI
+
+    n = 0
+    while n < numTeeth
+      to = from + teeth
+      if radius is outerRadius
+        x1 = Math.round(innerRadius * Math.cos(to))
+        y1 = Math.round(innerRadius * Math.sin(to))
+
+        if parseInt(Math.random()*19) % 2 is 0
+          radius = outerRadius
+        else
+          radius = innerRadius
+        hexagon.graphics.arc(0, 0, radius, from, to, 0)
+      else
+        x1 = Math.round(outerRadius * Math.cos(to))
+        y1 = Math.round(outerRadius * Math.sin(to))
+
+        if parseInt(Math.random()*19) % 2 is 0
+          radius = outerRadius
+        else
+          radius = innerRadius
+        hexagon.graphics.arc(0, 0, radius, from, to, 0)
+      hexagon.graphics.lineTo(x1, y1)
+      from += teeth 
+      n++
+
     hexagon.x = x
     hexagon.y = y
 
