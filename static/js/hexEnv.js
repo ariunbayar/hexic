@@ -195,5 +195,3 @@ hexEnv.drawBoard = function (moves, board_data, board_users) {
 
     this.board.data('is_ready', true);
 }
-
-

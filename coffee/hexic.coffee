@@ -193,4 +193,3 @@ class HexController
 
 @init_game = (playground) ->
   return new HexController(playground)
-

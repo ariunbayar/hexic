@@ -7,7 +7,7 @@ from django.utils import simplejson
 from decorators import check_login, render_to
 
 from security.models import Account
-from game_old.utils import memval, move_valid, game_restart as game_start
+from game.utils import memval, move_valid, game_restart as game_start
 
 
 def game_stop():
@@ -15,6 +15,7 @@ def game_stop():
     cache.delete('moves')
     cache.delete('move_queue')
     cache.delete('simple_moves')
+
 
 @check_login
 def home(request):
@@ -28,6 +29,7 @@ def home(request):
     cxt = {'user_id': request.session.get('account_id'), 'board_id': board_id}
     return render_to_response('game/home.html', RequestContext(request, cxt))
 
+
 def progress(request):
     """ dumps game progress in json """
     board_id = request.GET['board_id']
@@ -39,9 +41,11 @@ def progress(request):
                             'board_id': board_id, 'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
+
 def game_restart(request):
     game_start()
     return HttpResponseRedirect(reverse('homepage'))
+
 
 def move(request):
     """ adds the move to move list """
@@ -65,6 +69,7 @@ def move(request):
         msg = 'ack'
     cxt = {'rsp': msg}
     return HttpResponse(simplejson.dumps(cxt), mimetype="application/json")
+
 
 def data_board(request):
     """ dumps json board data """
