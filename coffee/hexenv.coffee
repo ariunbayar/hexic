@@ -26,9 +26,11 @@ hexEnv.mouseUp = (e) -> # EVENT
   @mouse_down = false
   to = $(e.currentTarget).data("position")
   return if @from.x is -1 or to.x is -1
-  return unless (to.x + "_" + to.y) of @arrows  if @posEqual(@from, to)
+  if @posEqual(@from, to)
+    return unless ((to.x + "_" + to.y) of @arrows)
   @arrows["temp"].hide() if "temp" of @arrows
   @moveFunc(@from, to, @board.attr("id"))
+  return
 
 hexEnv.cellLeave = -> # EVENT
   return unless @board.data("is_ready")
@@ -55,7 +57,7 @@ hexEnv.drawArrow = (from, to, key) ->
   else
     $arrow = @newArrow(arrow)
     @arrows[key] = $arrow
-    @board.append $arrow
+    @board.append($arrow)
   pos = @cells[from.x][from.y].position()
   $arrow.css({
     top: (pos.top - 20) + "px"
@@ -189,7 +191,8 @@ hexEnv.drawBoard = (moves, board_data, board_users) ->
       y: move[3]
     )
     key = move[0] + "_" + move[1]
-    tmparr.hide()  if tmparr.data("pos") is (key)  if tmparr.length
+    if tmparr.lenght
+      tmparr.hide() if tmparr.data('pos') is (key)
     mentions[mentions.length] = key
     i++
   arrows = @arrows
@@ -197,6 +200,7 @@ hexEnv.drawBoard = (moves, board_data, board_users) ->
     if mentions.indexOf(k) is -1
       arr.remove()
       delete arrows[k]
+      return
   )
 
   @board.data("is_ready", true)

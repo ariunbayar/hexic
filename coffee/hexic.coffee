@@ -172,4 +172,3 @@ class HexController
 
 @start_game = (playground) ->
   game = new HexController(playground)
-
