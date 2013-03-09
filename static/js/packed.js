@@ -338,12 +338,33 @@
     };
 
     HexController.prototype.new_hexagon = function(x, y, coord) {
-      var hexagon, self;
+      var from, hexagon, innerRadius, n, numTeeth, number_of_nodes, outerRadius, radius, self, teeth, to;
+      number_of_nodes = Math.random() * 1000000;
       hexagon = new createjs.Shape();
-      hexagon.graphics.setStrokeStyle(10, "round");
+      hexagon.graphics.setStrokeStyle(this.hexagon_radius * 0.1, "round");
       hexagon.graphics.beginStroke(this.colors.hex_border);
       hexagon.graphics.beginFill(this.colors.hex_fill);
       hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
+      hexagon.graphics.setStrokeStyle(1, "round");
+      radius = 0;
+      outerRadius = this.hexagon_radius * 0.6;
+      innerRadius = this.hexagon_radius * 0.5;
+      numTeeth = 20;
+      from = 0;
+      to = 0;
+      teeth = 1 / (numTeeth / 2) * Math.PI;
+      n = 0;
+      while (n < numTeeth) {
+        to = from + teeth;
+        if (parseInt(Math.random() * 20) % 2 === 0) {
+          radius = outerRadius;
+        } else {
+          radius = innerRadius;
+        }
+        hexagon.graphics.arc(0, 0, radius, from, to, 0);
+        from += teeth;
+        n++;
+      }
       hexagon.x = x;
       hexagon.y = y;
       hexagon.coord = coord;
