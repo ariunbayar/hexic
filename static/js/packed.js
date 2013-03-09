@@ -299,6 +299,8 @@
 
     HexController.prototype.update = true;
 
+    HexController.prototype.is_ready = false;
+
     HexController.prototype.point_start = null;
 
     HexController.prototype.point_end = null;
@@ -334,7 +336,7 @@
       return this.temp_arrow;
     };
 
-    HexController.prototype.new_hexagon = function(x, y) {
+    HexController.prototype.new_hexagon = function(x, y, coord) {
       var hex_game, hexagon;
       hexagon = new createjs.Shape();
       hexagon.graphics.setStrokeStyle(10, "round");
@@ -343,6 +345,7 @@
       hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
       hexagon.x = x;
       hexagon.y = y;
+      hexagon.coord = coord;
       hex_game = this;
       hexagon.onMouseOver = function(e) {
         if (hex_game.point_start) {
@@ -354,12 +357,24 @@
       hexagon.onPress = function(e) {
         hex_game.point_start = e.target;
         return e.onMouseUp = function(ev) {
+          hex_game.move(hex_game.point_start.coord, hex_game.point_end.coord);
           hex_game.point_start = null;
           hex_game.point_end = null;
           return hex_game.update = true;
         };
       };
       return hexagon;
+    };
+
+    HexController.prototype.move = function(from, to) {
+      var params;
+      params = {
+        fx: from.x,
+        fy: from.y,
+        tx: to.x,
+        ty: to.y
+      };
+      return this.ajax(this.url_move, 3000, params);
     };
 
     HexController.prototype.new_arrow = function(x, y, rotation) {
@@ -406,9 +421,12 @@
           if (!board[y][x]) {
             continue;
           }
-          pos_x = hex_game.hexagon_width * x + (y % 2) * hex_game.hexagon_width / 2;
+          pos_x = hex_game.hexagon_width * x - (y % 2) * hex_game.hexagon_width / 2;
           pos_y = hex_game.hexagon_radius * 1.5 * y;
-          shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y);
+          shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y, {
+            x: x,
+            y: y
+          });
           cell = {
             arrow: null,
             hexagon: shape
@@ -418,6 +436,7 @@
         }
         hex_game.cells.push(cell_rows);
       }
+      this.is_ready = true;
     };
 
     HexController.prototype.start = function() {
@@ -485,6 +504,9 @@
 
     HexController.prototype.ajax = function(url, timeout, data, successFunc) {
       var self;
+      if (successFunc == null) {
+        successFunc = function() {};
+      }
       self = this;
       return $.ajax({
         url: url,
