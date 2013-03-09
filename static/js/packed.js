@@ -413,7 +413,7 @@
             arrow: null,
             hexagon: shape
           };
-          hex_game.stage.addChild(shape);
+          hex_game.stage.addChildAt(shape, 1);
           cell_rows[x] = cell;
         }
         hex_game.cells.push(cell_rows);

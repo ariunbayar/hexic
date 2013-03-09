@@ -24,12 +24,14 @@ class HexController
     @stage.addChild(shape)
 
   show_arrow: (point_start, point_end) ->
-    return if Math.abs(point_end.x - point_start.x) > @hexagon_width + 1
-    return if Math.abs(point_end.y - point_start.y) > @hexagon_width + 1
+    if Math.abs(point_end.x - point_start.x) > @hexagon_width + 1
+      return
+    if Math.abs(point_end.y - point_start.y) > @hexagon_width + 1
+      return
     @temp_arrow.x = point_start.x
     @temp_arrow.y = point_start.y
     @temp_arrow.rotation = @angle_from_points(point_start, point_end)
-    @temp_arrow
+    return @temp_arrow
 
   new_hexagon: (x, y) ->
     hexagon = new createjs.Shape()
@@ -105,7 +107,7 @@ class HexController
           arrow: null
           hexagon: shape
 
-        hex_game.stage.addChild(shape)
+        hex_game.stage.addChildAt(shape, 1)
         cell_rows[x] = cell
       hex_game.cells.push(cell_rows)
 
