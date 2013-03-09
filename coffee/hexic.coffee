@@ -1,81 +1,21 @@
-game = null
-
-
 class HexController
-  hexagon_radius: 50
+  url_board: null
+  url_progress: null
+  url_move: null
+
+  update_interval: null
+  hexagon_radius: null
   update: true
+  point_start: null
+  point_end: null
   colors:
     background: createjs.Graphics.getRGB(32, 38, 35)
     hex_border: createjs.Graphics.getRGB(63, 159, 112)
     hex_fill: createjs.Graphics.getRGB(6, 59, 33)
 
-
   constructor: (container_id) ->
-    # setup default values
-    @board = [
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1],
-      [1, 1, 1, 0, 1],
-      [1, 1, 0, 0, 1],
-      [1, 1, 1, 1, 1]
-    ]
-
-    @point_start = null
-    @point_end = null
-
-    @arrow = null
-    @hexagon = null
-
-    # create canvas in container element
-    $canvas = $('<canvas></canvas>')
-    $container = $(container_id).append($canvas)
-
-    # set our playground non-draggable
-    @set_nondraggable($container)
-
-    # store and set the sizing
-    @width = $container.width()
-    @height = $container.height()
-    $canvas.attr(width: @width, height: @height)
-
-    # initialize Stage
-    @stage = new createjs.Stage($canvas.get(0))
-    @stage.enableMouseOver()
-    @drawBackground()
-
-    # draw the board
+    @container_id = container_id
     @hexagon_width = @hexagon_radius * Math.sqrt(3)
-    @cells = []
-    offset_x = 100
-    offset_y = 100
-    for y of @board
-      cell_rows = new Array()
-      for x of @board[y]
-        continue unless @board[y][x]
-        pos_x = @hexagon_width * x + (y % 2) * @hexagon_width / 2
-        pos_y = @hexagon_radius * 1.5 * y
-        shape = @new_hexagon(offset_x + pos_x, offset_y + pos_y)
-        cell =
-          arrow: null
-          hexagon: shape
-
-        @stage.addChild(shape)
-        cell_rows[x] = cell
-      @cells.push(cell_rows)
-    
-    # fpsLabel
-    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000")
-    @stage.addChild(@fpsLabel)
-    @fpsLabel.x = 10
-    @fpsLabel.y = 20
-
-    @temp_arrow = @new_arrow(0, 0, null)
-    @stage.addChild(@temp_arrow)
-    
-    #draw to the canvas
-    @stage.update()
-    createjs.Ticker.addListener(@)
-    createjs.Ticker.setFPS(50)
 
   drawBackground: ->
     # fill background
@@ -143,6 +83,73 @@ class HexController
     arrow.y = y
     return arrow
 
+  init_board: (hex_game, json) ->
+    ###
+    A callback function for board details
+    Initialize board by drawing into stage
+    ###
+    user_id = $("#user_id").val()
+    board = json[json.board_id]
+
+    # draw the board
+    
+    hex_game.cells = []
+    offset_x = 100
+    offset_y = 100
+    for y of board
+      cell_rows = new Array()
+      for x of board[y]
+        continue unless board[y][x]
+        pos_x = hex_game.hexagon_width * x + (y % 2) * hex_game.hexagon_width / 2
+        pos_y = hex_game.hexagon_radius * 1.5 * y
+        shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y)
+        cell =
+          arrow: null
+          hexagon: shape
+
+        hex_game.stage.addChild(shape)
+        cell_rows[x] = cell
+      hex_game.cells.push(cell_rows)
+
+    #hexEnv.initBoard(user_id, json.board_id, json[json.board_id], json.board_users, movethem)
+    #showBoardProgress(json.board_id)
+    return
+
+  start: ->
+    # create canvas in container element
+    $canvas = $('<canvas></canvas>')
+    $container = $(@container_id).append($canvas)
+
+    # TODO change the board id
+    hexEnv.ajax(@url_board, 2000, {board_id: 'board1'}, @init_board)
+
+    # set our playground non-draggable
+    @set_nondraggable($container)
+
+    # store and set the sizing
+    @width = $container.width()
+    @height = $container.height()
+    $canvas.attr(width: @width, height: @height)
+
+    # initialize Stage
+    @stage = new createjs.Stage($canvas.get(0))
+    @stage.enableMouseOver()
+    @drawBackground()
+
+    # fpsLabel
+    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000")
+    @stage.addChild(@fpsLabel)
+    @fpsLabel.x = 10
+    @fpsLabel.y = 20
+
+    @temp_arrow = @new_arrow(0, 0, null)
+    @stage.addChild(@temp_arrow)
+    
+    #draw to the canvas
+    @stage.update()
+    createjs.Ticker.addListener(@)
+    createjs.Ticker.setFPS(50)
+
   tick: ->
     if @update
       if @point_start and @point_end
@@ -170,6 +177,20 @@ class HexController
     angle += 180
     return angle
 
-@start_game = (playground) ->
-  game = new HexController(playground)
+  ajax: (url, timeout, data, successFunc) ->
+    $.ajax({
+      url: url
+      dataType: "json"
+      data: data
+      cache: false
+      timeout: timeout
+      done: (json) ->
+        console.log(json)
+        successFunc(@, json)
+      error: (xhr, msg) ->
+    })
+
+
+@init_game = (playground) ->
+  return new HexController(playground)
 

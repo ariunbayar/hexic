@@ -3,10 +3,17 @@
 
 {% block content %}
 <div id="playground" style="width: 800px; height: 600px;"></div>
+<input type="hidden" id="user_id" name="user_id" value="{{ user_id }}"/>
 {% endblock %}
 
 {% block js-init %}
-start_game('#playground')
+game = init_game('#playground');
+game.hexagon_radius = 50;
+game.update_interval = 1000;
+game.url_board = "{% url game-board %}";
+game.url_progress = "{% url game-progress %}";
+game.url_move = "{% url game-move %}";
+game.start();
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

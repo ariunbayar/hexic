@@ -28,6 +28,7 @@ hexEnv.mouseUp = function (e) {  // EVENT
         if (!((to.x + '_' + to.y) in this.arrows)) return;
     }
     if ('temp' in this.arrows) this.arrows['temp'].hide();
+    console.log(this.from, to);
     this.moveFunc(this.from, to, this.board.attr('id'));
 }
 
