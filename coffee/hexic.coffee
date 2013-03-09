@@ -6,6 +6,7 @@ class HexController
   update_interval: null
   hexagon_radius: null
   update: true
+
   point_start: null
   point_end: null
   colors:
@@ -33,14 +34,13 @@ class HexController
     @temp_arrow.rotation = @angle_from_points(point_start, point_end)
     return @temp_arrow
 
-  new_hexagon: (x, y) ->
+  new_hexagon: (x, y, coord) ->
     hexagon = new createjs.Shape()
     hexagon.graphics.setStrokeStyle(10, "round")
     hexagon.graphics.beginStroke(@colors.hex_border)
     hexagon.graphics.beginFill(@colors.hex_fill)
     hexagon.graphics.drawPolyStar(0, 0, @hexagon_radius, 6, 0, -90)
 
-    
     hexagon.graphics.setStrokeStyle(1, "round")
     
     radius = 0
@@ -79,6 +79,7 @@ class HexController
 
     hexagon.x = x
     hexagon.y = y
+    hexagon.coord = coord
 
     hex_game = @
     
@@ -92,11 +93,22 @@ class HexController
     hexagon.onPress = (e) ->
       hex_game.point_start = e.target
       e.onMouseUp = (ev) ->
+        hex_game.move(hex_game.point_start.coord, hex_game.point_end.coord)
         hex_game.point_start = null
         hex_game.point_end = null
         hex_game.update = true
 
     return hexagon
+
+  move: (from, to) ->
+    params = {
+      fx: from.x
+      fy: from.y
+      tx: to.x
+      ty: to.y
+    }
+    @ajax(@url_move, 3000, params)
+
 
   new_arrow: (x, y, rotation) ->
     arrow = new createjs.Shape()
@@ -138,9 +150,9 @@ class HexController
       cell_rows = new Array()
       for x of board[y]
         continue unless board[y][x]
-        pos_x = hex_game.hexagon_width * x + (y % 2) * hex_game.hexagon_width / 2
+        pos_x = hex_game.hexagon_width * x - (y % 2) * hex_game.hexagon_width / 2
         pos_y = hex_game.hexagon_radius * 1.5 * y
-        shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y)
+        shape = hex_game.new_hexagon(offset_x + pos_x, offset_y + pos_y, {x: x, y: y})
         cell =
           arrow: null
           hexagon: shape
@@ -149,8 +161,6 @@ class HexController
         cell_rows[x] = cell
       hex_game.cells.push(cell_rows)
 
-    #hexEnv.initBoard(user_id, json.board_id, json[json.board_id], json.board_users, movethem)
-    #showBoardProgress(json.board_id)
     return
 
   start: ->
@@ -216,7 +226,7 @@ class HexController
     angle += 180
     return angle
 
-  ajax: (url, timeout, data, successFunc) ->
+  ajax: (url, timeout, data, successFunc = ->) ->
     self = @
     $.ajax({
       url: url
