@@ -83,13 +83,16 @@ class HexController
     arrow.y = y
     return arrow
 
-  init_board: (hex_game, json) ->
+  init_board: (json) ->
     ###
     A callback function for board details
     Initialize board by drawing into stage
     ###
     user_id = $("#user_id").val()
     board = json[json.board_id]
+    console.log(@)
+    console.log(@hexagon_radius)
+    console.log(hex_game.hexagon_radius)
 
     # draw the board
     hex_game.cells = []
@@ -176,15 +179,20 @@ class HexController
     return angle
 
   ajax: (url, timeout, data, successFunc) ->
+    self = @
     $.ajax({
       url: url
       dataType: "json"
       data: data
       cache: false
       timeout: timeout
-      success: (json) ->
-        successFunc(@, json)
       error: (xhr, msg) ->
+        return
+      success: ((json) ->
+        console.log(@);
+        return (json) ->
+          successFunc(json)
+      )(self)
     })
 
 
