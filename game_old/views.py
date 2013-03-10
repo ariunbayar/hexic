@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from decorators import check_login, render_to
 
+from game.models import HexicProfile
 from security.models import Account
 from game.utils import memval, move_valid, game_restart as game_start
 
@@ -105,7 +106,8 @@ def select_cell(request):
         default_bytes = 20
         if board[y][x] < default_bytes:
             board[y][x] = default_bytes - board[y][x]
-            users[y][x] = [acc.id, acc.id]
+            profile = HexicProfile.objects.get(account=acc)
+            users[y][x] = [acc.id, profile.color]
             memval('board', board)
             memval('board_users', users)
             return redirect('homepage')

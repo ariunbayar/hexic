@@ -4,14 +4,30 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import simplejson
 
+from game.models import HexicProfile
 from security.models import Account
 from utils import memval, move_valid, game_restart as game_start
 
 
+def get_hexic_profile_by_acc(account):
+    obj, created = HexicProfile.objects.get_or_create(account=account)
+    return obj
+
 @check_login
 @render_to('game/animation.html')
 def board(request):
-    ctx = {'user_id': request.session.get('account_id')}
+    user_id = request.session.get('account_id')
+    account = Account.objects.get(pk=user_id)
+    profile = get_hexic_profile_by_acc(account)
+    if request.GET.get('color'):
+        profile.color = '#' + request.GET.get('color')
+        profile.save()
+
+    ctx = {
+        'profile': profile,
+        'user_id': user_id,
+        'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33']
+    }
     return ctx
 
 

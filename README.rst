@@ -68,10 +68,6 @@ South commands
 
    ./manage.py migrate app_name
 
-.. image:: http://coolmotivator.com/wp-content/gallery/coolmotivator-corporate-memes/meme-great-work.jpg
-    :width: 40
-    :height: 40
-
 
 Coffee Scripts
 ===============

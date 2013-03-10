@@ -14,7 +14,7 @@ def get_new_board():
 def get_new_board_users():
     board_users = []
     for y in range(10):
-        board_users.append([[0, 0] for x in range(10)])
+        board_users.append([[0, '#aaaaaa'] for x in range(10)])
     return board_users;
 
 

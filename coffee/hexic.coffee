@@ -66,13 +66,14 @@ class HexController
 
     return hexagon
 
-  update_hexagon: (hexagon, n, user_id) ->
+  update_hexagon: (hexagon, n, color) ->
     # draw the basic hexagon
     hexagon.graphics.clear()
     hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
-    hexagon.graphics.beginStroke(@colors.hex_border)
+    hexagon.graphics.beginStroke(color)
     hexagon.graphics.beginFill(@colors.hex_fill)
-    hexagon.graphics.drawPolyStar(0, 0, @hexagon_radius, 6, 0, -90)
+    radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
+    hexagon.graphics.drawPolyStar(0, 0, radius, 6, 0, -90)
 
     # draw toothed progress shape
     hexagon.graphics.setStrokeStyle(1, "round")
@@ -174,7 +175,7 @@ class HexController
     for y of board_data
       for x of board_data[y]
         if board_data[y][x]
-          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][0])
+          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][1])
 
     # TODO allow it to show arrows
     

@@ -3,7 +3,8 @@ import time
 import logging
 # http://docs.python.org/library/collections.html to optimize
 
-from game_old.utils import memval
+from game.models import HexicProfile
+from game.utils import memval
 
 
 CELL_LIMIT = 50
@@ -101,8 +102,8 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
                     decrementer = n
         if winner_id:
             moves[k][1] = []  # remove the move
-            design = winner_id
-            users[y][x] = [winner_id, design]
+            profile = HexicProfile.objects.get(account__id=winner_id)
+            users[y][x] = [winner_id, profile.color]
             board[y][x] = winner_score - orig
         else:
             board[y][x] -= decrementer

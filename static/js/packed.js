@@ -367,13 +367,14 @@
       return hexagon;
     };
 
-    HexController.prototype.update_hexagon = function(hexagon, n, user_id) {
-      var i, inner_radius, level, outer_radius, size, total_teeth, _i, _ref;
+    HexController.prototype.update_hexagon = function(hexagon, n, color) {
+      var i, inner_radius, level, outer_radius, radius, size, total_teeth, _i, _ref;
       hexagon.graphics.clear();
       hexagon.graphics.setStrokeStyle(this.hexagon_radius * 0.1, "round");
-      hexagon.graphics.beginStroke(this.colors.hex_border);
+      hexagon.graphics.beginStroke(color);
       hexagon.graphics.beginFill(this.colors.hex_fill);
-      hexagon.graphics.drawPolyStar(0, 0, this.hexagon_radius, 6, 0, -90);
+      radius = this.hexagon_radius - this.hexagon_radius * 0.1 / 2;
+      hexagon.graphics.drawPolyStar(0, 0, radius, 6, 0, -90);
       hexagon.graphics.setStrokeStyle(1, "round");
       level = Math.floor(Math.log(n) / Math.LN10) + 1;
       total_teeth = level * 10;
@@ -483,7 +484,7 @@
       for (y in board_data) {
         for (x in board_data[y]) {
           if (board_data[y][x]) {
-            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][0]);
+            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][1]);
           }
         }
       }
