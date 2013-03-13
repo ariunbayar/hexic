@@ -18,7 +18,7 @@
 {% block js-init %}
 game = init_game('#playground');
 game.hexagon_radius = 30;
-game.update_interval = 1000;
+game.update_interval = {{ update_interval }};
 game.url_board = "{% url game-board %}";
 game.url_progress = "{% url game-progress %}";
 game.url_move = "{% url game-move %}";

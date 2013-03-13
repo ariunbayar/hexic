@@ -6,6 +6,8 @@ import logging
 from game.models import HexicProfile
 from game.utils import memval
 
+from settings import UPDATE_INTERVAL
+
 
 CELL_LIMIT = 50
 DEC_GRAPH = [
@@ -122,7 +124,7 @@ def main():
               'board_users': 'board_users'}
     for i in xrange(3):
         process_moves(**kwargs)
-        time.sleep(.5)
+        time.sleep(UPDATE_INTERVAL / 1000)
     process_board(kwargs['board_name'], kwargs['board_users'])
     #time.sleep(1)
 

@@ -18,6 +18,35 @@ class HexController
   constructor: (container_id) ->
     @container_id = container_id
     @time_left_to_update = 0
+    @arrows = {}
+    types = [[1, 1], [-1, 1], [0, 1], [1, 0]]
+    @bin_array = []
+    # Pattern 1
+    i = 0
+    for y in [2..-2]
+      x = 0
+      for n in [2..-2]
+        if n % 2
+          x += 1
+        x = -x
+        t = types[Math.floor(Math.random() * 4)]
+        @bin_array[i++] = [x, y, t[0], t[1]]
+
+    ###
+    # Pattern 2
+    # 0: \, 1: /, 2: |, 3: -
+    @s = [
+      [[20,1],[21,3],[22,3],[23,3],[24,0]],
+      [[19,2],[ 6,1],[ 7,3],[ 8,3],[ 9,0]],
+      [[18,2],[ 5,2],[ 0,3],[ 1,0],[10,2]],
+      [[17,2],[ 4,0],[ 3,3],[ 2,1],[11,2]],
+      [[16,0],[15,3],[14,3],[13,3],[12,1]],
+    ]
+    for y of @s
+      for x of @s[y]
+        t = types[@s[y][x][1]]
+        @bin_array[@s[y][x][0]] = [x - 2, y - 2, t[0], t[1]]
+    ###
 
   drawBackground: ->
     # fill background
@@ -68,13 +97,57 @@ class HexController
 
   update_hexagon: (hexagon, n, color) ->
     # draw the basic hexagon
-    hexagon.graphics.clear()
+    g = hexagon.graphics
+    g.clear()
+    ###
     hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
     hexagon.graphics.beginStroke(color)
-    hexagon.graphics.beginFill(@colors.hex_fill)
     radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
     hexagon.graphics.drawPolyStar(0, 0, radius, 6, 0, -90)
+    ###
 
+
+    ### filled hexagon
+    g.beginStroke(color)
+    g.setStrokeStyle(1, "round")
+    g.beginFill(color)
+    level = Math.round(n / 10)
+    g.drawPolyStar(0, 0, @hexagon_radius / 15 * level, 6, 0, -90)
+    ###
+
+    color = 
+      r: parseInt(color.substr(1, 2), 16)
+      g: parseInt(color.substr(3, 2), 16)
+      b: parseInt(color.substr(5, 2), 16)
+
+    c = createjs.Graphics.getRGB(color.r, color.g, color.b, .3)
+    g.beginFill(c)
+    radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
+    g.drawPolyStar(0, 0, radius, 6, 0, -90)
+
+    draw_bin_at = (x, y, _x, _y, size = 5, spacing = 2) ->
+      _x *= size / 2
+      _y *= size / 2
+      _offset = spacing + size
+      ## draw lines
+      #g.moveTo(x * _offset - _x, y * _offset - _y)
+      #g.lineTo(x * _offset + _x, y * _offset + _y)
+      ## draws rectangles
+      g.rect(x * _offset, y * _offset, size, size)
+    
+    g.setStrokeStyle(2)
+    n_str = n.toString(2).split('').reverse().join('')
+    for i of n_str
+      if not i of @bin_array
+        continue
+      alpha = if n_str[i] is '1' then 1 else .7
+      c = createjs.Graphics.getRGB(color.r, color.g, color.b, alpha)
+      g.beginStroke(c)
+      [x, y, _x, _y] = @bin_array[i]
+      #draw_bin_at(x, y, _x, _y, 4)  # for the lines
+      draw_bin_at(x, y, _x, _y, 2)  # for the rectangles
+
+    ###
     # draw toothed progress shape
     hexagon.graphics.setStrokeStyle(1, "round")
     level = Math.floor(Math.log(n) / Math.LN10) + 1
@@ -85,6 +158,7 @@ class HexController
     for i in [0..(level-1)]
       if i
         hexagon.graphics.drawCircle(0, 0, @hexagon_radius / 10 * i)
+    ###
 
     ###
     # prepare random array
@@ -99,8 +173,10 @@ class HexController
       from += size
     ###
 
+    ###
     size = Math.PI * 2 * n / Math.pow(10, level)
     hexagon.graphics.arc(0, 0, inner_radius, 0, size, 0)
+    ###
 
   move: (from, to) ->
     params = {
@@ -111,12 +187,15 @@ class HexController
     }
     @ajax(@url_move, 3000, params)
 
-  new_arrow: (x, y, rotation) ->
+  new_arrow: (x, y, rotation = 0) ->
     arrow = new createjs.Shape()
-    size = 40
+    g = arrow.graphics
+
+    ###
+    # Fancy arrow design
+    size = @hexagon_radius / 3
     arrow.regX = size
     arrow.regY = size * 2
-    num_arrows = ""
     coef = 0.75
     scaled_size = size
 
@@ -125,14 +204,36 @@ class HexController
       offset_y = offset_x * 3 - size
       arrow.graphics.moveTo(offset_x, offset_y)
       arrow.graphics.setStrokeStyle(scaled_size / 7)
-      arrow.graphics.beginStroke("#AAAAAA")
+      arrow.graphics.beginStroke("#555555")
       arrow.graphics.lineTo(offset_x + scaled_size / 2, offset_y - scaled_size / 2)
       arrow.graphics.lineTo(offset_x + scaled_size, offset_y)
       arrow.graphics.endStroke()
       scaled_size = scaled_size * coef
-    arrow.rotation = (if rotation then rotation else 0)
+    ###
+
+    # Line arrow design
+    arrow.color = createjs.Graphics.getRGB(255,255,255,.1)
+    size = @hexagon_radius * 2 - 5.5
+    self = @
+    arrow.update = () ->
+      g.clear()
+      #g.setStrokeStyle(2)
+      #g.beginStroke(arrow.color)
+      #g.moveTo(0, -self.hexagon_radius / 2)
+      #g.lineTo(0, -self.hexagon_radius)
+
+      g.setStrokeStyle(1)
+      g.beginStroke(arrow.color)
+      for i of arrow.dots
+        n = arrow.dots[i] + 2
+        n = 0 if n > size
+        g.rect(0, -n, 1, 1)
+        arrow.dots[i] = n
+    arrow.dots = (i * 8 for i in [0..3])
+    arrow.rotation = rotation
     arrow.x = x
     arrow.y = y
+    arrow.update()
     return arrow
 
   init_board: (self, json) ->
@@ -154,9 +255,7 @@ class HexController
         pos_x = self.hexagon_width * x - (y % 2) * self.hexagon_width / 2
         pos_y = self.hexagon_radius * 1.5 * y
         shape = self.new_hexagon(offset_x + pos_x, offset_y + pos_y, {x: x, y: y})
-        cell =
-          arrow: null
-          hexagon: shape
+        cell = {arrow: null, hexagon: shape}
 
         self.stage.addChildAt(shape, 1)
         cell_rows[x] = cell
@@ -169,6 +268,7 @@ class HexController
     self.is_ready = false
     self.users = data.board_users
     cells = self.cells
+    moves = data.moves
     
     # show board values and user colors
     board_data = data[data.board_id]
@@ -177,39 +277,26 @@ class HexController
         if board_data[y][x]
           cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][1])
 
-    # TODO allow it to show arrows
-    
     # show moves in arrows
-    ###
-    mentions = []
-    tmparr = []
-    if "temp" of @arrows
-      tmparr = @arrows["temp"]
-      mentions[0] = tmparr
-    i = 0
+    visible_arrows = []
+    for [fy, fx, tx, ty] in moves
+      cell_from = cells[fx][fy]
+      cell_to = cells[ty][tx]
+      from = {x: cell_from.hexagon.x, y: cell_from.hexagon.y}
+      to = {x: cell_to.hexagon.x, y: cell_to.hexagon.y}
+      rotation = self.angle_from_points(from, to)
+      if cell_from.arrow
+        cell_from.arrow.rotation = rotation
+      else
+        cell_from.arrow = self.new_arrow(from.x, from.y, rotation)
+        self.stage.addChildAt(cell_from.arrow, 1)
 
-    while i < moves.length
-      move = moves[i]
-      arr = @drawArrow(
-        x: move[0]
-        y: move[1]
-      ,
-        x: move[2]
-        y: move[3]
-      )
-      key = move[0] + "_" + move[1]
-      if tmparr.lenght
-        tmparr.hide() if tmparr.data('pos') is (key)
-      mentions[mentions.length] = key
-      i++
-    arrows = @arrows
-    $.each(arrows, (k, arr) ->
-      if mentions.indexOf(k) is -1
-        arr.remove()
-        delete arrows[k]
-        return
-    )
-    ###
+      visible_arrows.push(fy + '_' + fx)
+
+    for y of cells
+      for x of cells[y]
+        if cells[y][x].arrow
+          cells[y][x].arrow.visible = ((x + '_' + y) in visible_arrows)
 
     self.is_ready = true
     self.update = true
@@ -262,6 +349,16 @@ class HexController
       @fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps"
       @update = false
       @stage.update()
+
+    # animate the arrows
+    if not @arrow_speed or @arrow_speed < 0
+      @arrow_speed = 200
+      for y of @cells
+        for x of @cells[y]
+          if @cells[y][x].arrow
+            @cells[y][x].arrow.update()
+      @update = true
+    @arrow_speed -= time_passed
 
     # load and show the progress every interval
     @time_left_to_update -= time_passed

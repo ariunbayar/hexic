@@ -6,6 +6,7 @@ from django.utils import simplejson
 
 from game.models import HexicProfile
 from security.models import Account
+from settings import UPDATE_INTERVAL
 from utils import memval, move_valid, game_restart as game_start
 
 
@@ -26,7 +27,8 @@ def board(request):
     ctx = {
         'profile': profile,
         'user_id': user_id,
-        'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33']
+        'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
+        'update_interval': UPDATE_INTERVAL
     }
     return ctx
 
