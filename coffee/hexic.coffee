@@ -19,34 +19,25 @@ class HexController
     @container_id = container_id
     @time_left_to_update = 0
     @arrows = {}
-    types = [[1, 1], [-1, 1], [0, 1], [1, 0]]
-    @bin_array = []
-    # Pattern 1
-    i = 0
-    for y in [2..-2]
-      x = 0
-      for n in [2..-2]
-        if n % 2
-          x += 1
-        x = -x
-        t = types[Math.floor(Math.random() * 4)]
-        @bin_array[i++] = [x, y, t[0], t[1]]
 
-    ###
+    @bin_array = []
     # Pattern 2
-    # 0: \, 1: /, 2: |, 3: -
-    @s = [
-      [[20,1],[21,3],[22,3],[23,3],[24,0]],
-      [[19,2],[ 6,1],[ 7,3],[ 8,3],[ 9,0]],
-      [[18,2],[ 5,2],[ 0,3],[ 1,0],[10,2]],
-      [[17,2],[ 4,0],[ 3,3],[ 2,1],[11,2]],
-      [[16,0],[15,3],[14,3],[13,3],[12,1]],
-    ]
-    for y of @s
-      for x of @s[y]
-        t = types[@s[y][x][1]]
-        @bin_array[@s[y][x][0]] = [x - 2, y - 2, t[0], t[1]]
-    ###
+    n = 16
+    i = 0
+    y = 0
+    arr = []
+    for _y in [0..n]
+      x = 0
+      for _x in [0..n]
+        @bin_array[i++] = [x, y]
+        if _x % 2
+          x = (_x - 1) / 2 + 1
+        else
+          x = -_x/2 - 1
+      if _y % 2
+        y = (_y - 1) / 2 + 1
+      else
+        y = -_y/2 - 1
 
   drawBackground: ->
     # fill background
@@ -99,21 +90,6 @@ class HexController
     # draw the basic hexagon
     g = hexagon.graphics
     g.clear()
-    ###
-    hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
-    hexagon.graphics.beginStroke(color)
-    radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
-    hexagon.graphics.drawPolyStar(0, 0, radius, 6, 0, -90)
-    ###
-
-
-    ### filled hexagon
-    g.beginStroke(color)
-    g.setStrokeStyle(1, "round")
-    g.beginFill(color)
-    level = Math.round(n / 10)
-    g.drawPolyStar(0, 0, @hexagon_radius / 15 * level, 6, 0, -90)
-    ###
 
     color = 
       r: parseInt(color.substr(1, 2), 16)
@@ -125,27 +101,21 @@ class HexController
     radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
     g.drawPolyStar(0, 0, radius, 6, 0, -90)
 
-    draw_bin_at = (x, y, _x, _y, size = 5, spacing = 2) ->
-      _x *= size / 2
-      _y *= size / 2
+    draw_bin_at = (x, y, size = 5, spacing = 2) ->
       _offset = spacing + size
-      ## draw lines
-      #g.moveTo(x * _offset - _x, y * _offset - _y)
-      #g.lineTo(x * _offset + _x, y * _offset + _y)
-      ## draws rectangles
-      g.rect(x * _offset, y * _offset, size, size)
+      g.moveTo(x * _offset - 0.5, y * _offset - 0.5)
+      g.lineTo(x * _offset + 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset - 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset + 0.5, y * _offset - 0.5)
     
-    g.setStrokeStyle(2)
-    n_str = n.toString(2).split('').reverse().join('')
-    for i of n_str
-      if not i of @bin_array
+    g.setStrokeStyle(1)
+    for i in [0..(n-1)/10]
+      if not (i of @bin_array)
         continue
-      alpha = if n_str[i] is '1' then 1 else .7
-      c = createjs.Graphics.getRGB(color.r, color.g, color.b, alpha)
+      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
       g.beginStroke(c)
-      [x, y, _x, _y] = @bin_array[i]
-      #draw_bin_at(x, y, _x, _y, 4)  # for the lines
-      draw_bin_at(x, y, _x, _y, 2)  # for the rectangles
+      [x, y] = @bin_array[i]
+      draw_bin_at(x, y, 1, 1)
 
     ###
     # draw toothed progress shape

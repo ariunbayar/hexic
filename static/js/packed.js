@@ -313,40 +313,31 @@
     };
 
     function HexController(container_id) {
-      var i, n, t, types, x, y, _i, _j;
+      var arr, i, n, x, y, _i, _j, _x, _y;
       this.container_id = container_id;
       this.time_left_to_update = 0;
       this.arrows = {};
-      types = [[1, 1], [-1, 1], [0, 1], [1, 0]];
       this.bin_array = [];
+      n = 16;
       i = 0;
-      for (y = _i = 2; _i >= -2; y = --_i) {
+      y = 0;
+      arr = [];
+      for (_y = _i = 0; 0 <= n ? _i <= n : _i >= n; _y = 0 <= n ? ++_i : --_i) {
         x = 0;
-        for (n = _j = 2; _j >= -2; n = --_j) {
-          if (n % 2) {
-            x += 1;
+        for (_x = _j = 0; 0 <= n ? _j <= n : _j >= n; _x = 0 <= n ? ++_j : --_j) {
+          this.bin_array[i++] = [x, y];
+          if (_x % 2) {
+            x = (_x - 1) / 2 + 1;
+          } else {
+            x = -_x / 2 - 1;
           }
-          x = -x;
-          t = types[Math.floor(Math.random() * 4)];
-          this.bin_array[i++] = [x, y, t[0], t[1]];
+        }
+        if (_y % 2) {
+          y = (_y - 1) / 2 + 1;
+        } else {
+          y = -_y / 2 - 1;
         }
       }
-      /*
-          # Pattern 2
-          # 0: \, 1: /, 2: |, 3: -
-          @s = [
-            [[20,1],[21,3],[22,3],[23,3],[24,0]],
-            [[19,2],[ 6,1],[ 7,3],[ 8,3],[ 9,0]],
-            [[18,2],[ 5,2],[ 0,3],[ 1,0],[10,2]],
-            [[17,2],[ 4,0],[ 3,3],[ 2,1],[11,2]],
-            [[16,0],[15,3],[14,3],[13,3],[12,1]],
-          ]
-          for y of @s
-            for x of @s[y]
-              t = types[@s[y][x][1]]
-              @bin_array[@s[y][x][0]] = [x - 2, y - 2, t[0], t[1]]
-      */
-
     }
 
     HexController.prototype.drawBackground = function() {
@@ -401,24 +392,9 @@
     };
 
     HexController.prototype.update_hexagon = function(hexagon, n, color) {
-      var alpha, c, draw_bin_at, g, i, n_str, radius, x, y, _ref, _results, _x, _y;
+      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
       g = hexagon.graphics;
       g.clear();
-      /*
-          hexagon.graphics.setStrokeStyle(@hexagon_radius * 0.1, "round")
-          hexagon.graphics.beginStroke(color)
-          radius = @hexagon_radius - @hexagon_radius * 0.1 / 2
-          hexagon.graphics.drawPolyStar(0, 0, radius, 6, 0, -90)
-      */
-
-      /* filled hexagon
-      g.beginStroke(color)
-      g.setStrokeStyle(1, "round")
-      g.beginFill(color)
-      level = Math.round(n / 10)
-      g.drawPolyStar(0, 0, @hexagon_radius / 15 * level, 6, 0, -90)
-      */
-
       color = {
         r: parseInt(color.substr(1, 2), 16),
         g: parseInt(color.substr(3, 2), 16),
@@ -428,7 +404,7 @@
       g.beginFill(c);
       radius = this.hexagon_radius - this.hexagon_radius * 0.1 / 2;
       g.drawPolyStar(0, 0, radius, 6, 0, -90);
-      draw_bin_at = function(x, y, _x, _y, size, spacing) {
+      draw_bin_at = function(x, y, size, spacing) {
         var _offset;
         if (size == null) {
           size = 5;
@@ -436,23 +412,22 @@
         if (spacing == null) {
           spacing = 2;
         }
-        _x *= size / 2;
-        _y *= size / 2;
         _offset = spacing + size;
-        return g.rect(x * _offset, y * _offset, size, size);
+        g.moveTo(x * _offset - 0.5, y * _offset - 0.5);
+        g.lineTo(x * _offset + 0.5, y * _offset + 0.5);
+        g.lineTo(x * _offset - 0.5, y * _offset + 0.5);
+        return g.lineTo(x * _offset + 0.5, y * _offset - 0.5);
       };
-      g.setStrokeStyle(2);
-      n_str = n.toString(2).split('').reverse().join('');
+      g.setStrokeStyle(1);
       _results = [];
-      for (i in n_str) {
-        if (!i in this.bin_array) {
+      for (i = _i = 0, _ref = (n - 1) / 10; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (!(i in this.bin_array)) {
           continue;
         }
-        alpha = n_str[i] === '1' ? 1 : .7;
-        c = createjs.Graphics.getRGB(color.r, color.g, color.b, alpha);
+        c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1);
         g.beginStroke(c);
-        _ref = this.bin_array[i], x = _ref[0], y = _ref[1], _x = _ref[2], _y = _ref[3];
-        _results.push(draw_bin_at(x, y, _x, _y, 2));
+        _ref1 = this.bin_array[i], x = _ref1[0], y = _ref1[1];
+        _results.push(draw_bin_at(x, y, 1, 1));
       }
       return _results;
       /*
