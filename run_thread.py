@@ -1,12 +1,10 @@
-#!/usr/bin/env python
 import time
-import logging
 # http://docs.python.org/library/collections.html to optimize
 
 from game.models import HexicProfile
 from game.utils import memval
 
-from settings import UPDATE_INTERVAL
+from django.conf import settings
 
 
 CELL_LIMIT = 50
@@ -124,20 +122,6 @@ def main():
               'board_users': 'board_users'}
     for i in xrange(3):
         process_moves(**kwargs)
-        time.sleep(UPDATE_INTERVAL / 1000)
+        time.sleep(settings.UPDATE_INTERVAL / 1000)
     process_board(kwargs['board_name'], kwargs['board_users'])
     #time.sleep(1)
-
-
-if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.INFO)
-    retry_sec = 10
-    while True:
-        try:
-            logging.info("Thread starting ...")
-            while True:
-                main()
-        except Exception, msg:
-            logging.exception(msg)
-            logging.warn("Restarting the thread in %s seconds" % retry_sec)
-        time.sleep(retry_sec)
