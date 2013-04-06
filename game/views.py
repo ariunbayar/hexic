@@ -35,8 +35,9 @@ def board(request):
     }
     users = memval('board_users')
     board = memval('board')
-    if not with_cells(users, account):
+    if not board:
         game_start()
+    if not with_cells(users, account):
         # Automatically select cell if cell not selected
         default_bytes = 20
         y, x = random_cell(board, users)
