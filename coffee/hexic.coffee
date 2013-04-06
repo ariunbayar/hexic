@@ -21,13 +21,16 @@ class HexController
     @arrows = {}
 
     @bin_array = []
-    n = 16
+    n = 26
+    _n = 22
     i = 0
     y = 0
     arr = []
     for _y in [0..n]
       x = 0
-      for _x in [0..n]
+      if _y > 15
+        _n -= 2
+      for _x in [0.._n]
         @bin_array[i++] = [x, y]
         if _x % 2
           x = (_x - 1) / 2 + 1

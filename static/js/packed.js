@@ -313,18 +313,22 @@
     };
 
     function HexController(container_id) {
-      var arr, i, n, x, y, _i, _j, _x, _y;
+      var arr, i, n, x, y, _i, _j, _n, _x, _y;
       this.container_id = container_id;
       this.time_left_to_update = 0;
       this.arrows = {};
       this.bin_array = [];
-      n = 16;
+      n = 26;
+      _n = 22;
       i = 0;
       y = 0;
       arr = [];
       for (_y = _i = 0; 0 <= n ? _i <= n : _i >= n; _y = 0 <= n ? ++_i : --_i) {
         x = 0;
-        for (_x = _j = 0; 0 <= n ? _j <= n : _j >= n; _x = 0 <= n ? ++_j : --_j) {
+        if (_y > 15) {
+          _n -= 2;
+        }
+        for (_x = _j = 0; 0 <= _n ? _j <= _n : _j >= _n; _x = 0 <= _n ? ++_j : --_j) {
           this.bin_array[i++] = [x, y];
           if (_x % 2) {
             x = (_x - 1) / 2 + 1;
