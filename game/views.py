@@ -7,7 +7,8 @@ from django.utils import simplejson
 from game.models import HexicProfile
 from security.models import Account
 from settings import UPDATE_INTERVAL
-from utils import memval, move_valid, game_restart as game_start
+from utils import memval, move_valid, game_restart as game_start, \
+                                            random_cell, with_cells
 
 
 def get_hexic_profile_by_acc(account):
@@ -32,6 +33,19 @@ def board(request):
         'update_interval': UPDATE_INTERVAL,
         'board_id': board_id
     }
+    game_start()
+    users = memval('board_users')
+    board = memval('board')
+    if not with_cells(users, account):
+        # Automatically select cell if cell not selected
+        default_bytes = 20
+        y, x = random_cell(board, users)
+
+        board[y][x] = default_bytes - board[y][x]
+        profile = HexicProfile.objects.get(account=account)
+        users[y][x] = [account.id, profile.color]
+        memval('board', board)
+        memval('board_users', users)
     return ctx
 
 
@@ -108,10 +122,8 @@ def select_cell(request):
         board = memval('board')
         users = memval('board_users')
         default_bytes = 20
-        for _y in xrange(10):
-            for _x in xrange(10):
-                if acc.id == users[_y][_x][0]:
-                    return redirect('homepage')
+        if with_cells(users, acc):
+            return redirect('homepage')
         if board[y][x] < default_bytes:
             board[y][x] = default_bytes - board[y][x]
             profile = HexicProfile.objects.get(account=acc)
