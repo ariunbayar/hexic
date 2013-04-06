@@ -1,4 +1,5 @@
 from collections import deque
+import random
 import logging
 
 from django.core.cache import cache
@@ -59,3 +60,19 @@ def move_valid(move, board, user_id, users):
 
 def move_fix(move, moves):
     return moves
+
+def random_cell(board, users):
+    """ Returns board's y, x if cell not selected """
+    default_bytes = 20
+    while True:
+        y = random.randint(0, len(board) - 1)
+        x = random.randint(0, len(board[y]) - 1)
+        if board[y][x] and board[y][x] < default_bytes and not users[y][x][0]:
+            return (y, x)
+
+def with_cells(users, acc):
+    for _y in xrange(10):
+        for _x in xrange(10):
+            if acc.id == users[_y][_x][0]:
+                return True
+    return False

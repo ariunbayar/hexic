@@ -7,7 +7,8 @@ from django.utils import simplejson
 from game.models import HexicProfile
 from security.models import Account
 from settings import UPDATE_INTERVAL
-from utils import memval, move_valid, game_restart as game_start
+from utils import memval, move_valid, game_restart as game_start, \
+                                            random_cell, with_cells
 
 
 def get_hexic_profile_by_acc(account):
@@ -20,6 +21,7 @@ def board(request):
     user_id = request.session.get('account_id')
     account = Account.objects.get(pk=user_id)
     profile = get_hexic_profile_by_acc(account)
+    board_id = 'board1'
     if request.GET.get('color'):
         profile.color = '#' + request.GET.get('color')
         profile.save()
@@ -28,8 +30,22 @@ def board(request):
         'profile': profile,
         'user_id': user_id,
         'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
-        'update_interval': UPDATE_INTERVAL
+        'update_interval': UPDATE_INTERVAL,
+        'board_id': board_id
     }
+    game_start()
+    users = memval('board_users')
+    board = memval('board')
+    if not with_cells(users, account):
+        # Automatically select cell if cell not selected
+        default_bytes = 20
+        y, x = random_cell(board, users)
+
+        board[y][x] = default_bytes - board[y][x]
+        profile = HexicProfile.objects.get(account=account)
+        users[y][x] = [account.id, profile.color]
+        memval('board', board)
+        memval('board_users', users)
     return ctx
 
 
@@ -44,6 +60,7 @@ def progress(request):
     return HttpResponse(val, mimetype="application/json")
 
 
+@check_login
 def game_restart(request):
     game_start()
     return HttpResponseRedirect(reverse('homepage'))
@@ -105,9 +122,12 @@ def select_cell(request):
         board = memval('board')
         users = memval('board_users')
         default_bytes = 20
+        if with_cells(users, acc):
+            return redirect('homepage')
         if board[y][x] < default_bytes:
             board[y][x] = default_bytes - board[y][x]
-            users[y][x] = [acc.id, acc.id]
+            profile = HexicProfile.objects.get(account=acc)
+            users[y][x] = [acc.id, profile.color]
             memval('board', board)
             memval('board_users', users)
             return redirect('homepage')

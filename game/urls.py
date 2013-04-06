@@ -6,4 +6,6 @@ urlpatterns = patterns('game.views',
     url(r'^game/move/$', 'move', name='game-move'),
     url(r'^game/board/$', 'data_board', name='game-board'),
     url(r'^game/progress/$', 'progress', name='game-progress'),
+    url(r'^game/select_cell/$', 'select_cell', name='select_cell'),
+    url(r'^game/restart$', 'game_restart', name='game-restart'),
 )
