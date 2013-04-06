@@ -33,10 +33,10 @@ def board(request):
         'update_interval': UPDATE_INTERVAL,
         'board_id': board_id
     }
-    game_start()
     users = memval('board_users')
     board = memval('board')
     if not with_cells(users, account):
+        game_start()
         # Automatically select cell if cell not selected
         default_bytes = 20
         y, x = random_cell(board, users)
@@ -58,12 +58,6 @@ def progress(request):
     val = simplejson.dumps({'moves': simple_moves, 'board1': board,
                             'board_id': 'board1', 'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
-
-
-@check_login
-def game_restart(request):
-    game_start()
-    return HttpResponseRedirect(reverse('homepage'))
 
 
 def move(request):
@@ -114,6 +108,7 @@ def get_account(session):
 
 @check_login
 @render_to("game/select_cell.html")
+# TODO: will deleted
 def select_cell(request):
     if 'x' in request.GET and 'y' in request.GET:
         x = int(request.GET['x'])
