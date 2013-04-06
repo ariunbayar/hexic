@@ -100,6 +100,9 @@
       hexagon.onPress = function(e) {
         self.point_start = e.target;
         return e.onMouseUp = function(ev) {
+          if (!self.point_end) {
+            self.point_end = ev.target;
+          }
           self.move(self.point_start.coord, self.point_end.coord);
           self.point_start = null;
           self.point_end = null;
