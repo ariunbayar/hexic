@@ -8,6 +8,7 @@ from django.conf import settings
 
 
 CELL_LIMIT = 50
+MOVE_LIMIT = 2560
 DEC_GRAPH = [
     0, 0, 1, 2, 3, 3, 4, 4, 5, 5, #  0 -  9
     5, 5, 5, 6, 6, 6, 6, 6, 6, 6, # 10 - 19
@@ -70,6 +71,8 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
             continue
         bb, bx, by = moves[k][1]
         ax, ay = moves[k][0]
+        if board[by][bx] >= MOVE_LIMIT:
+            continue
         fromuid = users[ay][ax][0]
 
         n = get_decrement(board[ay][ax]);

@@ -21,7 +21,6 @@ class HexController
     @arrows = {}
 
     @bin_array = []
-    # Pattern 2
     n = 16
     i = 0
     y = 0
