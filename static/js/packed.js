@@ -198,33 +198,13 @@
       return this.ajax(this.url_move, 3000, params);
     };
 
-    HexController.prototype.new_arrow = function(x, y, rotation) {
+    HexController.prototype.dotted_arrow = function(x, y, rotation) {
       var arrow, g, i, self, size;
       if (rotation == null) {
         rotation = 0;
       }
       arrow = new createjs.Shape();
       g = arrow.graphics;
-      /*
-          # Fancy arrow design
-          size = @hexagon_radius / 3
-          arrow.regX = size
-          arrow.regY = size * 2
-          coef = 0.75
-          scaled_size = size
-      
-          for i in [1..5]
-            offset_x = size - scaled_size / 2
-            offset_y = offset_x * 3 - size
-            arrow.graphics.moveTo(offset_x, offset_y)
-            arrow.graphics.setStrokeStyle(scaled_size / 7)
-            arrow.graphics.beginStroke("#555555")
-            arrow.graphics.lineTo(offset_x + scaled_size / 2, offset_y - scaled_size / 2)
-            arrow.graphics.lineTo(offset_x + scaled_size, offset_y)
-            arrow.graphics.endStroke()
-            scaled_size = scaled_size * coef
-      */
-
       arrow.color = createjs.Graphics.getRGB(255, 255, 255, .1);
       size = this.hexagon_radius * 2 - 5.5;
       self = this;
@@ -256,6 +236,35 @@
       arrow.x = x;
       arrow.y = y;
       arrow.update();
+      return arrow;
+    };
+
+    HexController.prototype.drag_arrow = function(x, y, rotation) {
+      var arrow, coef, g, i, offset_x, offset_y, scaled_size, size, _i;
+      if (rotation == null) {
+        rotation = 0;
+      }
+      arrow = new createjs.Shape();
+      g = arrow.graphics;
+      size = this.hexagon_radius / 1.5;
+      arrow.regX = size;
+      arrow.regY = size * 2;
+      coef = 0.75;
+      scaled_size = size;
+      for (i = _i = 1; _i <= 5; i = ++_i) {
+        offset_x = size - scaled_size / 2;
+        offset_y = offset_x * 3 - size;
+        arrow.graphics.moveTo(offset_x, offset_y);
+        arrow.graphics.setStrokeStyle(scaled_size / 7);
+        arrow.graphics.beginStroke("#FFFFFF");
+        arrow.graphics.lineTo(offset_x + scaled_size / 2, offset_y - scaled_size / 2);
+        arrow.graphics.lineTo(offset_x + scaled_size, offset_y);
+        arrow.graphics.endStroke();
+        scaled_size = scaled_size * coef;
+      }
+      arrow.rotation = rotation;
+      arrow.x = x;
+      arrow.y = y;
       return arrow;
     };
 
@@ -326,7 +335,7 @@
         if (cell_from.arrow) {
           cell_from.arrow.rotation = rotation;
         } else {
-          cell_from.arrow = self.new_arrow(from.x, from.y, rotation);
+          cell_from.arrow = self.dotted_arrow(from.x, from.y, rotation);
           self.stage.addChildAt(cell_from.arrow, 1);
         }
         visible_arrows.push(fy + '_' + fx);
@@ -364,7 +373,7 @@
       this.stage.addChild(this.fpsLabel);
       this.fpsLabel.x = 10;
       this.fpsLabel.y = 20;
-      this.temp_arrow = this.new_arrow(0, 0, null);
+      this.temp_arrow = this.drag_arrow(0, 0, null);
       this.stage.addChild(this.temp_arrow);
       this.stage.update();
       createjs.Ticker.addListener(this);
