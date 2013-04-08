@@ -149,7 +149,7 @@
       };
       g.setStrokeStyle(1);
       _results = [];
-      for (i = _i = 0, _ref = (n - 1) / 10; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+      for (i = _i = 0, _ref = n - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         if (!(i in this.bin_array)) {
           continue;
         }

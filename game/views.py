@@ -1,6 +1,5 @@
 from decorators import render_to, check_login
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils import simplejson
 

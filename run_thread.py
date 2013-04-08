@@ -8,7 +8,7 @@ from django.conf import settings
 
 
 CELL_LIMIT = 50
-MOVE_LIMIT = 4890
+MOVE_LIMIT = 489
 DEC_GRAPH = [
     0, 0, 1, 2, 3, 3, 4, 4, 5, 5, #  0 -  9
     5, 5, 5, 6, 6, 6, 6, 6, 6, 6, # 10 - 19
