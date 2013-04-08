@@ -259,8 +259,7 @@ class HexController
     for y of board_data
       for x of board_data[y]
         if board_data[y][x]
-          user_id = self.users[y][x][0]
-          color = self.users[y][x][1]
+          [user_id, color] = self.users[y][x]
           cells[y][x].hexagon.update(board_data[y][x], user_id, color)
 
     # show moves in arrows

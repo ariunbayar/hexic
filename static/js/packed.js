@@ -36,7 +36,6 @@
       this.container_id = container_id;
       this.time_left_to_update = 0;
       this.arrows = {};
-      this.user_id = parseInt(this.get_user_id());
       this.bin_array = [];
       n = 26;
       _n = 22;
@@ -114,18 +113,17 @@
           return self.update = true;
         };
       };
-      hexagon.update = function(n, user_id) {
-        return self.update_hexagon(hexagon, n, user_id);
+      hexagon.update = function(n, user_id, color) {
+        return self.update_hexagon(hexagon, n, user_id, color);
       };
       return hexagon;
     };
 
-    HexController.prototype.update_hexagon = function(hexagon, n, user_info) {
-      var c, color, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
+    HexController.prototype.update_hexagon = function(hexagon, n, user_id, color) {
+      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
       g = hexagon.graphics;
       g.clear();
-      color = user_info[1];
-      hexagon.user_id = user_info[0];
+      hexagon.user_id = user_id;
       color = {
         r: parseInt(color.substr(1, 2), 16),
         g: parseInt(color.substr(3, 2), 16),
@@ -281,8 +279,7 @@
           Initialize board by drawing into stage
       */
 
-      var board, cell, cell_rows, offset_x, offset_y, pos_x, pos_y, shape, user_id, x, y;
-      user_id = self.get_user_id();
+      var board, cell, cell_rows, offset_x, offset_y, pos_x, pos_y, shape, x, y;
       board = json[json.board_id];
       self.cells = [];
       offset_x = 100;
@@ -312,7 +309,7 @@
     };
 
     HexController.prototype.draw_updated_data = function(self, data) {
-      var board_data, cell_from, cell_to, cells, from, fx, fy, moves, rotation, to, tx, ty, visible_arrows, x, y, _i, _len, _ref, _ref1;
+      var board_data, cell_from, cell_to, cells, color, from, fx, fy, moves, rotation, to, tx, ty, user_id, visible_arrows, x, y, _i, _len, _ref, _ref1, _ref2;
       self.is_ready = false;
       self.users = data.board_users;
       cells = self.cells;
@@ -321,13 +318,14 @@
       for (y in board_data) {
         for (x in board_data[y]) {
           if (board_data[y][x]) {
-            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x]);
+            _ref = self.users[y][x], user_id = _ref[0], color = _ref[1];
+            cells[y][x].hexagon.update(board_data[y][x], user_id, color);
           }
         }
       }
       visible_arrows = [];
       for (_i = 0, _len = moves.length; _i < _len; _i++) {
-        _ref = moves[_i], fy = _ref[0], fx = _ref[1], tx = _ref[2], ty = _ref[3];
+        _ref1 = moves[_i], fy = _ref1[0], fx = _ref1[1], tx = _ref1[2], ty = _ref1[3];
         cell_from = cells[fx][fy];
         cell_to = cells[ty][tx];
         from = {
@@ -350,7 +348,7 @@
       for (y in cells) {
         for (x in cells[y]) {
           if (cells[y][x].arrow) {
-            cells[y][x].arrow.visible = (_ref1 = x + '_' + y, __indexOf.call(visible_arrows, _ref1) >= 0);
+            cells[y][x].arrow.visible = (_ref2 = x + '_' + y, __indexOf.call(visible_arrows, _ref2) >= 0);
           }
         }
       }
@@ -437,14 +435,6 @@
       }
       angle += 180;
       return angle;
-    };
-
-    HexController.prototype.get_user_id = function() {
-      return $("#user_id").val();
-    };
-
-    HexController.prototype.get_user_color = function() {
-      return $("#user_color").val();
     };
 
     HexController.prototype.ajax = function(url, timeout, data, successFunc) {
