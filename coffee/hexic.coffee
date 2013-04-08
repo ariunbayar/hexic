@@ -90,16 +90,15 @@ class HexController
         self.point_end = null
         self.update = true
 
-    hexagon.update = (n, user_id) -> self.update_hexagon(hexagon, n, user_id)
+    hexagon.update = (n, user_id, color) -> self.update_hexagon(hexagon, n, user_id, color)
 
     return hexagon
 
-  update_hexagon: (hexagon, n, user_info) ->
+  update_hexagon: (hexagon, n, user_id, color) ->
     # draw the basic hexagon
     g = hexagon.graphics
     g.clear()
-    color = user_info[1]
-    hexagon.user_id = user_info[0]
+    hexagon.user_id = user_id
 
     color =
       r: parseInt(color.substr(1, 2), 16)
@@ -260,7 +259,9 @@ class HexController
     for y of board_data
       for x of board_data[y]
         if board_data[y][x]
-          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x])
+          user_id = self.users[y][x][0]
+          color = self.users[y][x][1]
+          cells[y][x].hexagon.update(board_data[y][x], user_id, color)
 
     # show moves in arrows
     visible_arrows = []
