@@ -263,7 +263,7 @@
         offset_y = offset_x * 3 - size;
         arrow.graphics.moveTo(offset_x, offset_y);
         arrow.graphics.setStrokeStyle(scaled_size / 7);
-        arrow.graphics.beginStroke("#555555");
+        arrow.graphics.beginStroke("#FFFFFF");
         arrow.graphics.lineTo(offset_x + scaled_size / 2, offset_y - scaled_size / 2);
         arrow.graphics.lineTo(offset_x + scaled_size, offset_y);
         arrow.graphics.endStroke();
