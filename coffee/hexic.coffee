@@ -114,7 +114,7 @@ class HexController
       g.lineTo(x * _offset + 0.5, y * _offset - 0.5)
     
     g.setStrokeStyle(1)
-    for i in [0..(n-1)/10]
+    for i in [0..(n-1)]
       if not (i of @bin_array)
         continue
       c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
