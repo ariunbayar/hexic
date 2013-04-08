@@ -20,7 +20,6 @@ class HexController
     @container_id = container_id
     @time_left_to_update = 0
     @arrows = {}
-    @user_id = parseInt(@get_user_id())
 
     @bin_array = []
     n = 26
@@ -228,7 +227,6 @@ class HexController
     A callback function for board details
     Initialize board by drawing into stage
     ###
-    user_id = self.get_user_id()
     board = json[json.board_id]
 
     # draw the board
@@ -369,12 +367,6 @@ class HexController
     angle = 360 - angle  if c > 0
     angle += 180
     return angle
-
-  get_user_id: () ->
-    return $("#user_id").val()
-
-  get_user_color: () ->
-    return $("#user_color").val()
 
   ajax: (url, timeout, data, successFunc = ->) ->
     self = @

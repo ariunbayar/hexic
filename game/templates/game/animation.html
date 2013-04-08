@@ -4,7 +4,6 @@
 {% block content %}
 
 <div id="playground" style="width: 1000px; height: 900px;"></div>
-<input type="hidden" id="user_id" value="{{ user_id }}"/>
 <input type="hidden" id="user_color" value="{{ profile.color }}"/>
 
 <h4>You can change your color</h4>
@@ -18,6 +17,7 @@
 {% block js-init %}
 game = init_game('#playground');
 game.hexagon_radius = 30;
+game.user_id = {{ user_id }};
 game.update_interval = {{ update_interval }};
 game.url_board = "{% url game-board %}";
 game.url_progress = "{% url game-progress %}";
