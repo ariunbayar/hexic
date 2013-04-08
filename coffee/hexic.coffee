@@ -6,6 +6,7 @@ class HexController
   update_interval: null
   hexagon_radius: null
   update: true
+  user_id: null
 
   point_start: null
   point_end: null
@@ -19,6 +20,7 @@ class HexController
     @container_id = container_id
     @time_left_to_update = 0
     @arrows = {}
+    @user_id = parseInt(@get_user_id())
 
     @bin_array = []
     n = 26
@@ -82,7 +84,9 @@ class HexController
         # point_end being null means player not moved mouse
         if not self.point_end
           self.point_end = ev.target
-        self.move(self.point_start.coord, self.point_end.coord)
+        if ev.target.user_id == self.user_id
+          # Move only if player's cell
+          self.move(self.point_start.coord, self.point_end.coord)
         self.point_start = null
         self.point_end = null
         self.update = true
@@ -91,12 +95,14 @@ class HexController
 
     return hexagon
 
-  update_hexagon: (hexagon, n, color) ->
+  update_hexagon: (hexagon, n, user_info) ->
     # draw the basic hexagon
     g = hexagon.graphics
     g.clear()
+    color = user_info[1]
+    hexagon.user_id = user_info[0]
 
-    color = 
+    color =
       r: parseInt(color.substr(1, 2), 16)
       g: parseInt(color.substr(3, 2), 16)
       b: parseInt(color.substr(5, 2), 16)
@@ -222,7 +228,7 @@ class HexController
     A callback function for board details
     Initialize board by drawing into stage
     ###
-    user_id = $("#user_id").val()
+    user_id = self.get_user_id()
     board = json[json.board_id]
 
     # draw the board
@@ -256,7 +262,7 @@ class HexController
     for y of board_data
       for x of board_data[y]
         if board_data[y][x]
-          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][1])
+          cells[y][x].hexagon.update(board_data[y][x], self.users[y][x])
 
     # show moves in arrows
     visible_arrows = []
@@ -322,7 +328,7 @@ class HexController
 
   tick: (time_passed) ->
     if @update
-      if @point_start and @point_end
+      if @point_start and @point_end and (@point_start.user_id == @user_id)
         if @point_start.x isnt @point_end.x or @point_start.y isnt @point_end.y
           @show_arrow(@point_start, @point_end)
       else
@@ -363,6 +369,12 @@ class HexController
     angle = 360 - angle  if c > 0
     angle += 180
     return angle
+
+  get_user_id: () ->
+    return $("#user_id").val()
+
+  get_user_color: () ->
+    return $("#user_color").val()
 
   ajax: (url, timeout, data, successFunc = ->) ->
     self = @

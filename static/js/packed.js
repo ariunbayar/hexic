@@ -17,6 +17,8 @@
 
     HexController.prototype.update = true;
 
+    HexController.prototype.user_id = null;
+
     HexController.prototype.point_start = null;
 
     HexController.prototype.point_end = null;
@@ -34,6 +36,7 @@
       this.container_id = container_id;
       this.time_left_to_update = 0;
       this.arrows = {};
+      this.user_id = parseInt(this.get_user_id());
       this.bin_array = [];
       n = 26;
       _n = 22;
@@ -103,7 +106,9 @@
           if (!self.point_end) {
             self.point_end = ev.target;
           }
-          self.move(self.point_start.coord, self.point_end.coord);
+          if (ev.target.user_id === self.user_id) {
+            self.move(self.point_start.coord, self.point_end.coord);
+          }
           self.point_start = null;
           self.point_end = null;
           return self.update = true;
@@ -115,10 +120,12 @@
       return hexagon;
     };
 
-    HexController.prototype.update_hexagon = function(hexagon, n, color) {
-      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
+    HexController.prototype.update_hexagon = function(hexagon, n, user_info) {
+      var c, color, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
       g = hexagon.graphics;
       g.clear();
+      color = user_info[1];
+      hexagon.user_id = user_info[0];
       color = {
         r: parseInt(color.substr(1, 2), 16),
         g: parseInt(color.substr(3, 2), 16),
@@ -275,7 +282,7 @@
       */
 
       var board, cell, cell_rows, offset_x, offset_y, pos_x, pos_y, shape, user_id, x, y;
-      user_id = $("#user_id").val();
+      user_id = self.get_user_id();
       board = json[json.board_id];
       self.cells = [];
       offset_x = 100;
@@ -314,7 +321,7 @@
       for (y in board_data) {
         for (x in board_data[y]) {
           if (board_data[y][x]) {
-            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x][1]);
+            cells[y][x].hexagon.update(board_data[y][x], self.users[y][x]);
           }
         }
       }
@@ -383,7 +390,7 @@
     HexController.prototype.tick = function(time_passed) {
       var x, y;
       if (this.update) {
-        if (this.point_start && this.point_end) {
+        if (this.point_start && this.point_end && (this.point_start.user_id === this.user_id)) {
           if (this.point_start.x !== this.point_end.x || this.point_start.y !== this.point_end.y) {
             this.show_arrow(this.point_start, this.point_end);
           }
@@ -430,6 +437,14 @@
       }
       angle += 180;
       return angle;
+    };
+
+    HexController.prototype.get_user_id = function() {
+      return $("#user_id").val();
+    };
+
+    HexController.prototype.get_user_color = function() {
+      return $("#user_color").val();
     };
 
     HexController.prototype.ajax = function(url, timeout, data, successFunc) {
