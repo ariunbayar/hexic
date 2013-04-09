@@ -118,11 +118,18 @@ class HexController
       _offset = spacing + size
       g.moveTo(x * _offset - 0.5, y * _offset - 0.5)
       g.lineTo(x * _offset + 0.5, y * _offset + 0.5)
-      g.lineTo(x * _offset - 0.5, y * _offset + 0.5)
-      g.lineTo(x * _offset + 0.5, y * _offset - 0.5)
+
+      g.moveTo(x * _offset + 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset + 1.5, y * _offset + 1.5)
+
+      g.moveTo(x * _offset - 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset + 0.5, y * _offset + 1.5)
+
+      g.moveTo(x * _offset + 0.5, y * _offset - 0.5)
+      g.lineTo(x * _offset + 1.5, y * _offset + 0.5)
     
     g.setStrokeStyle(1)
-    c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
+    c = createjs.Graphics.getRGB(color.r, color.g, color.b, 0.8)
     g.beginStroke(c)
     for i in [0..(n-1)]
       if not (i of @bin_array)

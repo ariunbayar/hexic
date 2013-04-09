@@ -148,11 +148,15 @@
         _offset = spacing + size;
         g.moveTo(x * _offset - 0.5, y * _offset - 0.5);
         g.lineTo(x * _offset + 0.5, y * _offset + 0.5);
-        g.lineTo(x * _offset - 0.5, y * _offset + 0.5);
-        return g.lineTo(x * _offset + 0.5, y * _offset - 0.5);
+        g.moveTo(x * _offset + 0.5, y * _offset + 0.5);
+        g.lineTo(x * _offset + 1.5, y * _offset + 1.5);
+        g.moveTo(x * _offset - 0.5, y * _offset + 0.5);
+        g.lineTo(x * _offset + 0.5, y * _offset + 1.5);
+        g.moveTo(x * _offset + 0.5, y * _offset - 0.5);
+        return g.lineTo(x * _offset + 1.5, y * _offset + 0.5);
       };
       g.setStrokeStyle(1);
-      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1);
+      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 0.8);
       g.beginStroke(c);
       for (i = _i = 0, _ref = n - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         if (!(i in this.bin_array)) {
