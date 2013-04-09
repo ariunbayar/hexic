@@ -137,6 +137,23 @@ class HexController
       [x, y] = @bin_array[i]
       draw_bin_at(x, y, 1, 1)
 
+    if n >= 489
+      g.beginStroke(null)
+      g.beginFill('#FFFFFF')
+      g.drawPolyStar(0, -4, radius/5, 5, 0.48, -90)
+      g.drawPolyStar(5, 3, radius/5, 5, 0.48, -90)
+      g.drawPolyStar(-5, 3, radius/5, 5, 0.48, -90)
+      g.beginFill('#000000')
+      g.drawPolyStar(0, -4, radius/5, 5, 0.9, -90)
+      g.drawPolyStar(5, 3, radius/5, 5, 0.9, -90)
+      g.drawPolyStar(-5, 3, radius/5, 5, 0.9, -90)
+    else if n >= 200
+      g.beginStroke(null)
+      g.beginFill('#FFFFFF')
+      g.drawPolyStar(0, -4, radius/5, 5, 0.48, -90)
+      g.beginFill('#000000')
+      g.drawPolyStar(0, -4, radius/5, 5, 0.9, -90)
+
     hexagon.cache(-radius, -radius, 2 * radius,  2 * radius)
 
     ###
