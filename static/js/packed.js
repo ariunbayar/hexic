@@ -120,10 +120,14 @@
     };
 
     HexController.prototype.update_hexagon = function(hexagon, n, user_id, color) {
-      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1, _results;
+      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1;
+      if (hexagon.old_n === n && (hexagon.user_id = user_id)) {
+        return;
+      }
       g = hexagon.graphics;
       g.clear();
       hexagon.user_id = user_id;
+      hexagon.old_n = n;
       color = {
         r: parseInt(color.substr(1, 2), 16),
         g: parseInt(color.substr(3, 2), 16),
@@ -144,21 +148,24 @@
         _offset = spacing + size;
         g.moveTo(x * _offset - 0.5, y * _offset - 0.5);
         g.lineTo(x * _offset + 0.5, y * _offset + 0.5);
-        g.lineTo(x * _offset - 0.5, y * _offset + 0.5);
-        return g.lineTo(x * _offset + 0.5, y * _offset - 0.5);
+        g.moveTo(x * _offset + 0.5, y * _offset + 0.5);
+        g.lineTo(x * _offset + 1.5, y * _offset + 1.5);
+        g.moveTo(x * _offset - 0.5, y * _offset + 0.5);
+        g.lineTo(x * _offset + 0.5, y * _offset + 1.5);
+        g.moveTo(x * _offset + 0.5, y * _offset - 0.5);
+        return g.lineTo(x * _offset + 1.5, y * _offset + 0.5);
       };
       g.setStrokeStyle(1);
-      _results = [];
+      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 0.8);
+      g.beginStroke(c);
       for (i = _i = 0, _ref = n - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
         if (!(i in this.bin_array)) {
           continue;
         }
-        c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1);
-        g.beginStroke(c);
         _ref1 = this.bin_array[i], x = _ref1[0], y = _ref1[1];
-        _results.push(draw_bin_at(x, y, 1, 1));
+        draw_bin_at(x, y, 1, 1);
       }
-      return _results;
+      return hexagon.cache(-radius, -radius, 2 * radius, 2 * radius);
       /*
           # draw toothed progress shape
           hexagon.graphics.setStrokeStyle(1, "round")
@@ -374,7 +381,7 @@
         board_id: 'board1'
       }, this.init_board);
       this.drawBackground();
-      this.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
+      this.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#777");
       this.stage.addChild(this.fpsLabel);
       this.fpsLabel.x = 10;
       this.fpsLabel.y = 20;

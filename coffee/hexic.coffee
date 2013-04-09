@@ -95,10 +95,14 @@ class HexController
     return hexagon
 
   update_hexagon: (hexagon, n, user_id, color) ->
+    if hexagon.old_n == n and hexagon.user_id = user_id
+      return
+
     # draw the basic hexagon
     g = hexagon.graphics
     g.clear()
     hexagon.user_id = user_id
+    hexagon.old_n = n
 
     color =
       r: parseInt(color.substr(1, 2), 16)
@@ -114,17 +118,26 @@ class HexController
       _offset = spacing + size
       g.moveTo(x * _offset - 0.5, y * _offset - 0.5)
       g.lineTo(x * _offset + 0.5, y * _offset + 0.5)
-      g.lineTo(x * _offset - 0.5, y * _offset + 0.5)
-      g.lineTo(x * _offset + 0.5, y * _offset - 0.5)
+
+      g.moveTo(x * _offset + 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset + 1.5, y * _offset + 1.5)
+
+      g.moveTo(x * _offset - 0.5, y * _offset + 0.5)
+      g.lineTo(x * _offset + 0.5, y * _offset + 1.5)
+
+      g.moveTo(x * _offset + 0.5, y * _offset - 0.5)
+      g.lineTo(x * _offset + 1.5, y * _offset + 0.5)
     
     g.setStrokeStyle(1)
+    c = createjs.Graphics.getRGB(color.r, color.g, color.b, 0.8)
+    g.beginStroke(c)
     for i in [0..(n-1)]
       if not (i of @bin_array)
         continue
-      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
-      g.beginStroke(c)
       [x, y] = @bin_array[i]
       draw_bin_at(x, y, 1, 1)
+
+    hexagon.cache(-radius, -radius, 2 * radius,  2 * radius)
 
     ###
     # draw toothed progress shape
@@ -311,7 +324,7 @@ class HexController
     @drawBackground()
 
     # fpsLabel
-    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000")
+    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#777")
     @stage.addChild(@fpsLabel)
     @fpsLabel.x = 10
     @fpsLabel.y = 20
