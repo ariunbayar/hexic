@@ -1,9 +1,12 @@
+# coding: utf-8
 from decorators import render_to, check_login
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils import simplejson
+from django.core.urlresolvers import reverse
 
 from game.models import HexicProfile, ActiveBoard
+from game.forms import NewBoardForm
 from security.models import Account
 from django.conf import settings
 from utils import memval, move_valid, game_restart as game_start, \
@@ -24,24 +27,19 @@ def board(request):
         profile.color = '#' + request.GET.get('color')
         profile.save()
     board_id = request.GET.get('board_id', None)
-    board_name = request.GET.get('board_name', None)
 
     qs_active_boards = ActiveBoard.objects.all()
     if board_id and qs_active_boards.get(pk=board_id):
         board = memval('board_%s' % board_id)
-    else:
-        active_board = ActiveBoard(name=board_name)
-        active_board.save()
-        board_id = active_board.id
-        game_start(board_id)
-
+    
     ctx = {
         'profile': profile,
         'user_id': user_id,
         'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
         'update_interval': settings.UPDATE_INTERVAL,
-        'board_id': board_id
+        'board_id': board_id,
     }
+
     board = memval('board_%s' % board_id)
     users = memval('%s_board_users' % board_id)
     if not with_cells(users, account):
@@ -60,7 +58,27 @@ def board(request):
 @check_login
 @render_to("game/select_board.html")
 def select_board(request):
-    return {'active_boards': ActiveBoard.objects.all()}
+    form = NewBoardForm()
+    ctx = {'active_boards': ActiveBoard.objects.all(),
+            'form': form}
+    if request.POST:
+        form = NewBoardForm(request.POST)
+        ctx['form'] = form
+        if form.is_valid():
+            board_name = form.cleaned_data['name']
+            qs = ActiveBoard.objects.filter(name=board_name)
+            name_exist = (qs.count() > 0)
+            if name_exist:
+                msg = 'Нэр давхцсан байна'
+                form._errors['name'] = form.error_class([msg])
+                return ctx
+            active_board = ActiveBoard(name=board_name)
+            active_board.save()
+            board_id = active_board.id
+            game_start(board_id)
+            return redirect(reverse('homepage'), board_id)
+
+    return ctx
 
 
 def progress(request):

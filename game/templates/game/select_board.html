@@ -11,8 +11,14 @@
   </div>
   <div class='span6'>
     <h2>Шинээр тоглолт үүсгэх</h2>
-    <form action="{% url homepage %}" method="get" id='new-game-form'>
-      <input type="text" name="board_name" />
+    <form action="" method="post" id='new-game-form'>
+      {% csrf_token %}
+      {% if form.errors %}
+        <div class="errorlist">
+          {{ form.errors }}
+        </div>
+      {% endif %}
+      {{ form.name }}
       <input type="submit" />
     </form>
   </div>
