@@ -1,11 +1,11 @@
 import time
 # http://docs.python.org/library/collections.html to optimize
 
-from game.models import HexicProfile
+from game.models import HexicProfile, ActiveBoard
 from game.utils import memval
 
 from django.conf import settings
-
+from datetime import datetime
 
 CELL_LIMIT = 50
 MOVE_LIMIT = 489
@@ -45,21 +45,21 @@ def process_queue(queue, moves, users):
                 moves[bb] = [[bx, by], [], {}]
     return moves
 
-def process_board(board_name, board_users):
-    board = memval(board_name)
+def process_board(board_id, board_users):
+    board = memval('board_%s' % board_id)
     users = memval(board_users)
     for y, row in enumerate(board):
         for x, v in enumerate(row):
             if board[y][x] > 0 and board[y][x] < CELL_LIMIT \
                and users[y][x][0] > 0:
                 board[y][x] += 1
-    memval(board_name, board)
+    memval('board_%s' % board_id, board)
 
-def process_moves(moves_name=None, board_name=None, move_queue=None,
+def process_moves(moves_name=None, board_id=None, move_queue=None,
         simple_moves=None, board_users=None):
     moves = memval(moves_name, allow_empty=True)
     queue = memval(move_queue)
-    board = memval(board_name)
+    board = memval('board_%s' % board_id)
     users = memval(board_users)
     s_moves = [] # simple moves to display on board
 
@@ -112,7 +112,7 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
             board[y][x] -= decrementer
         moves[k][2] = {}
 
-    memval(board_name, board)
+    memval('board_%s' % board_id, board)
     memval(moves_name, moves)
     memval(move_queue, queue)
     memval(simple_moves, s_moves)
@@ -120,11 +120,18 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
 
 
 def main():
-    kwargs = {'moves_name': 'moves', 'move_queue': 'move_queue',
-              'board_name': 'board', 'simple_moves': 'simple_moves',
-              'board_users': 'board_users'}
-    for i in xrange(3):
-        process_moves(**kwargs)
-        time.sleep(settings.UPDATE_INTERVAL / 1000)
-    process_board(kwargs['board_name'], kwargs['board_users'])
-    #time.sleep(1)
+    active_boards = ActiveBoard.objects.filter(created_at__lte=datetime.now())
+    for board in active_boards:
+        if not memval('board_%s' % board.id):
+            board.delete()
+            continue
+        kwargs = {'moves_name': '%s_moves' % board.id,
+                  'move_queue': '%s_move_queue' % board.id,
+                  'simple_moves': '%s_simple_moves' % board.id,
+                  'board_users': '%s_board_users' % board.id,
+                  'board_id': board.id}
+        for i in xrange(3):
+            process_moves(**kwargs)
+            time.sleep(settings.UPDATE_INTERVAL / 1000)
+        process_board(kwargs['board_id'], kwargs['board_users'])
+        #time.sleep(1)

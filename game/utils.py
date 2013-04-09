@@ -19,17 +19,18 @@ def get_new_board_users():
     return board_users;
 
 
-def game_restart():
+def game_restart(board_id):
     board = get_new_board()
     board_users = get_new_board_users()
     moves = {}
     queue = deque([])
     simple_moves = []
-    cache.set('board', board, 60)
-    cache.set('board_users', board_users, 60)
-    cache.set('moves', moves, 60)
-    cache.set('move_queue', queue, 60)
-    cache.set('simple_moves', simple_moves, 60)
+    logging.error(board_id)
+    cache.set('board_%s' % board_id, board, 60)
+    cache.set('%s_board_users' % board_id, board_users, 60)
+    cache.set('%s_moves' % board_id, moves, 60)
+    cache.set('%s_move_queue' % board_id, queue, 60)
+    cache.set('%s_simple_moves' % board_id, simple_moves, 60)
 
 
 def memval(name, value='__empty__', duration=30, allow_empty=False):
@@ -37,7 +38,7 @@ def memval(name, value='__empty__', duration=30, allow_empty=False):
     if value == '__empty__': # get case
         value = cache.get(name, None)
         if allow_empty == False and value is None:
-            msg = '%s is empty while game is active. Restarting...'
+            msg = '%s is empty while game is active.'
             logging.error(msg % name)
 
         return value

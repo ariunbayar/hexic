@@ -369,6 +369,7 @@ class HexController
     return angle
 
   ajax: (url, timeout, data, successFunc = ->) ->
+    data['board_id'] = @board_id
     self = @
     $.ajax({
       url: url

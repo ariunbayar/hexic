@@ -3,11 +3,11 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils import simplejson
 
-from game.models import HexicProfile
+from game.models import HexicProfile, ActiveBoard
 from security.models import Account
 from settings import UPDATE_INTERVAL
 from utils import memval, move_valid, game_restart as game_start, \
-                                            random_cell, with_cells
+                            random_cell, with_cells
 
 
 def get_hexic_profile_by_acc(account):
@@ -20,22 +20,30 @@ def board(request):
     user_id = request.session.get('account_id')
     account = Account.objects.get(pk=user_id)
     profile = get_hexic_profile_by_acc(account)
-    board_id = 'board1'
     if request.GET.get('color'):
         profile.color = '#' + request.GET.get('color')
         profile.save()
+    board_id = request.GET.get('board_id', None)
+    board_name = request.GET.get('board_name', None)
+
+    qs_active_boards = ActiveBoard.objects.all()
+    if board_id and qs_active_boards.get(pk=board_id):
+        board = memval('board_%s' % board_id)
+    else:
+        active_board = ActiveBoard(name=board_name)
+        active_board.save()
+        board_id = active_board.id
+        game_start(board_id)
 
     ctx = {
         'profile': profile,
         'user_id': user_id,
         'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
         'update_interval': UPDATE_INTERVAL,
-        'board_id': board_id
+        'board_id': board_id,
     }
-    users = memval('board_users')
-    board = memval('board')
-    if not board:
-        game_start()
+    board = memval('board_%s' % board_id)
+    users = memval('%s_board_users' % board_id)
     if not with_cells(users, account):
         # Automatically select cell if cell not selected
         default_bytes = 20
@@ -44,19 +52,25 @@ def board(request):
         board[y][x] = default_bytes - board[y][x]
         profile = HexicProfile.objects.get(account=account)
         users[y][x] = [account.id, profile.color]
-        memval('board', board)
-        memval('board_users', users)
+        memval('board_%s' % board_id, board)
+        memval('%s_board_users' % board_id, users)
     return ctx
+
+
+@check_login
+@render_to("game/select_board.html")
+def select_board(request):
+    return {'active_boards': ActiveBoard.objects.all()}
 
 
 def progress(request):
     """ dumps game progress in json """
-    # TODO apply board id
-    board = memval('board')
-    board_users = memval('board_users')
-    simple_moves = memval('simple_moves')
-    val = simplejson.dumps({'moves': simple_moves, 'board1': board,
-                            'board_id': 'board1', 'board_users': board_users})
+    board_id = request.GET.get('board_id')
+    board = memval('board_%s' % board_id)
+    board_users = memval('%s_board_users' % board_id)
+    simple_moves = memval('%s_simple_moves' % board_id)
+    val = simplejson.dumps({'moves': simple_moves, board_id: board,
+                            'board_id': board_id, 'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
 
@@ -69,16 +83,16 @@ def move(request):
     move = (int(ax), int(ay), int(bx), int(by))
     user_id = int(request.session.get('account_id'));
 
-    # TODO apply board_id
-    queue = memval('move_queue')
-    board = memval('board')
-    users = memval('board_users')
+    board_id = request.GET.get('board_id')
+    queue = memval('%s_move_queue' % board_id)
+    board = memval('board_%s' % board_id)
+    users = memval('%s_board_users' % board_id)
 
     is_valid = move_valid(move, board, user_id, users)
     msg = [move, board, user_id, users]
     if is_valid:
         queue.append(move)
-        memval('move_queue', queue)
+        memval('%s_move_queue' % board_id, queue)
         msg = 'ack'
     cxt = {'rsp': msg}
     return HttpResponse(simplejson.dumps(cxt), mimetype="application/json")
@@ -87,11 +101,10 @@ def move(request):
 def data_board(request):
     """ dumps json board data """
     board_id = request.GET['board_id']
-    # TODO validate board_id
-    board = memval('board')  # TODO get by board_id
-    board_users = memval('board_users')
+    board = memval('board_%s' % board_id)
+    board_users = memval('%s_board_users' % board_id)
     val = simplejson.dumps({'board_id': board_id, board_id: board,
-                            'board_users': board_users})
+                            '%s_board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
 
@@ -114,8 +127,9 @@ def select_cell(request):
         x = int(request.GET['x'])
         y = int(request.GET['y'])
         acc = get_account(request.session)
-        board = memval('board')
-        users = memval('board_users')
+        board_id = request.GET.get('board_id')
+        board = memval('board_%s' % board_id)
+        users = memval('%s_board_users' % board_id)
         default_bytes = 20
         if with_cells(users, acc):
             return redirect('homepage')
@@ -123,8 +137,8 @@ def select_cell(request):
             board[y][x] = default_bytes - board[y][x]
             profile = HexicProfile.objects.get(account=acc)
             users[y][x] = [acc.id, profile.color]
-            memval('board', board)
-            memval('board_users', users)
+            memval('board_%s' % board_id, board)
+            memval('%s_board_users' % board_id, users)
             return redirect('homepage')
 
-    return {'board': memval('board')}
+    return {'board': memval('board_%s' % board_id)}

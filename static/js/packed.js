@@ -442,6 +442,7 @@
       if (successFunc == null) {
         successFunc = function() {};
       }
+      data['board_id'] = this.board_id;
       self = this;
       return $.ajax({
         url: url,
