@@ -245,6 +245,21 @@ form .errors .controls input {
 }
 /* }}} */
 
+/* new-game-form {{{ */
+#new-game-form {
+    display: block;
+    margin-left: 25px;
+}
+
+#new-game-form input{
+    margin-left: 5px;
+}
+
+#new-game-form .errorlist {
+    text-align: center;
+}
+/* }}} */
+
 
 /* Old designs. To be removed after completion of G25 {{{ */
 .navbar{ font-weight: 600; }

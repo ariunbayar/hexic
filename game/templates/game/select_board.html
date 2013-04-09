@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Select board{% endblock %}
+{% block content %}
+
+<div class='row-fluid show-grid'>
+  <div class='span6'>
+    <h2>Одоо болж байгаа тоглолтууд</h2>
+    {% for board in active_boards %}
+    <a href="{% url homepage %}?board_id={{ board.id }}">{{ board.name }}</a><br />
+    {% endfor %}
+  </div>
+  <div class='span6'>
+    <h2>Шинээр тоглолт үүсгэх</h2>
+    <form action="{% url homepage %}" method="get" id='new-game-form'>
+      <input type="text" name="board_name" />
+      <input type="submit" />
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}
