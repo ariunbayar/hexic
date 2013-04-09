@@ -95,10 +95,14 @@ class HexController
     return hexagon
 
   update_hexagon: (hexagon, n, user_id, color) ->
+    if hexagon.old_n == n and hexagon.user_id = user_id
+      return
+
     # draw the basic hexagon
     g = hexagon.graphics
     g.clear()
     hexagon.user_id = user_id
+    hexagon.old_n = n
 
     color =
       r: parseInt(color.substr(1, 2), 16)
@@ -118,13 +122,15 @@ class HexController
       g.lineTo(x * _offset + 0.5, y * _offset - 0.5)
     
     g.setStrokeStyle(1)
+    c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
+    g.beginStroke(c)
     for i in [0..(n-1)]
       if not (i of @bin_array)
         continue
-      c = createjs.Graphics.getRGB(color.r, color.g, color.b, 1)
-      g.beginStroke(c)
       [x, y] = @bin_array[i]
       draw_bin_at(x, y, 1, 1)
+
+    hexagon.cache(-radius, -radius, 2 * radius,  2 * radius)
 
     ###
     # draw toothed progress shape
