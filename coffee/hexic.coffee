@@ -311,7 +311,7 @@ class HexController
     @drawBackground()
 
     # fpsLabel
-    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000")
+    @fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#777")
     @stage.addChild(@fpsLabel)
     @fpsLabel.x = 10
     @fpsLabel.y = 20

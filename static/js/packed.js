@@ -374,7 +374,7 @@
         board_id: 'board1'
       }, this.init_board);
       this.drawBackground();
-      this.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
+      this.fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#777");
       this.stage.addChild(this.fpsLabel);
       this.fpsLabel.x = 10;
       this.fpsLabel.y = 20;
