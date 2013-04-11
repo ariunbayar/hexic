@@ -68,15 +68,14 @@ def select_board(request):
             board_name = form.cleaned_data['name']
             qs = ActiveBoard.objects.filter(name=board_name)
             name_exist = (qs.count() > 0)
-            if name_exist:
-                msg = 'Нэр давхцсан байна'
-                form._errors['name'] = form.error_class([msg])
-                return ctx
-            active_board = ActiveBoard(name=board_name)
-            active_board.save()
-            board_id = active_board.id
-            game_start(board_id)
-            return redirect(reverse('homepage'), board_id)
+            if not name_exist:
+                active_board = ActiveBoard(name=board_name)
+                active_board.save()
+                board_id = active_board.id
+                game_start(board_id)
+                return redirect(reverse('homepage') + '?board_id=%s' % board_id)
+            msg = 'Нэр давхцсан байна'
+            form._errors['name'] = form.error_class([msg])
 
     return ctx
 
