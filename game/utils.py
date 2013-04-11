@@ -25,7 +25,6 @@ def game_restart(board_id):
     moves = {}
     queue = deque([])
     simple_moves = []
-    logging.error(board_id)
     cache.set('board_%s' % board_id, board, 60)
     cache.set('%s_board_users' % board_id, board_users, 60)
     cache.set('%s_moves' % board_id, moves, 60)

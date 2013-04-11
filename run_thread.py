@@ -6,6 +6,8 @@ from game.utils import memval
 
 from django.conf import settings
 from datetime import datetime
+from django.db import transaction
+
 
 CELL_LIMIT = 50
 MOVE_LIMIT = 489
@@ -119,7 +121,12 @@ def process_moves(moves_name=None, board_id=None, move_queue=None,
     memval(board_users, users)
 
 
+@transaction.commit_manually
+def clear_query_cache():
+    transaction.commit()
+
 def main():
+    clear_query_cache()
     active_boards = ActiveBoard.objects.filter(created_at__lte=datetime.now())
     for board in active_boards:
         if not memval('board_%s' % board.id):
@@ -134,4 +141,3 @@ def main():
             process_moves(**kwargs)
             time.sleep(settings.UPDATE_INTERVAL / 1000)
         process_board(kwargs['board_id'], kwargs['board_users'])
-        #time.sleep(1)

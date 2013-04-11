@@ -9,8 +9,8 @@ from game.models import HexicProfile, ActiveBoard
 from game.forms import NewBoardForm
 from security.models import Account
 from django.conf import settings
-from utils import memval, move_valid, game_restart as game_start, \
-                            random_cell, with_cells
+from utils import (memval, move_valid, game_restart as game_start,
+                   random_cell, with_cells)
 
 
 def get_hexic_profile_by_acc(account):
@@ -58,12 +58,8 @@ def board(request):
 @check_login
 @render_to("game/select_board.html")
 def select_board(request):
-    form = NewBoardForm()
-    ctx = {'active_boards': ActiveBoard.objects.all(),
-            'form': form}
     if request.POST:
         form = NewBoardForm(request.POST)
-        ctx['form'] = form
         if form.is_valid():
             board_name = form.cleaned_data['name']
             qs = ActiveBoard.objects.filter(name=board_name)
@@ -76,7 +72,11 @@ def select_board(request):
                 return redirect(reverse('homepage') + '?board_id=%s' % board_id)
             msg = 'Нэр давхцсан байна'
             form._errors['name'] = form.error_class([msg])
+    else:
+        form = NewBoardForm()
 
+    ctx = {'active_boards': ActiveBoard.objects.all(),
+           'form': form}
     return ctx
 
 
