@@ -61,7 +61,7 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
     queue = memval(move_queue)
     board = memval(board_name)
     users = memval(board_users)
-    s_moves = [] # simple moves to display on board
+    s_moves = []  # simple moves to display on board
 
     moves = process_queue(queue, moves, users)
 
@@ -77,9 +77,6 @@ def process_moves(moves_name=None, board_name=None, move_queue=None,
         will_overflow = (board[by][bx] + n > MOVE_LIMIT)
         if will_overflow and fromuid == users[by][bx][0]:
             n = MOVE_LIMIT - board[by][bx]
-            board[ay][ax] -= n
-            board[by][bx] += n
-            continue
         board[ay][ax] -= n
         if fromuid == users[by][bx][0]:
             board[by][bx] += n  # apply if same user
