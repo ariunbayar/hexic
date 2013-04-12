@@ -31,7 +31,7 @@ def board(request):
     qs_active_boards = ActiveBoard.objects.all()
     if board_id and qs_active_boards.get(pk=board_id):
         board = memval('board_%s' % board_id)
-    
+
     ctx = {
         'profile': profile,
         'user_id': user_id,

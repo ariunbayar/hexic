@@ -130,7 +130,7 @@ def main():
     active_boards = ActiveBoard.objects.filter(created_at__lte=datetime.now())
     for board in active_boards:
         if not memval('board_%s' % board.id):
-            board.delete()
+            # TODO mark it as obsolete
             continue
         kwargs = {'moves_name': '%s_moves' % board.id,
                   'move_queue': '%s_move_queue' % board.id,
