@@ -64,7 +64,7 @@ def dashboard(request):
         if form.is_valid():
             board = Board(
                     name=form.cleaned_data['name'],
-                    status=Board.STATUS_IN_PROGRESS)
+                    status=Board.STATUS_WAITING)
             board.save()
             board_id = board.id
             game_start(board_id)
@@ -76,6 +76,12 @@ def dashboard(request):
         'active_boards': Board.objects.filter(status=Board.STATUS_IN_PROGRESS),
         'form': form}
     return ctx
+
+
+@check_login
+def select_board(request):
+    val = simplejson.dumps({'users': users})
+    return HttpResponse(val, mimetype="application/json")
 
 
 @check_login

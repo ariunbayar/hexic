@@ -100,9 +100,13 @@ tbody tr:hover {
 
 .span12 {width: 100%;}
 
-.span9 {width: 76.5%}
+.span9 {width: 72.25%}
 
-.span3 {width: 17.4%}
+.span8 {width: 65.5%}
+
+.span4 {width: 32%}
+
+.span3 {width: 25.25%}
 
 .span* {display: inline-block;}
 /* }}} */

@@ -128,7 +128,9 @@ def clear_query_cache():
 
 def main():
     clear_query_cache()
-    active_boards = Board.objects.filter(created_at__lte=datetime.now())
+    active_boards = Board.objects.filter(
+                    created_at__lte=datetime.now(),
+                    status=Board.STATUS_IN_PROGRESS)
     for board in active_boards:
         if not memval('board_%s' % board.id):
             board.status = Board.STATUS_ERROR
