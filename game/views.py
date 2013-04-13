@@ -48,16 +48,21 @@ def play(request):
 @check_login
 @render_to("game/dashboard.html")
 def dashboard(request):
+    # TODO include number of players of one board
+    count_player = 2
+    user_id = request.session.get('account_id')
+    board_players = [user_id]
+    for i in xrange(count_player):
+        board_players.append(0)
     if request.POST:
         form = NewBoardForm(request.POST)
         if form.is_valid():
             board = Board(
                     name=form.cleaned_data['name'],
-                    status=Board.STATUS_WAITING)
+                    status=Board.STATUS_WAITING,
+                    players=board_players)
             board.save()
-            board_id = board.id
-            game_start(board_id)
-            return redirect(reverse('game.views.play') + '?board_id=%s' % board_id)
+            return redirect(reverse('game.views.play') + '?board_id=%s' % board.id)
     else:
         form = NewBoardForm()
 
@@ -69,6 +74,14 @@ def dashboard(request):
 
 @check_login
 def select_board(request):
+    board_id = request.GET.get('board_id')
+    user_id = request.session.get('account_id')
+    board = Board.objects.get(board_id)
+    indx = board.players.index(0)
+    board.players[indx] = user_id
+    if indx + 1 == len(board.players):
+        board.status = Board.STATUS_IN_PROGRESS
+        game_start(board.id)
     val = simplejson.dumps({'users': users})
     return HttpResponse(val, mimetype="application/json")
 
