@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-    Тавтай морилно уу!!!
+
+<div style="background-color: #eee; padding: 60px; border-radius: 6px;">
+    <span style="font-size: 3em; font-weight: bold;">
+        Танд мэндчилж байна!
+    </span>
+    <p>
+        "Hexic" тоглоомыг бид сүүлийн хагас жилийн туршид ажиллан бүтээсэн
+        билээ.
+    </p>
+    <p>
+        Нөхөрсөг хамт олны 500 цагийн хөлс хүч шингэсэн бүтээлийг танд хүргэх
+        болсондоо таатай байна.
+    </p>
+    <a href="{% url security.views.login %}">Энд дарж нэвтэрнэ үү!</a>
+</div>
 {% endblock %}
