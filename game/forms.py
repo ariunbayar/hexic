@@ -1,6 +1,6 @@
 # coding: utf-8
 from django import forms
-from game.models import ActiveBoard
+from game.models import Board
 
 
 class NewBoardForm(forms.Form):
@@ -13,7 +13,7 @@ class NewBoardForm(forms.Form):
 
     def clean_name(self):
         board_name = self.cleaned_data['name']
-        qs = ActiveBoard.objects.filter(name=board_name)
+        qs = Board.objects.filter(name=board_name)
         if qs.count() > 0:
             raise forms.ValidationError('Нэр давхцсан байна')
 

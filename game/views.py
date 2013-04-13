@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
-from game.models import HexicProfile, ActiveBoard
+from game.models import HexicProfile, Board
 from game.forms import NewBoardForm
 from security.models import Account
 from django.conf import settings
@@ -28,7 +28,7 @@ def board(request):
         profile.save()
     board_id = request.GET.get('board_id', None)
 
-    qs_active_boards = ActiveBoard.objects.all()
+    qs_active_boards = Board.objects.filter(status=Board.STATUS_IN_PROGRESS)
     if board_id and qs_active_boards.get(pk=board_id):
         board = memval('board_%s' % board_id)
 
@@ -62,12 +62,16 @@ def select_board(request):
         form = NewBoardForm(request.POST)
         if form.is_valid():
             board_name = form.cleaned_data['name']
-            qs = ActiveBoard.objects.filter(name=board_name)
+            qs = Board.objects.filter(
+                    name=board_name,
+                    status=Board.STATUS_IN_PROGRESS)
             name_exist = (qs.count() > 0)
             if not name_exist:
-                active_board = ActiveBoard(name=board_name)
-                active_board.save()
-                board_id = active_board.id
+                board = Board(
+                        name=board_name,
+                        status=Board.STATUS_IN_PROGRESS)
+                board.save()
+                board_id = board.id
                 game_start(board_id)
                 return redirect(reverse('homepage') + '?board_id=%s' % board_id)
             msg = 'Нэр давхцсан байна'
@@ -75,8 +79,9 @@ def select_board(request):
     else:
         form = NewBoardForm()
 
-    ctx = {'active_boards': ActiveBoard.objects.all(),
-           'form': form}
+    ctx = {
+        'active_boards': Board.objects.filter(status=Board.STATUS_IN_PROGRESS),
+        'form': form}
     return ctx
 
 

@@ -1,11 +1,11 @@
 import time
 # http://docs.python.org/library/collections.html to optimize
 
-from game.models import HexicProfile, ActiveBoard
+from game.models import HexicProfile, Board
 from game.utils import memval
 
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db import transaction
 
 
@@ -127,10 +127,13 @@ def clear_query_cache():
 
 def main():
     clear_query_cache()
-    active_boards = ActiveBoard.objects.filter(created_at__lte=datetime.now())
+    # Getting boards only after 5 seconds
+    before_few_seconds = datetime.now() - timedelta(seconds=5)
+    active_boards = Board.objects.filter(created_at__lte=before_few_seconds)
     for board in active_boards:
         if not memval('board_%s' % board.id):
-            # TODO mark it as obsolete
+            board.status = Board.STATUS_ERROR
+            board.save()
             continue
         kwargs = {'moves_name': '%s_moves' % board.id,
                   'move_queue': '%s_move_queue' % board.id,

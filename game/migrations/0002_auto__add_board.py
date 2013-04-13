@@ -8,26 +8,29 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'ActiveBoard'
-        db.create_table('game_activeboard', (
+        # Adding model 'Board'
+        db.delete_table('game_activeboard')
+        db.create_table('game_board', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('status', self.gf('django.db.models.fields.PositiveIntegerField')()),
         ))
-        db.send_create_signal('game', ['ActiveBoard'])
+        db.send_create_signal('game', ['Board'])
 
 
     def backwards(self, orm):
-        # Deleting model 'ActiveBoard'
-        db.delete_table('game_activeboard')
+        # Deleting model 'Board'
+        db.delete_table('game_board')
 
 
     models = {
-        'game.activeboard': {
-            'Meta': {'object_name': 'ActiveBoard'},
+        'game.board': {
+            'Meta': {'object_name': 'Board'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'status': ('django.db.models.fields.PositiveIntegerField', [], {})
         },
         'game.hexicprofile': {
             'Meta': {'object_name': 'HexicProfile'},
