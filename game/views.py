@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
-from game.models import HexicProfile, Board
+from game.models import Board
 from game.forms import NewBoardForm
 from security.models import Account
 from django.conf import settings
@@ -13,19 +13,11 @@ from utils import (memval, move_valid, game_restart as game_start,
                    random_cell, with_cells)
 
 
-def get_hexic_profile_by_acc(account):
-    obj, created = HexicProfile.objects.get_or_create(account=account)
-    return obj
-
 @check_login
 @render_to('game/play.html')
 def play(request):
     user_id = request.session.get('account_id')
     account = Account.objects.get(pk=user_id)
-    profile = get_hexic_profile_by_acc(account)
-    if request.GET.get('color'):
-        profile.color = '#' + request.GET.get('color')
-        profile.save()
     board_id = request.GET.get('board_id', None)
 
     qs_active_boards = Board.objects.filter(status=Board.STATUS_IN_PROGRESS)
@@ -34,9 +26,7 @@ def play(request):
         board = memval('board_%s' % board_id)
 
     ctx = {
-        'profile': profile,
         'user_id': user_id,
-        'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
         'update_interval': settings.UPDATE_INTERVAL,
         'active_board': active_board,
     }
@@ -49,8 +39,7 @@ def play(request):
         y, x = random_cell(board, users)
 
         board[y][x] = default_bytes - board[y][x]
-        profile = HexicProfile.objects.get(account=account)
-        users[y][x] = [account.id, profile.color]
+        users[y][x] = [account.id, '#FF0000']
         memval('board_%s' % board_id, board)
         memval('%s_board_users' % board_id, users)
     return ctx
@@ -153,8 +142,7 @@ def select_cell(request):
             return redirect('game.views.play')
         if board[y][x] < default_bytes:
             board[y][x] = default_bytes - board[y][x]
-            profile = HexicProfile.objects.get(account=acc)
-            users[y][x] = [acc.id, profile.color]
+            users[y][x] = [acc.id, '#FF0000']
             memval('board_%s' % board_id, board)
             memval('%s_board_users' % board_id, users)
             return redirect('game.views.play')

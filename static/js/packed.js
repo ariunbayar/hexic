@@ -429,7 +429,7 @@
       this.loader.useXHR = false;
       self = this;
       this.loader.onProgress = function() {
-        return console.log('image load progress');
+        return 0;
       };
       this.loader.onFileLoad = function(event) {
         return self.assets.push(event);

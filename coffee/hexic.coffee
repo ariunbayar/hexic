@@ -365,8 +365,7 @@ class HexController
     @loader = new createjs.PreloadJS()
     @loader.useXHR = false
     self = @
-    @loader.onProgress = ->
-      console.log('image load progress')
+    @loader.onProgress = -> 0
     @loader.onFileLoad = (event) -> self.assets.push(event)
     @loader.onComplete = ->
       self.assets_ready = true

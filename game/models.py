@@ -4,11 +4,6 @@ from datetime import datetime, timedelta
 from south.modelsinspector import add_introspection_rules
 
 
-class HexicProfile(models.Model):
-    account = models.ForeignKey('security.Account')
-    color = models.CharField(max_length=7, default="#ffffff")
-
-
 class Board(models.Model):
     name = models.CharField(max_length=50)
     created_at = models.DateTimeField(
