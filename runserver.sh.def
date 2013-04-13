@@ -1,0 +1,4 @@
+#!/bin/sh
+./service restart
+./manage.py runserver
+./service stop
