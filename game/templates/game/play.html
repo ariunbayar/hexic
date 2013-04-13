@@ -6,13 +6,6 @@
 <h1>{{ active_board.name }}</h1>
 <div id="loader"><h1>Loading...</h1></div>
 <div id="playground" style="width: 650px; height: 600px;"></div>
-<input type="hidden" id="user_color" value="{{ profile.color }}"/>
-
-<h4>You can change your color</h4>
-{% for color in colors %}
-<a href="{% url game.views.play %}?color={{ color }}"
-  style="width: 20px; height: 20px; background: #{{ color }}; display: inline-block;"></a>
-{% endfor %}
 
 {% endblock %}
 
