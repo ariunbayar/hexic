@@ -29,7 +29,8 @@ def board(request):
     board_id = request.GET.get('board_id', None)
 
     qs_active_boards = Board.objects.filter(status=Board.STATUS_IN_PROGRESS)
-    if board_id and qs_active_boards.get(pk=board_id):
+    active_board = qs_active_boards.get(pk=board_id)
+    if board_id and active_board:
         board = memval('board_%s' % board_id)
 
     ctx = {
@@ -37,7 +38,7 @@ def board(request):
         'user_id': user_id,
         'colors': ['90CA77', '81C6DD', 'E9B64D', 'E48743', '9E3B33'],
         'update_interval': settings.UPDATE_INTERVAL,
-        'board_id': board_id,
+        'active_board': active_board,
     }
 
     board = memval('board_%s' % board_id)

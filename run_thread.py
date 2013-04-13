@@ -5,7 +5,7 @@ from game.models import HexicProfile, Board
 from game.utils import memval
 
 from django.conf import settings
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.db import transaction
 
 
@@ -127,9 +127,7 @@ def clear_query_cache():
 
 def main():
     clear_query_cache()
-    # Getting boards only after 5 seconds
-    before_few_seconds = datetime.now() - timedelta(seconds=5)
-    active_boards = Board.objects.filter(created_at__lte=before_few_seconds)
+    active_boards = Board.objects.filter(created_at__lte=datetime.now())
     for board in active_boards:
         if not memval('board_%s' % board.id):
             board.status = Board.STATUS_ERROR
