@@ -104,6 +104,15 @@ class HexController
     hexagon.user_id = user_id
     hexagon.old_n = n
 
+    if not hexagon.bitmap
+      ### Design 1 ###
+      bitmap = @loader.getResult('image1').result
+      hexagon.bitmap = new createjs.Bitmap(bitmap)
+      hexagon.bitmap.x = hexagon.x - 20
+      hexagon.bitmap.y = hexagon.y - 20
+      @stage.addChild(hexagon.bitmap)
+    hexagon.bitmap.visible = (user_id == @user_id)
+
     color =
       r: parseInt(color.substr(1, 2), 16)
       g: parseInt(color.substr(3, 2), 16)
@@ -137,23 +146,16 @@ class HexController
       [x, y] = @bin_array[i]
       draw_bin_at(x, y, 1, 1)
 
-    if n >= 489
-      g.beginStroke(null)
-      g.beginFill('#FFFFFF')
-      g.drawPolyStar(0, -4, radius/5, 5, 0.48, -90)
-      g.drawPolyStar(5, 3, radius/5, 5, 0.48, -90)
-      g.drawPolyStar(-5, 3, radius/5, 5, 0.48, -90)
-      g.beginFill('#000000')
-      g.drawPolyStar(0, -4, radius/5, 5, 0.9, -90)
-      g.drawPolyStar(5, 3, radius/5, 5, 0.9, -90)
-      g.drawPolyStar(-5, 3, radius/5, 5, 0.9, -90)
-    else if n >= 200
+    ###
+    # Show star when have enough power
+    if n >= 200
       g.beginStroke(null)
       g.beginFill('#FFFFFF')
       g.drawPolyStar(0, -4, radius/5, 5, 0.48, -90)
       g.beginFill('#000000')
       g.drawPolyStar(0, -4, radius/5, 5, 0.9, -90)
 
+    ###
     hexagon.cache(-radius, -radius, 2 * radius,  2 * radius)
 
     ###
@@ -317,7 +319,6 @@ class HexController
     self.update = true
     return
 
-
   start: ->
     @hexagon_width = @hexagon_radius * Math.sqrt(3)
 
@@ -354,7 +355,29 @@ class HexController
     createjs.Ticker.addListener(@)
     createjs.Ticker.setFPS(50)
 
+    @assets_ready = false
+    @assets = []
+    assets_to_load = [
+      {src: '/static/images/custom1.png', id: 'image1'},
+      {src: '/static/images/custom2.png', id: 'image2'},
+      {src: '/static/images/custom3.png', id: 'image3'},
+    ]
+    @loader = new createjs.PreloadJS()
+    @loader.useXHR = false
+    self = @
+    @loader.onProgress = ->
+      console.log('image load progress')
+    @loader.onFileLoad = (event) -> self.assets.push(event)
+    @loader.onComplete = ->
+      self.assets_ready = true
+      self.update = true
+      $('#loader').hide()
+    @loader.loadManifest(assets_to_load);
+
   tick: (time_passed) ->
+    if not @assets_ready
+      return
+
     if @update
       if @point_start and @point_end and (@point_start.user_id == @user_id)
         if @point_start.x isnt @point_end.x or @point_start.y isnt @point_end.y

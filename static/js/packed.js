@@ -120,7 +120,7 @@
     };
 
     HexController.prototype.update_hexagon = function(hexagon, n, user_id, color) {
-      var c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1;
+      var bitmap, c, draw_bin_at, g, i, radius, x, y, _i, _ref, _ref1;
       if (hexagon.old_n === n && (hexagon.user_id = user_id)) {
         return;
       }
@@ -128,6 +128,17 @@
       g.clear();
       hexagon.user_id = user_id;
       hexagon.old_n = n;
+      if (!hexagon.bitmap) {
+        /* Design 1
+        */
+
+        bitmap = this.loader.getResult('image1').result;
+        hexagon.bitmap = new createjs.Bitmap(bitmap);
+        hexagon.bitmap.x = hexagon.x - 20;
+        hexagon.bitmap.y = hexagon.y - 20;
+        this.stage.addChild(hexagon.bitmap);
+      }
+      hexagon.bitmap.visible = user_id === this.user_id;
       color = {
         r: parseInt(color.substr(1, 2), 16),
         g: parseInt(color.substr(3, 2), 16),
@@ -165,23 +176,16 @@
         _ref1 = this.bin_array[i], x = _ref1[0], y = _ref1[1];
         draw_bin_at(x, y, 1, 1);
       }
-      if (n >= 489) {
-        g.beginStroke(null);
-        g.beginFill('#FFFFFF');
-        g.drawPolyStar(0, -4, radius / 5, 5, 0.48, -90);
-        g.drawPolyStar(5, 3, radius / 5, 5, 0.48, -90);
-        g.drawPolyStar(-5, 3, radius / 5, 5, 0.48, -90);
-        g.beginFill('#000000');
-        g.drawPolyStar(0, -4, radius / 5, 5, 0.9, -90);
-        g.drawPolyStar(5, 3, radius / 5, 5, 0.9, -90);
-        g.drawPolyStar(-5, 3, radius / 5, 5, 0.9, -90);
-      } else if (n >= 200) {
-        g.beginStroke(null);
-        g.beginFill('#FFFFFF');
-        g.drawPolyStar(0, -4, radius / 5, 5, 0.48, -90);
-        g.beginFill('#000000');
-        g.drawPolyStar(0, -4, radius / 5, 5, 0.9, -90);
-      }
+      /*
+          # Show star when have enough power
+          if n >= 200
+            g.beginStroke(null)
+            g.beginFill('#FFFFFF')
+            g.drawPolyStar(0, -4, radius/5, 5, 0.48, -90)
+            g.beginFill('#000000')
+            g.drawPolyStar(0, -4, radius/5, 5, 0.9, -90)
+      */
+
       return hexagon.cache(-radius, -radius, 2 * radius, 2 * radius);
       /*
           # draw toothed progress shape
@@ -381,7 +385,7 @@
     };
 
     HexController.prototype.start = function() {
-      var $canvas, $container;
+      var $canvas, $container, assets_to_load, self;
       this.hexagon_width = this.hexagon_radius * Math.sqrt(3);
       $canvas = $('<canvas></canvas>');
       $container = $(this.container_id).append($canvas);
@@ -406,11 +410,43 @@
       this.stage.addChild(this.temp_arrow);
       this.stage.update();
       createjs.Ticker.addListener(this);
-      return createjs.Ticker.setFPS(50);
+      createjs.Ticker.setFPS(50);
+      this.assets_ready = false;
+      this.assets = [];
+      assets_to_load = [
+        {
+          src: '/static/images/custom1.png',
+          id: 'image1'
+        }, {
+          src: '/static/images/custom2.png',
+          id: 'image2'
+        }, {
+          src: '/static/images/custom3.png',
+          id: 'image3'
+        }
+      ];
+      this.loader = new createjs.PreloadJS();
+      this.loader.useXHR = false;
+      self = this;
+      this.loader.onProgress = function() {
+        return console.log('image load progress');
+      };
+      this.loader.onFileLoad = function(event) {
+        return self.assets.push(event);
+      };
+      this.loader.onComplete = function() {
+        self.assets_ready = true;
+        self.update = true;
+        return $('#loader').hide();
+      };
+      return this.loader.loadManifest(assets_to_load);
     };
 
     HexController.prototype.tick = function(time_passed) {
       var x, y;
+      if (!this.assets_ready) {
+        return;
+      }
       if (this.update) {
         if (this.point_start && this.point_end && (this.point_start.user_id === this.user_id)) {
           if (this.point_start.x !== this.point_end.x || this.point_start.y !== this.point_end.y) {
