@@ -21,7 +21,7 @@ class Board(models.Model):
                     choices=STATUS_CHOICES,
                     default=STATUS_WAITING)
 
-    players = JSONField(default=[[0],[0]])
+    players = JSONField(default=[0, 0])
 
 
 add_introspection_rules([], ["^annoying\.fields\.JSONField"])
