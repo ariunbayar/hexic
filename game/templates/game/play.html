@@ -10,7 +10,7 @@
 
 <h4>You can change your color</h4>
 {% for color in colors %}
-<a href="{% url game.views.board %}?color={{ color }}"
+<a href="{% url game.views.play %}?color={{ color }}"
   style="width: 20px; height: 20px; background: #{{ color }}; display: inline-block;"></a>
 {% endfor %}
 
@@ -22,9 +22,9 @@ game.hexagon_radius = 30;
 game.user_id = {{ user_id }};
 game.board_id = {{ active_board.id }};
 game.update_interval = {{ update_interval }};
-game.url_board = "{% url game-board %}";
-game.url_progress = "{% url game-progress %}";
-game.url_move = "{% url game-move %}";
+game.url_board = "{% url game.views.data_board %}";
+game.url_progress = "{% url game.views.progress %}";
+game.url_move = "{% url game.views.move %}";
 game.start();
 {% endblock %}
 

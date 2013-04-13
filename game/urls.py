@@ -2,10 +2,11 @@ from django.conf.urls.defaults import patterns, url
 
 
 urlpatterns = patterns('game.views',
-    url(r'^game_dev/$', 'board', name='homepage'),
-    url(r'^game/move/$', 'move', name='game-move'),
-    url(r'^game/board/$', 'data_board', name='game-board'),
-    url(r'^game/progress/$', 'progress', name='game-progress'),
-    url(r'^game/select_cell/$', 'select_cell', name='select_cell'),
-    url(r'^game/dashboard/$', 'dashboard', name='dashboard'),
+    url(r'^game/play/$', 'play'),
+    url(r'^game/move/$', 'move'),
+    url(r'^game/board/$', 'data_board'),
+    url(r'^game/progress/$', 'progress'),
+    url(r'^game/dashboard/$', 'dashboard'),
+    # TODO remove
+    url(r'^game/select_cell/$', 'select_cell'),
 )

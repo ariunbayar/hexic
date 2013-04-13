@@ -20,7 +20,7 @@
     {% endif %}
     <td>
         {% if v %}
-        <a href="{% url select_cell %}?x={{ forloop.counter0 }}&y={{ forloop.parentloop.counter0 }}">{{ v }}</a>
+        <a href="{% url game.views.select_cell %}?x={{ forloop.counter0 }}&y={{ forloop.parentloop.counter0 }}">{{ v }}</a>
         {% endif %}
     </td>
 {% endfor %}

@@ -18,8 +18,8 @@ def get_hexic_profile_by_acc(account):
     return obj
 
 @check_login
-@render_to('game/animation.html')
-def board(request):
+@render_to('game/play.html')
+def play(request):
     user_id = request.session.get('account_id')
     account = Account.objects.get(pk=user_id)
     profile = get_hexic_profile_by_acc(account)
@@ -68,7 +68,7 @@ def dashboard(request):
             board.save()
             board_id = board.id
             game_start(board_id)
-            return redirect(reverse('homepage') + '?board_id=%s' % board_id)
+            return redirect(reverse('game.views.play') + '?board_id=%s' % board_id)
     else:
         form = NewBoardForm()
 
@@ -78,6 +78,7 @@ def dashboard(request):
     return ctx
 
 
+@check_login
 def progress(request):
     """ dumps game progress in json """
     board_id = request.GET.get('board_id')
@@ -89,6 +90,7 @@ def progress(request):
     return HttpResponse(val, mimetype="application/json")
 
 
+@check_login
 def move(request):
     """ adds the move to move list """
     ax = request.GET['fx'];
@@ -113,6 +115,7 @@ def move(request):
     return HttpResponse(simplejson.dumps(cxt), mimetype="application/json")
 
 
+@check_login
 def data_board(request):
     """ dumps json board data """
     board_id = request.GET['board_id']
@@ -147,13 +150,13 @@ def select_cell(request):
         users = memval('%s_board_users' % board_id)
         default_bytes = 20
         if with_cells(users, acc):
-            return redirect('homepage')
+            return redirect('game.views.play')
         if board[y][x] < default_bytes:
             board[y][x] = default_bytes - board[y][x]
             profile = HexicProfile.objects.get(account=acc)
             users[y][x] = [acc.id, profile.color]
             memval('board_%s' % board_id, board)
             memval('%s_board_users' % board_id, users)
-            return redirect('homepage')
+            return redirect('game.views.play')
 
     return {'board': memval('board_%s' % board_id)}
