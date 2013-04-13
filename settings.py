@@ -144,7 +144,17 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 # Key for SMS client to recieve any messages
 SMS_CLIENT_KEY = 'FDpLAxrP3f7yYxvu'
 
+# Refresh and game movement/increment interval
 UPDATE_INTERVAL = 1000  # in milliseconds
+
+
+USER_COLORS = [
+    '90CA77',
+    '81C6DD',
+    'E9B64D',
+    'E48743',
+    '9E3B33'
+]
 
 
 # A sample logging configuration. The only tangible logging
