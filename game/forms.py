@@ -13,7 +13,8 @@ class NewBoardForm(forms.Form):
 
     def clean_name(self):
         board_name = self.cleaned_data['name']
-        qs = Board.objects.filter(name=board_name)
+        qs = Board.objects.filter(name=board_name,
+                                  status=Board.STATUS_IN_PROGRESS)
         if qs.count() > 0:
             raise forms.ValidationError('Нэр давхцсан байна')
 

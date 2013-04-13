@@ -21,7 +21,7 @@ def login(request):
                 form._errors["phone_number"] = form.error_class([msg])
             else:
                 request.session['account_id'] = acc.id
-                return redirect(reverse('game.views.select_board'))
+                return redirect(reverse('game.views.dashboard'))
 
     else:
         form = AccountForm()
