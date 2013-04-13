@@ -57,8 +57,8 @@ def board(request):
 
 
 @check_login
-@render_to("game/select_board.html")
-def select_board(request):
+@render_to("game/dashboard.html")
+def dashboard(request):
     if request.POST:
         form = NewBoardForm(request.POST)
         if form.is_valid():
