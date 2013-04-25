@@ -9,7 +9,7 @@ from game.models import Board
 from game.forms import NewBoardForm
 from security.models import Account
 from django.conf import settings
-from utils import (memval, move_valid, game_restart as game_start,
+from utils import (memval, move_valid, game_start,
                    random_cell, with_cells)
 
 
@@ -49,10 +49,10 @@ def play(request):
 @render_to("game/dashboard.html")
 def dashboard(request):
     # TODO include number of players of one board
-    count_player = 2
+    count_players = 2
     user_id = request.session.get('account_id')
     board_players = [user_id]
-    for i in xrange(count_player):
+    for i in xrange(count_players):
         board_players.append(0)
     if request.POST:
         form = NewBoardForm(request.POST)
@@ -74,14 +74,23 @@ def dashboard(request):
 
 @check_login
 def select_board(request):
+    users = []
     board_id = request.GET.get('board_id')
     user_id = request.session.get('account_id')
     board = Board.objects.get(board_id)
-    indx = board.players.index(0)
-    board.players[indx] = user_id
-    if indx + 1 == len(board.players):
-        board.status = Board.STATUS_IN_PROGRESS
-        game_start(board.id)
+    indx = board.players.index(0) if 0 in board.players else None
+    if indx:
+        board.players[indx] = user_id
+        board.save()
+        if not 0 in board.players:
+            board.status = Board.STATUS_IN_PROGRESS
+            board.save()
+            game_start(board.id)
+            return redirect(reverse('game.views.play') + '?board_id=%s' % board.id)
+
+    qs = Account.objects.filter(pk__in=board.players)
+    for account in qs:
+        users.append(account.phone_number)
     val = simplejson.dumps({'users': users})
     return HttpResponse(val, mimetype="application/json")
 

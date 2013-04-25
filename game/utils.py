@@ -19,7 +19,7 @@ def get_new_board_users():
     return board_users;
 
 
-def game_restart(board_id):
+def game_start(board_id):
     board = get_new_board()
     board_users = get_new_board_users()
     moves = {}
