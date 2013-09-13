@@ -50,7 +50,6 @@ class HexController
     @stage.addChild(shape)
 
   show_arrow: (point_start, point_end) ->
-    console.log 'hello nokia'
     if Math.abs(point_end.x - point_start.x) > @hexagon_width + 1
       return
     if Math.abs(point_end.y - point_start.y) > @hexagon_width + 1
@@ -191,7 +190,6 @@ class HexController
     ###
 
   move: (from, to) ->
-    console.log 'hi nokia'
     params = {
       fx: from.x
       fy: from.y
@@ -360,9 +358,9 @@ class HexController
     @assets_ready = false
     @assets = []
     assets_to_load = [
-      {src: '/static/images/custom1.png', id: 'image1'},
+      {src: '/static/images/custom1.png', id: 'image3'},
       {src: '/static/images/custom2.png', id: 'image2'},
-      {src: '/static/images/custom3.png', id: 'image3'},
+      {src: '/static/images/custom3.png', id: 'image1'},
     ]
     @loader = new createjs.PreloadJS()
     @loader.useXHR = false

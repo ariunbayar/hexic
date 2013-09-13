@@ -31,7 +31,7 @@ def play(request):
     if board_id:
         board = memval('board_%s' % board_id)
         ctx = {
-            'user_id': user_id,
+            'user_id': int(user_id),
             'update_interval': settings.UPDATE_INTERVAL,
             'waiting_board': working_board,
         }
@@ -54,7 +54,7 @@ def play(request):
                 for user_id in user_ids:
                     y, x = random_cell(board, users)
                     board[y][x] = default_bytes - board[y][x]
-                    users[y][x] = [user_id, '#FF0000']
+                    users[y][x] = [int(user_id), '#FF0000']
 
                 memval('board_%s' % board_id, board)
                 memval('%s_board_users' % board_id, users)

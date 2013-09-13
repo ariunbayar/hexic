@@ -110,7 +110,6 @@
     };
 
     HexController.prototype.show_arrow = function(point_start, point_end) {
-      console.log('hello nokia');
       if (Math.abs(point_end.x - point_start.x) > this.hexagon_width + 1) {
         return;
       }
@@ -261,7 +260,6 @@
 
     HexController.prototype.move = function(from, to) {
       var params;
-      console.log('hi nokia');
       params = {
         fx: from.x,
         fy: from.y,
@@ -456,13 +454,13 @@
       assets_to_load = [
         {
           src: '/static/images/custom1.png',
-          id: 'image1'
+          id: 'image3'
         }, {
           src: '/static/images/custom2.png',
           id: 'image2'
         }, {
           src: '/static/images/custom3.png',
-          id: 'image3'
+          id: 'image1'
         }
       ];
       this.loader = new createjs.PreloadJS();

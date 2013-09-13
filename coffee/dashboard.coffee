@@ -6,7 +6,7 @@ class Dashboard
     @ajax(data, @successFunc)
 
   successFunc: (json)->
-    return 
+    return
 
   ajax: (data, successFunc = ->) ->
     $.ajax({
