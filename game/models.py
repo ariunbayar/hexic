@@ -1,6 +1,5 @@
 from django.db import models
 from datetime import datetime, timedelta
-from security.models import Account
 
 
 class Board(models.Model):

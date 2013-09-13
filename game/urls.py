@@ -7,6 +7,7 @@ urlpatterns = patterns('game.views',
     url(r'^game/board/$', 'data_board'),
     url(r'^game/progress/$', 'progress'),
     url(r'^game/dashboard/$', 'dashboard'),
+    url(r'^game/select_board/$', 'select_board'),
     # TODO remove
     url(r'^game/select_cell/$', 'select_cell'),
 )
