@@ -50,6 +50,7 @@ class HexController
     @stage.addChild(shape)
 
   show_arrow: (point_start, point_end) ->
+    console.log 'hello nokia'
     if Math.abs(point_end.x - point_start.x) > @hexagon_width + 1
       return
     if Math.abs(point_end.y - point_start.y) > @hexagon_width + 1
@@ -190,6 +191,7 @@ class HexController
     ###
 
   move: (from, to) ->
+    console.log 'hi nokia'
     params = {
       fx: from.x
       fy: from.y

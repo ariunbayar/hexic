@@ -8,7 +8,6 @@ from django.conf import settings
 from datetime import datetime
 from django.db import transaction
 
-
 CELL_LIMIT = 50
 MOVE_LIMIT = 489
 DEC_GRAPH = [

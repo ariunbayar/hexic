@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
+from security.models import Account
 
 
 class Board(models.Model):
@@ -9,9 +10,11 @@ class Board(models.Model):
 
     STATUS_ERROR = 0
     STATUS_IN_PROGRESS = 1
+    STATUS_WAIT = 2
 
     STATUS_CHOICES = (
         (STATUS_ERROR, 'Error'),
-        (STATUS_IN_PROGRESS, 'In progress'))
+        (STATUS_IN_PROGRESS, 'In progress'),
+        (STATUS_WAIT, 'Waiting'))
     status = models.PositiveIntegerField(choices=STATUS_CHOICES)
-
+    players = models.CharField(max_length=15)

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{ active_board.name }}{% endblock %}
+{% block title %}{{ waiting_board.name }}{% endblock %}
 
 {% block content %}
 
-<h1>{{ active_board.name }}</h1>
+<h1>{{ waiting_board.name }}</h1>
 <div id="loader"><h1>Loading...</h1></div>
 <div id="playground" style="width: 650px; height: 600px;"></div>
 
@@ -13,7 +13,7 @@
 game = init_game('#playground');
 game.hexagon_radius = 30;
 game.user_id = {{ user_id }};
-game.board_id = {{ active_board.id }};
+game.board_id = {{ waiting_board.id }};
 game.update_interval = {{ update_interval }};
 game.url_board = "{% url game.views.data_board %}";
 game.url_progress = "{% url game.views.progress %}";
