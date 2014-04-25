@@ -35,6 +35,8 @@ def play(request):
             'update_interval': settings.UPDATE_INTERVAL,
             'waiting_board': working_board,
         }
+    else:
+        return Http404
 
     board = memval('board_%s' % board_id)
     users = memval('%s_board_users' % board_id)
@@ -100,7 +102,7 @@ def select_board(request):
     users = []
     board_id = request.GET.get('board_id')
     user_id = request.session.get('account_id')
-    board = Board.objects.get(board_id)
+    board = Board.objects.get(id=board_id)
     indx = board.players.index(0) if 0 in board.players else None
     if indx:
         board.players[indx] = user_id
