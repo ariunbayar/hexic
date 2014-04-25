@@ -595,31 +595,53 @@
     };
 
     GameEngine.prototype.drawBoard = function(data) {
-      if (this.tmp) {
-        return;
-      }
-      if (this.tmp === void 0) {
-        this.tmp = 1;
-      }
       return this.renderer.updateBoard(this.convertHexicDataForEngine(data));
     };
 
     GameEngine.prototype.convertHexicDataForEngine = function(hexic_data) {
-      var color, data, moves, power, powers, user_id, users, x, y, _ref;
+      var color, data, direction, fx, fy, getDirection, power, tx, ty, user_id, x, y, _i, _len, _ref, _ref1, _ref2;
       data = [];
-      powers = hexic_data[this.board_id];
-      users = hexic_data.board_users;
-      moves = hexic_data.moves;
-      for (y in users) {
+      for (y in hexic_data.board_users) {
         if (!(y in data)) {
           data[y] = [];
         }
-        for (x in users[y]) {
-          _ref = users[y][x], user_id = _ref[0], color = _ref[1];
-          power = powers[y][x];
+        for (x in hexic_data.board_users[y]) {
+          _ref = hexic_data.board_users[y][x], user_id = _ref[0], color = _ref[1];
+          power = hexic_data[this.board_id][y][x];
           if (!(x in data[y])) {
             data[y][x] = [user_id, power];
           }
+        }
+      }
+      getDirection = function(fx, fy, tx, ty) {
+        var shift;
+        shift = fy % 2 ? 0 : 1;
+        if (ty === fy - 1 && tx === fx - 1 + shift) {
+          return 1;
+        }
+        if (ty === fy - 1 && tx === fx + shift) {
+          return 2;
+        }
+        if (ty === fy && tx === fx + 1) {
+          return 3;
+        }
+        if (ty === fy + 1 && tx === fx + shift) {
+          return 4;
+        }
+        if (ty === fy + 1 && tx === fx - 1 + shift) {
+          return 5;
+        }
+        if (ty === fy && tx === fx - 1) {
+          return 6;
+        }
+        return 0;
+      };
+      _ref1 = hexic_data.moves;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        _ref2 = _ref1[_i], fx = _ref2[0], fy = _ref2[1], tx = _ref2[2], ty = _ref2[3];
+        direction = getDirection(fx, fy, tx, ty);
+        if (direction) {
+          data[fy][fx][2] = direction;
         }
       }
       return data;

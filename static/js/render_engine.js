@@ -54,8 +54,11 @@
       return el.attr('d', Helpers.arc.getD(0, 2 * Math.PI * progress, inner_radius, outer_radius));
     },
     changeArrowDirection: function(el, direction, colors) {
+      if (!direction) {
+        return el.select('polyline').style('visibility', 'hidden');
+      }
       el.attr('transform', Helpers.arrow.getAngleBy(direction));
-      return el.select('polyline').attr('display', "block").attr('fill', colors.fill).attr('stroke', colors.stroke).style('visibility', 'visible');
+      return el.select('polyline').attr('fill', colors.fill).attr('stroke', colors.stroke).style('stroke-linecap', 'round').style('stroke-linejoin', 'round').style('visibility', 'visible');
     },
     mouseoverHexagon: function(el) {
       return el.transition().style('stroke-width', 3).style('fill-opacity', .5);
@@ -137,7 +140,7 @@
     coords: function(position) {
       var coord_x, coord_y;
       coord_x = position.x * Settings.offset_x + Settings.board_offset_x;
-      if (position.y % 2) {
+      if (position.y % 2 === 0) {
         coord_x += Settings.offset_x / 2;
       }
       coord_y = position.y * Settings.offset_y + Settings.board_offset_y;
@@ -198,7 +201,8 @@
       colors: Settings.colors.inactive,
       power: null,
       direction: null,
-      neighbours: []
+      neighbours: [],
+      mousedown: false
     },
     initialize: function() {
       var border, colors, coords, el_arrow, el_container, el_hexagon, el_svg, radius, self;
@@ -216,19 +220,29 @@
       this.on('change:power', this.powerChanged, this);
       this.on('change:colors', this.colorsChanged, this);
       this.on('change:direction', this.directionChanged, this);
+      this.on('change:mousedown', this.mousedownChanged, this);
       self = this;
       el_container.on('mouseover', function() {
-        var cell, _i, _len, _ref, _results;
+        var cell, direction, el, _i, _j, _len, _len1, _ref, _ref1;
+        el_arrow = self.get('el_arrow');
         Graphics.mouseoverHexagon(el_hexagon);
         _ref = self.get('neighbours');
-        _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           cell = _ref[_i];
-          _results.push(Graphics.mouseoverHexagon(cell.get('el_hexagon')));
+          Graphics.mouseoverHexagon(cell.get('el_hexagon'));
         }
-        return _results;
+        _ref1 = self.get('neighbours');
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          el = _ref1[_j];
+          if (el.cid === self.hoveredby) {
+            direction = el.cid;
+          }
+        }
+        if (direction) {
+          return Graphics.changeArrowDirection(el_arrow, direction, colors);
+        }
       });
-      return el_container.on('mouseout', function() {
+      el_container.on('mouseout', function() {
         var cell, _i, _len, _ref, _results;
         Graphics.mouseoutHexagon(el_hexagon);
         _ref = self.get('neighbours');
@@ -239,6 +253,11 @@
         }
         return _results;
       });
+      el_container.on('mousedown', function() {
+        self.set('mousedown', true);
+        return self.set('from', self);
+      });
+      return el_container.on('mouseup', function() {});
     },
     colorsChanged: function() {
       var c, colors, el_arc, el_circle, el_hexagon;
@@ -298,9 +317,17 @@
       colors = this.get('colors');
       direction = this.get('direction');
       el_arrow = this.get('el_arrow');
-      if (direction) {
-        return Graphics.changeArrowDirection(el_arrow, direction, colors);
+      return Graphics.changeArrowDirection(el_arrow, direction, colors);
+    },
+    mousedownChanged: function() {
+      var el, neighbours, _i, _len, _results;
+      neighbours = this.get('neighbours');
+      _results = [];
+      for (_i = 0, _len = neighbours.length; _i < _len; _i++) {
+        el = neighbours[_i];
+        _results.push(el.hoveredby = this.cid);
       }
+      return _results;
     }
   });
 
@@ -340,7 +367,7 @@
         for (x in board[y]) {
           y = parseInt(y);
           x = parseInt(x);
-          shift = y % 2 ? 1 : 0;
+          shift = y % 2 ? 0 : 1;
           neighbours = [];
           if (has_cell_at(y - 1, x - 1 + shift)) {
             neighbours.push(this.board[y - 1][x - 1 + shift]);

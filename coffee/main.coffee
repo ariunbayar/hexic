@@ -19,21 +19,28 @@ class GameEngine
     setInterval(fn, @update_interval)
 
   drawBoard: (data) ->
-    return if @tmp
-    @tmp = 1 if @tmp == undefined
     @renderer.updateBoard(@convertHexicDataForEngine(data))
 
   convertHexicDataForEngine: (hexic_data) ->
     data = []
-    powers = hexic_data[@board_id]
-    users = hexic_data.board_users
-    moves = hexic_data.moves
-    for y of users
+    for y of hexic_data.board_users
       data[y] = [] if not (y of data)
-      for x of users[y]
-        [user_id, color] = users[y][x]
-        power = powers[y][x]
+      for x of hexic_data.board_users[y]
+        [user_id, color] = hexic_data.board_users[y][x]
+        power = hexic_data[@board_id][y][x]
         data[y][x] = [user_id, power] if not (x of data[y])
+    getDirection = (fx, fy, tx, ty) ->
+      shift = if fy % 2 then 0 else 1
+      return 1 if ty == fy - 1 and tx == fx - 1 + shift
+      return 2 if ty == fy - 1 and tx == fx + shift
+      return 3 if ty == fy     and tx == fx + 1
+      return 4 if ty == fy + 1 and tx == fx + shift
+      return 5 if ty == fy + 1 and tx == fx - 1 + shift
+      return 6 if ty == fy     and tx == fx - 1
+      return 0
+    for [fx, fy, tx, ty] in hexic_data.moves
+      direction = getDirection(fx, fy, tx, ty)
+      data[fy][fx][2] = direction if direction
     return data
 
   ajax: (url, timeout, data, successFunc = ->) ->
