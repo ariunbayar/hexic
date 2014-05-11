@@ -1,0 +1,19 @@
+{
+  "name": "demo1",
+  "version": "0.1.0",
+  "description": "Demonstrating socketio implementation",
+  "author": "Ariunbayar Baterdene <admin@example.com>",
+  "license": "ISC",
+  "dependencies": {
+      "redis": "latest",
+      "socket.io": "latest"
+  },
+  "devDependencies": {
+      "grunt": "latest",
+      "connect": "latest",
+      "connect-livereload": "latest",
+      "grunt-contrib-watch": "latest",
+      "grunt-contrib-coffee": "latest",
+      "grunt-contrib-connect": "latest"
+  }
+}

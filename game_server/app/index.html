@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Demo 1</title>
+</head>
+<body>
+
+<h1 style="background-color: red;">Hello world</h1>
+<div id="game"></div>
+
+<button type="button" onclick="ask_worker_id()">Click me to know worker id</button>
+<label id="wid"></label>
+
+<script src="/js/lib/jquery-1.11.1.min.js"></script>
+<script src="/js/lib/underscore-min.js"></script>
+<script src="/js/lib/backbone-min.js"></script>
+<script src="/js/lib/d3.js"></script>
+<script src="/js/lib/RenderEngine.js"></script>
+<script src="http://localhost:8001/socket.io/socket.io.js"></script>
+<script src="/js/client.js"></script>
+<script type="text/javascript">
+$(function(){
+    //window.init("http://localhost:8001");
+    //init_svg_game('#game', 350, 300, 1);
+});
+</script>
+
+</body>
+</html>

@@ -3,3 +3,6 @@
 *.db
 local_settings.py
 runserver.sh
+game_server/node_modules/
+game_server/local_settings.coffee
+game_server/app/js/*.js
