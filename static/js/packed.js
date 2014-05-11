@@ -3,42 +3,66 @@
   var Dashboard, GameEngine, HexController,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  Dashboard = (function() {
+  GameEngine = (function() {
 
-    function Dashboard(clicked_elem, url) {
-      var data;
-      this.board_id = clicked_elem.attr('board_id');
-      this.url = url;
-      data = {
-        'board_id': this.board_id
-      };
-      this.ajax(data, this.successFunc);
+    GameEngine.prototype.url_board = null;
+
+    GameEngine.prototype.url_progress = null;
+
+    GameEngine.prototype.url_move = null;
+
+    GameEngine.prototype.update_interval = null;
+
+    GameEngine.prototype.renderer = null;
+
+    GameEngine.prototype.board_id = null;
+
+    function GameEngine(container_id, width, height, user_id) {
+      this.renderer = new Engine(container_id, width, height, user_id);
     }
 
-    Dashboard.prototype.successFunc = function(json) {};
+    GameEngine.prototype.start = function() {
+      var fn, self;
+      self = this;
+      fn = function() {
+        return (function() {
+          return this.ajax(this.url_progress, this.update_interval, {}, this.drawBoard);
+        }).call(self);
+      };
+      return setInterval(fn, this.update_interval);
+    };
 
-    Dashboard.prototype.ajax = function(data, successFunc) {
+    GameEngine.prototype.drawBoard = function(data) {
+      return this.renderer.updateBoard(data.board_users, data[this.board_id], data.moves);
+    };
+
+    GameEngine.prototype.ajax = function(url, timeout, data, successFunc) {
       if (successFunc == null) {
         successFunc = function() {};
       }
+      data['board_id'] = this.board_id;
       return $.ajax({
-        url: this.url,
+        url: url,
         dataType: "json",
         data: data,
         cache: false,
+        context: this,
+        timeout: timeout,
         error: function(xhr, msg) {},
-        success: function(json) {
-          return successFunc(json);
-        }
+        success: successFunc
       });
     };
 
-    return Dashboard;
+    return GameEngine;
 
   })();
 
-  this.init_dashboard = function(clicked_elem, url) {
-    return new Dashboard(clicked_elem, url);
+  this.init_svg_game = function(playground, width, height, user_id) {
+    if (typeof Engine === "undefined") {
+      throw new Error("Render engine has not been included!");
+      return;
+    }
+    return new GameEngine(playground, width, height, user_id);
   };
 
   HexController = (function() {
@@ -563,6 +587,44 @@
     return new HexController(playground);
   };
 
+  Dashboard = (function() {
+
+    function Dashboard(clicked_elem, url) {
+      var data;
+      this.board_id = clicked_elem.attr('board_id');
+      this.url = url;
+      data = {
+        'board_id': this.board_id
+      };
+      this.ajax(data, this.successFunc);
+    }
+
+    Dashboard.prototype.successFunc = function(json) {};
+
+    Dashboard.prototype.ajax = function(data, successFunc) {
+      if (successFunc == null) {
+        successFunc = function() {};
+      }
+      return $.ajax({
+        url: this.url,
+        dataType: "json",
+        data: data,
+        cache: false,
+        error: function(xhr, msg) {},
+        success: function(json) {
+          return successFunc(json);
+        }
+      });
+    };
+
+    return Dashboard;
+
+  })();
+
+  this.init_dashboard = function(clicked_elem, url) {
+    return new Dashboard(clicked_elem, url);
+  };
+
   GameEngine = (function() {
 
     GameEngine.prototype.url_board = null;
@@ -575,12 +637,10 @@
 
     GameEngine.prototype.renderer = null;
 
-    GameEngine.prototype.user_id = null;
-
     GameEngine.prototype.board_id = null;
 
-    function GameEngine(container_id, width, height) {
-      this.renderer = new Engine(container_id, width, height);
+    function GameEngine(container_id, width, height, user_id) {
+      this.renderer = new Engine(container_id, width, height, user_id);
     }
 
     GameEngine.prototype.start = function() {
@@ -595,56 +655,7 @@
     };
 
     GameEngine.prototype.drawBoard = function(data) {
-      return this.renderer.updateBoard(this.convertHexicDataForEngine(data));
-    };
-
-    GameEngine.prototype.convertHexicDataForEngine = function(hexic_data) {
-      var color, data, direction, fx, fy, getDirection, power, tx, ty, user_id, x, y, _i, _len, _ref, _ref1, _ref2;
-      data = [];
-      for (y in hexic_data.board_users) {
-        if (!(y in data)) {
-          data[y] = [];
-        }
-        for (x in hexic_data.board_users[y]) {
-          _ref = hexic_data.board_users[y][x], user_id = _ref[0], color = _ref[1];
-          power = hexic_data[this.board_id][y][x];
-          if (!(x in data[y])) {
-            data[y][x] = [user_id, power];
-          }
-        }
-      }
-      getDirection = function(fx, fy, tx, ty) {
-        var shift;
-        shift = fy % 2 ? 0 : 1;
-        if (ty === fy - 1 && tx === fx - 1 + shift) {
-          return 1;
-        }
-        if (ty === fy - 1 && tx === fx + shift) {
-          return 2;
-        }
-        if (ty === fy && tx === fx + 1) {
-          return 3;
-        }
-        if (ty === fy + 1 && tx === fx + shift) {
-          return 4;
-        }
-        if (ty === fy + 1 && tx === fx - 1 + shift) {
-          return 5;
-        }
-        if (ty === fy && tx === fx - 1) {
-          return 6;
-        }
-        return 0;
-      };
-      _ref1 = hexic_data.moves;
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        _ref2 = _ref1[_i], fx = _ref2[0], fy = _ref2[1], tx = _ref2[2], ty = _ref2[3];
-        direction = getDirection(fx, fy, tx, ty);
-        if (direction) {
-          data[fy][fx][2] = direction;
-        }
-      }
-      return data;
+      return this.renderer.updateBoard(data.board_users, data[this.board_id], data.moves);
     };
 
     GameEngine.prototype.ajax = function(url, timeout, data, successFunc) {
@@ -668,12 +679,12 @@
 
   })();
 
-  this.init_svg_game = function(playground, width, height) {
+  this.init_svg_game = function(playground, width, height, user_id) {
     if (typeof Engine === "undefined") {
-      throw "Render engine has not been included!";
+      throw new Error("Render engine has not been included!");
       return;
     }
-    return new GameEngine(playground, width, height);
+    return new GameEngine(playground, width, height, user_id);
   };
 
 }).call(this);
