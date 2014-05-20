@@ -1,16 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>Demo 1</title>
+<title>Demo app</title>
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all" />
+<script src="/angular/angular.js"></script>
 </head>
 <body>
 
-<h1 style="background-color: red;">Hello world</h1>
-<div id="game"></div>
+<div class="container" ng-controller="gameController" ng-init="init()">
+    <div id="game_lobby">
+        {{ session_id }}
+        <div ng-repeat="game in games">
+            <i ng-if="$parent.game_id == game">&raquo;</i>
+            <a href="#" ng-click="join(game)">{{ game }}</a>
+        </div>
+        <input type="button" value="Click here to host" ng-click="host_new()"/>
+    </div>
 
-<button type="button" onclick="ask_worker_id()">Click me to know worker id</button>
-<label id="wid"></label>
+    <div id="game_room">
+        <div class="title">Hosted: {{ game_id }}</div>
+        <div>
+            <div ng-repeat="(name, is_ready) in players">
+                <i ng-if="$parent.session_id == name">&raquo;</i>
+                {{ name }} - {{ is_ready }}
+            </div>
+            <label>
+                <input type="checkbox" ng-model="is_ready"/> I'm ready
+            </label>
+        </div>
+    </div>
+
+    <div id="game"></div>
+</div>
 
 <script src="/js/lib/jquery-1.11.1.min.js"></script>
 <script src="/js/lib/underscore-min.js"></script>
@@ -20,8 +42,8 @@
 <script src="http://localhost:8001/socket.io/socket.io.js"></script>
 <script src="/js/client.js"></script>
 <script type="text/javascript">
+window.server_address = "http://localhost:8001";
 $(function(){
-    //window.init("http://localhost:8001");
     //init_svg_game('#game', 350, 300, 1);
 });
 </script>

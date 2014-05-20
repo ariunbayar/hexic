@@ -4,24 +4,42 @@ module.exports = (grunt) ->
     config: config
     coffee:
       compile:
-        expand: true,
-        flatten: true,
-        sourceMap: true
-        src: "<%= config.coffee %>/*.coffee"
-        dest: '<%= config.app %>/js/'
-        ext: '.js'
+        options:
+          sourceMap: false  # TODO true
+        files:
+          "app/js/client.js": "coffee/client.coffee"
+          "app/js/GameEngine.js": "coffee/GameEngine.coffee"
+      compile_server:
+        options:
+          sourceMap: true
+        files:
+          "app/js/server.js": "coffee/server.coffee"
+    sass:
+      compile:
+        files:
+          "app/css/style.css": "sass/style.scss"
     watch:
       livereload:
         options:
           livereload: true
         files: [
-          "<%= config.app %>/*.html",
-          "<%= config.app %>/js/*.js",
-          "<%= config.app %>/js/lib/*.js",
+          "app/index.html",
+          "app/js/lib/*.js",
+          "app/js/client.js",
+          "app/js/GameEngine.js",
+          "app/css/*.css",
         ]
+      coffee_server:
+        options:
+          nospawn: true
+        files: ["coffee/server.coffee"]
+        tasks: ["coffee:compile_server", "server:reload"]
       coffee:
-        files: '<%= config.coffee %>/*.coffee'
-        tasks: 'coffee:compile'
+        files: ['coffee/client.coffee', 'coffee/GameEngine.coffee']
+        tasks: ['coffee:compile']
+      sass:
+        files: ["sass/style.scss"]
+        tasks: ['sass:compile']
     connect:
       options:
         open: true
@@ -29,13 +47,14 @@ module.exports = (grunt) ->
       server:
         options:
           livereload: true
-          base: "<%= config.app %>"
+          base: ["app", "bower_components"]
 
   child_process = null
+  server_reloading = false
   spawn_node_app = ->
     grunt.util.spawn
       cmd: 'node'
-      args: ["#{config.app}/js/server.js", "debug"]
+      args: ["app/js/server.js", "debug"]
       opts: {stdio: 'inherit'}
     , (error, result, code) ->
       console.log('>>> Node application stopped!!!')
@@ -46,20 +65,26 @@ module.exports = (grunt) ->
       opts: {stdio: 'inherit'}
     , (error, result, code) ->
       console.log('>>> Redis stopped!!!')
-
-  grunt.event.on 'watch', (action, filepath, target) ->
-    if child_process
-      child_process.kill()
-    console.log(">>> Restarting node application!!!")
-    child_process = spawn_node_app()
+      unless server_reloading
+        grunt.task.run 'server:reload'
 
   grunt.registerTask "server", ->
     child_process = spawn_node_app()
+  grunt.registerTask "server:reload", ->
+    server_reloading = true
+    child_process.kill() if child_process
+    console.log(">>> Restarting node application!!!")
+    setTimeout ->
+      child_process = spawn_node_app()
+      server_reloading = false
+    , 2000
   grunt.registerTask "redis", ->
     spawn_redis()
 
-  grunt.registerTask("default", ["redis", "connect", "server", "watch"])
+  grunt.registerTask("default",
+    ["coffee", "sass", "redis", "connect", "server", "watch"])
 
   grunt.loadNpmTasks("grunt-contrib-watch")
   grunt.loadNpmTasks("grunt-contrib-coffee")
   grunt.loadNpmTasks("grunt-contrib-connect")
+  grunt.loadNpmTasks("grunt-contrib-sass")

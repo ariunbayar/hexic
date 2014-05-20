@@ -1,0 +1,13 @@
+{
+  "name": "game_server",
+  "version": "0.1.0",
+  "authors": [
+    "Ariunbayar Baterdene <admin@example.com>"
+  ],
+  "private": true,
+  "dependencies": {
+    "angular": "latest",
+    "bourbon": "latest",
+    "neat": "latest"
+  }
+}

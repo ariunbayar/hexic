@@ -14,6 +14,10 @@
       "connect-livereload": "latest",
       "grunt-contrib-watch": "latest",
       "grunt-contrib-coffee": "latest",
-      "grunt-contrib-connect": "latest"
+      "grunt-contrib-connect": "latest",
+      "grunt-contrib-sass": "latest",
+      "underscore": "latest",
+      "async": "latest",
+      "source-map-support": "latest"
   }
 }

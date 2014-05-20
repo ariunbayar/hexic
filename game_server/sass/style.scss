@@ -1,0 +1,21 @@
+@import "../bower_components/bourbon/dist/_bourbon.scss";
+@import "../bower_components/neat/app/assets/stylesheets/_neat.scss";
+
+$column: 90px;
+$gutter: 30px;
+$grid-columns: 10;
+$max-width: em(1088);
+$tablet: new-breakpoint(max-width 768px 8);
+$mobile: new-breakpoint(max-width 480px 4);
+
+.container{
+    @include outer-container;
+}
+
+#game_room{
+    @include span-columns(6);
+}
+
+*{
+    background-color: rgba(255, 125, 125, .2);
+}
