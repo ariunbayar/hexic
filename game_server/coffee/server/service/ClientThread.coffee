@@ -15,7 +15,7 @@ class ClientThread
 
   client_authorize: (handshakeData, callback)->
     cookie = handshakeData.headers.cookie
-    match = /PHPSESSID=([\w\d]+);/.exec(cookie)
+    match = /PHPSESSID=([\w\d]+)/.exec(cookie)
     if match
       handshakeData.session_id = match[1]
       callback(null, true)
@@ -27,7 +27,7 @@ class ClientThread
     socket.on("disconnect", _.bind(@client_disconnect, @, socket))
 
   client_disconnect: (socket)->
-    @clients[socket.id].disconnect(socket)
+    @clients[socket.id].disconnect()
     delete @clients[socket.id]
 
 module.exports = ClientThread

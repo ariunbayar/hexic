@@ -6,7 +6,6 @@ Player  = require('../model/Player')
 
 class Client
   constructor: (@socket)->
-    console.log('connect', @socket.id)
     _.bindAll(@, 'host_game')
     @notify_current_games()
     @socket.on('host_game', @host_game)

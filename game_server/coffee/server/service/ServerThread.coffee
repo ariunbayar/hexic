@@ -7,7 +7,7 @@ class ServerThread
     @io.set("store", new SIO.RedisStore)
 
   notify_workers: (msg) ->
-    @io.sockets.emit "games", msg
+    @io.sockets.emit("games", msg)
 
   process: ->
     return unless @is_idle

@@ -3,6 +3,7 @@ resume  = suspend.resume
 _       = require('underscore')
 
 class Game
+  @__games: 'games'
   @get_games: suspend.async ->
     games = yield REDIS.SMEMBERS('games', resume())
     if _.isArray(games) then games else []
@@ -26,18 +27,17 @@ class Game
     return unless _.isArray(player_ids) && player_ids.length
     k_game_players = [game_ids].map((game_id)-> "#{game_id}_players")
     v_game_players = yield REDIS.MGET(k_game_players, resume())
+    empty_game_ids = []
     empty_games = []
     update_args = []
-    for key, idx of k_game_players
+    for key, idx in k_game_players
       players = _.omit(JSON.parse(v_game_players[idx]), player_ids)
       if _.keys(players).length == 0
+        empty_game_ids.push(game_ids[idx])
         empty_games.push(key)
       else
         update_args.push(key, JSON.stringify(players))
-    # TODO remove debugging
-    console.log 'Remove players', game_ids, player_ids
-    console.log 'modifying', update_args
-    console.log 'deleting', empty_games
+    # TODO use transaction
     if update_args.length
       result = yield REDIS.MSET(update_args, resume())
       if result != 'OK'
@@ -47,6 +47,10 @@ class Game
       if num_deleted != empty_games.length
         msg = "Couldn't remove '#{empty_games}'. Removed #{num_deleted}"
         throw new Error(msg)
+      num_removed = yield REDIS.SREM([@__games].concat(empty_game_ids), resume())
+      if num_removed != empty_game_ids.length
+        throw new Error("Removing '#{empty_game_ids}' from '#{@__games}'
+                         failed. Removed #{num_removed}")
 
   constructor: (@game_id) ->
     @__players = "#{@game_id}_players"
@@ -54,11 +58,11 @@ class Game
   #get_players: suspend.async ->
     #return yield REDIS.GET("#{@game_id}_players", resume())
 
-  join_player: suspend.async (player_id, is_ready) ->
+  join_players: suspend.async (player_id, is_ready) ->
     players = yield REDIS.GET(@__players, resume())
     players = JSON.parse(players)
     players[player_id] = !!is_ready  # convert to boolean to be safe
-    yield REDIS.SET(@__players, JSON.stringify(players), resume())
+    result = yield REDIS.SET(@__players, JSON.stringify(players), resume())
     if result != 'OK'
       throw new Error("SET '#{@__players}' returned '#{result}'")
 
