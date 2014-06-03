@@ -1,4 +1,4 @@
-@gameController = ($scope)->
+@gameController = ($scope, $interval)->
   scopeWrap = (fn)-> (args...)-> $scope.$apply -> fn.apply(null, args)
   socket = io.connect window.server_address
 
@@ -28,3 +28,6 @@
   socket.on 'error', (reason) ->
     console.error('Unable to connect server', reason)
 
+  do_something = ->
+    console.log 'doing something', new Date / 1000
+  $interval(do_something, 2000)

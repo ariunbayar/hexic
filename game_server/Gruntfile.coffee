@@ -3,40 +3,43 @@ module.exports = (grunt) ->
   grunt.initConfig
     config: config
     coffee:
-      compile:
-        options:
-          sourceMap: false  # TODO true
-        files:
-          "app/js/client.js": "coffee/client.coffee"
-          "app/js/GameEngine.js": "coffee/GameEngine.coffee"
-      compile_server:
+      server:
         options:
           sourceMap: true
-        files:
-          "app/js/server.js": "coffee/server.coffee"
+        expand  : true,
+        cwd     : 'coffee/server/',
+        src     : ['**/*.coffee'],
+        dest    : 'app/server/',
+        ext     : '.js'
+      client:
+        options:
+          sourceMap: true
+        expand  : true,
+        cwd     : 'coffee/client/',
+        src     : ['**/*.coffee'],
+        dest    : 'app/client/js/',
+        ext     : '.js'
     sass:
       compile:
-        files:
-          "app/css/style.css": "sass/style.scss"
+        expand  : true,
+        flatten : true,
+        cwd     : 'sass/',
+        src     : ['*.scss'],
+        dest    : 'app/client/css/',
+        ext     : '.css'
     watch:
       livereload:
         options:
           livereload: true
-        files: [
-          "app/index.html",
-          "app/js/lib/*.js",
-          "app/js/client.js",
-          "app/js/GameEngine.js",
-          "app/css/*.css",
-        ]
+        files: ["app/client/**/*"]
       coffee_server:
         options:
           nospawn: true
-        files: ["coffee/server.coffee"]
-        tasks: ["coffee:compile_server", "server:reload"]
-      coffee:
-        files: ['coffee/client.coffee', 'coffee/GameEngine.coffee']
-        tasks: ['coffee:compile']
+        files: ["coffee/server/**/*.coffee"]
+        tasks: ["coffee:server", "server:reload"]
+      coffee_client:
+        files: ['coffee/client/**/*.coffee']
+        tasks: ['coffee:client']
       sass:
         files: ["sass/style.scss"]
         tasks: ['sass:compile']
@@ -47,14 +50,14 @@ module.exports = (grunt) ->
       server:
         options:
           livereload: true
-          base: ["app", "bower_components"]
+          base: ["app/client", "bower_components"]
 
   child_process = null
   server_reloading = false
   spawn_node_app = ->
     grunt.util.spawn
       cmd: 'node'
-      args: ["app/js/server.js", "debug"]
+      args: ["--harmony_generators", "app/server/main.js"]
       opts: {stdio: 'inherit'}
     , (error, result, code) ->
       console.log('>>> Node application stopped!!!')

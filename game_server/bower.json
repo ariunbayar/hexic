@@ -6,6 +6,11 @@
   ],
   "private": true,
   "dependencies": {
+    "hexic_rendering_engine": "ariunbayar/hexic_rendering_engine",
+    "d3": "latest",
+    "backbone": "latest",
+    "jquery": "latest",
+    "underscore": "latest",
     "angular": "latest",
     "bourbon": "latest",
     "neat": "latest"

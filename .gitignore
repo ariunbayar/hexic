@@ -7,6 +7,9 @@ game_server/node_modules/
 game_server/bower_components/
 game_server/.sass-cache/
 game_server/local_settings.coffee
-game_server/app/js/*.js
-game_server/app/js/*.js.map
-game_server/app/css/*.css
+game_server/app/client/css/*.css
+game_server/app/client/js/
+game_server/app/server/
+game_server/redis-cli
+game_server/redis-server
+tags

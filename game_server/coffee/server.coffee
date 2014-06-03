@@ -13,43 +13,33 @@ class Redis
   @handle_error: (err, data)->
     throw err if err
 
-  @deprecated_handle_error: (callback_fn) ->
-    # TODO only handle errors, don't do callback stuff
-    (err, data) ->
-      if err
-        throw err
-      else if callback_fn
-        callback_fn(data)
-
 class Model
   constructor: ->
     @redis = Redis.get_client()
-    @$err = Redis.deprecated_handle_error
     @$e = Redis.handle_error
 
   @redis: Redis.get_client()
-  @$err: Redis.deprecated_handle_error
   @$e: Redis.handle_error
 
 class Player extends Model
-  constructor: (@handshake_id) ->
+  constructor: (id) ->
     super()
 
   join_to: (game_id, callback) =>
-    @redis.SADD "#{@handshake_id}_games", game_id, callback
+    @redis.SADD "#{@id}_games", game_id, callback
 
   is_joined_to: (game_id, callback)=>
-    @redis.SISMEMBER "#{@handshake_id}_games", game_id, (err, result)=>
+    @redis.SISMEMBER "#{@id}_games", game_id, (err, result)=>
       callback(err, result == 1)
 
   leave_from: (game_id, callback)=>
-    @redis.SREM "#{@handshake_id}_games", game_id, callback
+    @redis.SREM "#{@id}_games", game_id, callback
 
   get_games: (callback)=>
-    @redis.SMEMBERS "#{@handshake_id}_games", callback
+    @redis.SMEMBERS "#{@id}_games", callback
 
-  @get_player: (handshake_id) =>
-    new Player handshake_id
+  @get_player: (id) =>
+    new Player id
 
 class Game extends Model
   constructor: (@game_id) ->
@@ -59,7 +49,7 @@ class Game extends Model
     async.waterfall [
       @get_players
       , (players, cb)=>
-        players[player.handshake_id] = is_ready
+        players[player.id] = is_ready
         json = JSON.stringify players
         @redis.SET "#{@game_id}_players", json, cb
       , (result, cb)=>
@@ -90,11 +80,11 @@ class Game extends Model
         if is_joined
           @get_players(cb)
         else
-          msg = "Trying to update player when player '#{player.handshake_id}'
+          msg = "Trying to update player when player '#{player.id}'
                  was not joined to '#{@game_id}'"
           cb(new Error(msg))
       , (players, cb)=>
-        players[player.handshake_id] = is_ready
+        players[player.id] = is_ready
         json = JSON.stringify players
         @redis.SET "#{@game_id}_players", json, cb
       , (result, cb)=>
@@ -109,7 +99,7 @@ class Game extends Model
     async.waterfall [
       @get_players
       , (players, cb)=>
-        delete players[player.handshake_id]
+        delete players[player.id]
         is_game_closed = _.keys(players).length == 0
         if is_game_closed
           Game.remove_game(@game_id, cb)
@@ -177,9 +167,10 @@ class LobbyServer
     @socket.on 'join_game', @join_game
     @socket.on 'tick_ready', @tick_ready
     @socket.on 'disconnect', @disconnect
-    @$err = Redis.deprecated_handle_error
 
-  disconnect: =>
+  disconnect: (callback)=>
+    # TODO error when hosting/leaving game
+    callback = callback || @$e
     # TODO console.log 'disconnect', @socket.id, @socket.handshake.session_id
     player = Player.get_player(@socket.id)
     async.waterfall [
@@ -200,7 +191,8 @@ class LobbyServer
               else
                 @notify_game_status game
           ], @$e
-    ], @$e
+        cb(null, game_ids.length)
+    ], callback
 
   notify_games: (broadcast) =>
     async.waterfall [
@@ -214,7 +206,12 @@ class LobbyServer
   host_game: =>
     game = null
     async.waterfall [
-      Game.create_game
+      (cb)=>
+        # leave current room.
+        # TODO rename disconnect to something else
+        @disconnect(cb)
+      , (num_left, cb)=>
+        Game.create_game cb
       , (_game, cb)=>
         @notify_games true
         game = _game
@@ -236,6 +233,10 @@ class LobbyServer
     game = null
     async.waterfall [
       (cb)=>
+        # leave current room.
+        # TODO rename disconnect to something else
+        @disconnect(cb)
+      , (num_left, cb)=>
         Game.get_game(game_id, cb)
       , (_game, cb)=>
         game = _game
