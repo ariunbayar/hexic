@@ -8,18 +8,14 @@ class Player
 
   constructor: (@id) ->
     #_.bindAll(@, 'join_to')
-    @__games = "#{@id}_games"
+    @__games = "games_for_#{@id}"
 
   get_games: (callback)->
     REDIS.SMEMBERS(@__games, callback)
 
   join_to: suspend.async (game_id)->
-    # leave current games
     games = yield @get_games(resume())
-    if _.isArray(games) && games.length
-      num_removed = yield REDIS.SREM([@__games].concat(games), resume())
-      if num_removed != games.length
-        throw new Error("Removing '#{games}' failed. Removed #{num_removed}")
+    yield @leave_from(games, resume())
     # join to game
     num_added = yield REDIS.SADD(@__games, game_id, resume())
     if num_added != 1
@@ -27,9 +23,13 @@ class Player
       throw new Error(msg)
     return games
 
-  #leave_from: (games, callback)->
-    #callback() unless _.isArray(games) && games.length
-    #REDIS.SREM([@__games].concat(games), callback)
+  leave_from: (games, callback)->
+    return callback() unless _.isArray(games) and games.length
+    REDIS.SREM([@__games].concat(games), (err, num_removed)->
+      if err == null and num_removed != games.length
+        err = new Error("Removing '#{games}' failed. Removed #{num_removed}")
+      callback(err)
+    )
 
   #is_joined_to: (game_id, callback)=>
     #@redis.SISMEMBER "#{@id}_games", game_id, (err, result)=>

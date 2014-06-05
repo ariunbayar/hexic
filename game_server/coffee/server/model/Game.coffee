@@ -21,10 +21,10 @@ class Game
       err = "game '#{game_id}' already exists. Indicator was '#{is_added}'."
     throw new Error(error_msg)
 
-  @remove_players: suspend.async (game_ids, player_ids)->
+  @remove_players: suspend.async (game_ids, player_ids, socket)->
     # removes players from given games, purges the game when empty
-    return unless _.isArray(game_ids)   && game_ids.length
-    return unless _.isArray(player_ids) && player_ids.length
+    return [] unless _.isArray(game_ids)   && game_ids.length
+    return [] unless _.isArray(player_ids) && player_ids.length
     k_game_players = [game_ids].map((game_id)-> "#{game_id}_players")
     v_game_players = yield REDIS.MGET(k_game_players, resume())
     empty_game_ids = []
@@ -51,20 +51,34 @@ class Game
       if num_removed != empty_game_ids.length
         throw new Error("Removing '#{empty_game_ids}' from '#{@__games}'
                          failed. Removed #{num_removed}")
+    socket.leave(game_ids) for game_id in game_ids
+    return empty_game_ids
+
+  @get_game: (game_id, callback) =>
+    REDIS.SISMEMBER('games', game_id, (err, result)->
+      if err == null and result != 1
+        err = new Error("game '#{game_id}' doesn't exist")
+      callback(err, new Game(game_id))
+    )
 
   constructor: (@game_id) ->
     @__players = "#{@game_id}_players"
 
-  #get_players: suspend.async ->
-    #return yield REDIS.GET("#{@game_id}_players", resume())
+  get_players: (callback)->
+    REDIS.GET(@__players, (err, json)->
+      try
+        callback(err, JSON.parse(json))
+      catch e
+        callback(e)
+    )
 
-  join_players: suspend.async (player_id, is_ready) ->
-    players = yield REDIS.GET(@__players, resume())
-    players = JSON.parse(players)
+  join_players: suspend.async (player_id, is_ready, socket) ->
+    players = yield @get_players(resume())
     players[player_id] = !!is_ready  # convert to boolean to be safe
     result = yield REDIS.SET(@__players, JSON.stringify(players), resume())
     if result != 'OK'
       throw new Error("SET '#{@__players}' returned '#{result}'")
+    socket.join(@game_id)
 
   #update_player: (player, is_ready, callback)=>
     #async.waterfall [
@@ -86,36 +100,6 @@ class Game
           #cb()
         #else
           #cb new Error "SET '#{@game_id}_players' returned '#{result}'"
-    #], callback
-
-  #remove_player: (player, callback)=>
-    #is_game_closed = false
-    #async.waterfall [
-      #@get_players
-      #, (players, cb)=>
-        #delete players[player.id]
-        #is_game_closed = _.keys(players).length == 0
-        #if is_game_closed
-          #Game.remove_game(@game_id, cb)
-        #else
-          #json = JSON.stringify players
-          ## TODO check if result == OK
-          #@redis.SET "#{@game_id}_players", json, cb
-      #, (result, cb)=>
-        #player.leave_from(@game_id, cb)
-      #, (is_player_left, cb)=>
-        #cb(null, is_game_closed)
-    #], callback
-
-  #@get_game: (game_id, callback) =>
-    #async.waterfall [
-      #(cb)=>
-        #@redis.SISMEMBER 'games', game_id, cb
-      #, (result, cb)=>
-        #if result == 1
-          #cb null, new Game game_id
-        #else
-          #cb new Error "game '#{game_id}' doesn't exist"
     #], callback
 
   #@remove_game: (game_id, callback)=>

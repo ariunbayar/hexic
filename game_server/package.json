@@ -5,6 +5,7 @@
   "author": "Ariunbayar Baterdene <admin@example.com>",
   "license": "ISC",
   "dependencies": {
+      "debug": "latest",
       "redis": "latest",
       "socket.io": "0.9"
   },

@@ -23,7 +23,7 @@ class ClientThread
       callback(throw new Error("Invalid cookie '" + cookie + "'"))
 
   client_connect: (socket)->
-    @clients[socket.id] = new Client(socket)
+    @clients[socket.id] = new Client(socket, @io.sockets)
     socket.on("disconnect", _.bind(@client_disconnect, @, socket))
 
   client_disconnect: (socket)->
