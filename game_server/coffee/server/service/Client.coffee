@@ -1,62 +1,77 @@
 debug   = require('debug')('hexic-play')
-suspend = require('suspend')
-resume  = suspend.resume
 _       = require('underscore')
-Game    = require('../model/Game')
-Player  = require('../model/Player')
 
 class Client
   constructor: (@socket, @sockets)->
+    @rooms = @socket.manager.rooms
+    @roomClients = @socket.manager.roomClients
+    @socket.on('host_game',  _.bind(@receive_host_game, @))
+    @socket.on('join_game',  _.bind(@receive_join_game, @))
+    @socket.on('tick_ready', _.bind(@receive_tick_ready, @))
+
+  _get_game_ids: (rooms)->
+    fn = (memo, v, k)-> if k then memo.concat(k[1..]) else memo
+    _.reduce(rooms, fn, [])
+
+  _get_player_games: (player_id)->
+    return @_get_game_ids(@roomClients[player_id])
+
+  _get_games: ->
+    return @_get_game_ids(@rooms)
+
+  _notify_games: ->
+    @sockets.emit('games', @_get_games())
+
+  _leave_old_games: (player_id, notify_games = true)->
+    cur_games = @_get_player_games(player_id)
+    num_empty_games = 0
+    for game_id in cur_games
+      @socket.leave(game_id)
+      @sockets.in(game_id).emit('leave', player_id)
+      num_empty_games++ unless _.size(@rooms['/' + game_id])
+    @_notify_games() if num_empty_games and notify_games
+
+  _get_players_for: (game_id)->
+    fn = (memo, player_id)->
+      # TODO ready state defaulting to false?
+      memo[player_id] = false
+      return memo
+    return _.reduce(@rooms['/' + game_id], fn, {})
+
+  receive_connect: ->
     debug('Connect from: ' + @socket.id)
-    _.bindAll(@, 'host_game', 'join_game', 'disconnect')
-    @notify_current_games()
-    @socket.on('host_game', @host_game)
-    @socket.on('join_game', @join_game)
-    #@socket.on 'tick_ready', @tick_ready
-    #@dummy = 123  # TODO debug only
-    #return console.log 'invalid scope' unless @dummy == 123
+    @socket.emit('games', @_get_games())
 
-  notify_current_games: suspend (to_all)->
-    games = yield Game.get_games(resume())
-    @socket.emit('games', games)
-    @socket.broadcast.emit('games', games) if to_all
+  receive_disconnect: ->
+    player_id = @socket.id
+    debug('Disconnect from: ' + player_id)
+    @_leave_old_games(player_id)
 
-  notify_game_status: suspend (game)->
-    players = yield game.get_players(resume())
-    @sockets
-      .in(game.game_id)
-      .emit('game_status', [game.game_id, players])
+  receive_host_game: (client_callback)->
+    @_leave_old_games(@socket.id, false)
+    # join to new game
+    REDIS.INCR('game_count', (err, game_count)=>
+      throw err if err
+      game_id = 'game_' + game_count
+      @socket.join(game_id)
+      # notify everyone about the new game
+      @_notify_games()
+      client_callback(game_id)
+    )
 
-  host_game: suspend ->
-    game = yield Game.create_game(resume())
-    yield @join_game([game.game_id, false], game, resume())
-    @notify_current_games(true)
+  receive_join_game: (game_id, is_ready, client_callback) ->
+    player_id = @socket.id
+    @_leave_old_games(player_id)
+    @socket.join(game_id)
+    # notify existing players
+    @sockets.in(game_id).emit('join', player_id, is_ready)
+    # notify the player about current_players
+    client_callback(@_get_players_for(game_id))
 
-  join_game: suspend ([game_id, is_ready], game, callback) ->
-    player = Player.get_player(@socket.id)
-    games_left = yield player.join_to(game_id, resume())
-    games_removed = yield Game.remove_players(
-      games_left, [player.id], @socket, resume())
-    games_updated = _.difference(games_left, games_removed)
-    game = yield Game.get_game(game_id, resume()) unless game
-    yield game.join_players([player.id], !!is_ready, @socket, resume())
-    @notify_game_status(game)
-    @notify_current_games(true) if games_removed.length
-    for game_id in games_updated
-      @notify_game_status(yield Game.get_game(game_id, resume()))
-    if callback  # called from host_game
-      callback()
-
-  disconnect: suspend ->
-    debug('Disconnect from: ' + @socket.id)
-    player = Player.get_player(@socket.id)
-    games = yield player.get_games(resume())
-    yield player.leave_from(games, resume())
-    games_removed = yield Game.remove_players(
-      games, [player.id], @socket, resume())
-    games_updated = _.difference(games, games_removed)
-    @notify_current_games(true) if games_removed.length
-    for game_id in games_updated
-      @notify_game_status(yield Game.get_game(game_id, resume()))
+  receive_tick_ready: (game_id, is_ready)->
+    player_id = @socket.id
+    # notify ready state within room
+    @sockets.in(game_id).emit('data', 'ready_state', player_id, is_ready)
+    debug game_id, is_ready
 
 module.exports = Client

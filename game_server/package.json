@@ -6,10 +6,13 @@
   "license": "ISC",
   "dependencies": {
       "debug": "latest",
+      "hiredis": "latest",
       "redis": "latest",
+      "socket.io-redis": "latest",
       "socket.io": "0.9"
   },
   "devDependencies": {
+      "redis-dump": "latest",
       "grunt": "latest",
       "connect": "latest",
       "connect-livereload": "latest",

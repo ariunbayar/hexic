@@ -24,10 +24,11 @@ class ClientThread
 
   client_connect: (socket)->
     @clients[socket.id] = new Client(socket, @io.sockets)
+    @clients[socket.id].receive_connect.call(@clients[socket.id])
     socket.on("disconnect", _.bind(@client_disconnect, @, socket))
 
   client_disconnect: (socket)->
-    @clients[socket.id].disconnect()
+    @clients[socket.id].receive_disconnect.call(@clients[socket.id])
     delete @clients[socket.id]
 
 module.exports = ClientThread

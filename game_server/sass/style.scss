@@ -1,21 +1,54 @@
 @import "../bower_components/bourbon/dist/_bourbon.scss";
 @import "../bower_components/neat/app/assets/stylesheets/_neat.scss";
 
-$column: 90px;
-$gutter: 30px;
-$grid-columns: 10;
-$max-width: em(1088);
-$tablet: new-breakpoint(max-width 768px 8);
-$mobile: new-breakpoint(max-width 480px 4);
+body{
+    font-family: 'Roboto', 'Ubuntu', 'Arial';
+    font-weight: 300;
+    color: #333;
+    margin: 0px;
+    padding: 0px;
+}
+
+/*$column: 90px;*/
+/*$gutter: 30px;*/
+/*$grid-columns: 10;*/
+/*$max-width: em(1088);*/
+/*$tablet: new-breakpoint(max-width 768px 8);*/
+/*$mobile: new-breakpoint(max-width 480px 4);*/
 
 .container{
+    margin-top: 2em;
     @include outer-container;
+    .sidebar{
+        @include span-columns(3);
+        .active{ font-weight: 700; }
+    }
+    .content{ @include span-columns(9); }
+    .sidebar, .content{
+        padding: 1em;
+        border: 1px solid rgba(255,150,150, .15);
+    }
 }
 
-#game_room{
-    @include span-columns(6);
+.game-lobby{
+    @include outer-container;
+    div{
+        background-color: rgba(255,150,150,.15);
+        margin-top: 1em;
+    }
+    div.span1{ @include span-columns(1); }
+    div.span2{ @include span-columns(2); }
+    div.span3{ @include span-columns(3); }
+    div.span4{ @include span-columns(4); }
+    div.span5{ @include span-columns(5); }
+    div.span6{ @include span-columns(6); }
+    div.span7{ @include span-columns(7); }
+    div.span8{ @include span-columns(8); }
 }
 
-*{
-    background-color: rgba(255, 125, 125, .2);
+
+.menu{
+    position: absolute;
+    top: 1px;
+    right: 0;
 }

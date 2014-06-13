@@ -6,33 +6,40 @@
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all" />
 <script src="/angular/angular.js"></script>
 </head>
-<body>
+<body ng-controller="gameController">
 
-<div class="container" ng-controller="gameController" ng-init="init()">
-    <div id="game_lobby">
-        {{ session_id }}
-        <div ng-repeat="game in games">
-            <i ng-if="$parent.game_id == game">&raquo;</i>
-            <a href="#" ng-click="join(game)">{{ game }}</a>
-        </div>
-        <input type="button" value="Click here to host" ng-click="host_new()"/>
+<div class="menu"><b>Player:</b> {{ player_id }}</div>
+<div class="container">
+    <div class="sidebar">
+        Current games: <br />
+        <ul>
+            <li ng-repeat="game in games">
+                <a href="#"
+                    ng-click="join(game)"
+                    ng-class="{active:$parent.game_id == game}"
+                    >{{ game }}</a>
+            </li>
+            <li>
+                <input type="button" value="Host New" ng-click="host_new()"/>
+            </li>
+        </ul>
     </div>
-
-    <div id="game_room">
-        <div class="title">Hosted: {{ game_id }}</div>
-        <div>
-            <div ng-repeat="(name, is_ready) in players">
-                <i ng-if="$parent.session_id == name">&raquo;</i>
-                {{ name }} - {{ is_ready }}
+    <div class="content" ng-if="game_is_valid()">
+        Hosted: {{ game_id }} <br />
+        <div ng-repeat="(name, is_ready) in players" class="game-lobby">
+            <div class="span1">
+                <i ng-if="$parent.player_id == name">&raquo;</i>
+                &nbsp;
             </div>
-            <label>
-                <input type="checkbox" ng-model="is_ready"/> I'm ready
-            </label>
+            <div class="span8"> {{ name }} </div>
+            <div class="span3"> {{ is_ready }} </div>
         </div>
+        <label>
+            <input type="checkbox" ng-model="$parent.is_ready"/> I'm ready
+        </label>
     </div>
-
-    <div id="game"></div>
 </div>
+<div id="game"></div>
 
 <script src="/jquery/dist/jquery.min.js"></script>
 <script src="/underscore/underscore.js"></script>
