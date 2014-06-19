@@ -8,6 +8,8 @@
       "debug": "latest",
       "hiredis": "latest",
       "redis": "latest",
+      "underscore": "latest",
+      "when": "latest",
       "socket.io-redis": "latest",
       "socket.io": "0.9"
   },
@@ -20,7 +22,6 @@
       "grunt-contrib-coffee": "latest",
       "grunt-contrib-connect": "latest",
       "grunt-contrib-sass": "latest",
-      "underscore": "latest",
       "suspend": "latest",
       "coffee-script": "https://github.com/barretron/coffee-script/tarball/generators_final",
       "source-map-support": "latest"

@@ -66,6 +66,7 @@ def play(request):
 
     return ctx
 
+
 @check_login
 @render_to("game/dashboard.html")
 def dashboard(request):

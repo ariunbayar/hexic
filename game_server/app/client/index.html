@@ -9,7 +9,7 @@
 <body ng-controller="gameController">
 
 <div class="menu"><b>Player:</b> {{ player_id }}</div>
-<div class="container">
+<div class="container" ng-hide="is_game_started">
     <div class="sidebar">
         Current games: <br />
         <ul>
@@ -24,7 +24,7 @@
             </li>
         </ul>
     </div>
-    <div class="content" ng-if="game_is_valid()">
+    <div class="content" ng-if="games.indexOf(game_id) >= 0">
         Hosted: {{ game_id }} <br />
         <div ng-repeat="(name, is_ready) in players" class="game-lobby">
             <div class="span1">
@@ -37,22 +37,24 @@
         <label>
             <input type="checkbox" ng-model="$parent.is_ready"/> I'm ready
         </label>
+        <input type="button" value="Start game"
+            ng-if="is_host && is_room_ready()"
+            ng-click="start_game()"/>
     </div>
 </div>
-<div id="game"></div>
+<div id="game" ng-show="is_game_started"></div>
 
 <script src="/jquery/dist/jquery.min.js"></script>
 <script src="/underscore/underscore.js"></script>
 <script src="/backbone/backbone.js"></script>
 <script src="/d3/d3.js"></script>
 <script src="/hexic_rendering_engine/Release/render_engine.js"></script>
-<script src="http://localhost:8001/socket.io/socket.io.js"></script>
+<script src="http://192.168.1.100:8001/socket.io/socket.io.js"></script>
+<script src="/js/GameEngine.js"></script>
 <script src="/js/main.js"></script>
 <script type="text/javascript">
-window.server_address = "http://localhost:8001";
-$(function(){
-    //init_svg_game('#game', 350, 300, 1);
-});
+window.server_address = "http://192.168.1.100:8001";
+$(function(){});
 </script>
 
 </body>

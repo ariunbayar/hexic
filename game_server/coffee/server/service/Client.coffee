@@ -8,6 +8,9 @@ class Client
     @socket.on('host_game',  _.bind(@receive_host_game, @))
     @socket.on('join_game',  _.bind(@receive_join_game, @))
     @socket.on('tick_ready', _.bind(@receive_tick_ready, @))
+    @socket.on('start_game', _.bind(@receive_start_game, @))
+    @socket.on('move',       _.bind(@receive_move, @))
+    @player_games = []
 
   _get_game_ids: (rooms)->
     fn = (memo, v, k)-> if k then memo.concat(k[1..]) else memo
@@ -33,7 +36,6 @@ class Client
 
   _get_players_for: (game_id)->
     fn = (memo, player_id)->
-      # TODO ready state defaulting to false?
       memo[player_id] = false
       return memo
     return _.reduce(@rooms['/' + game_id], fn, {})
@@ -61,6 +63,7 @@ class Client
 
   receive_join_game: (game_id, is_ready, client_callback) ->
     player_id = @socket.id
+    debug 'joined by', player_id
     @_leave_old_games(player_id)
     @socket.join(game_id)
     # notify existing players
@@ -72,6 +75,55 @@ class Client
     player_id = @socket.id
     # notify ready state within room
     @sockets.in(game_id).emit('data', 'ready_state', player_id, is_ready)
-    debug game_id, is_ready
+    debug game_id, is_ready, player_id
+
+  receive_start_game: (game_id, player_ids)->
+    # only 2 players allowed
+    return unless _.isArray(player_ids) and _.size(player_ids) >= 2
+    player_1_idx = 1
+    player_2_idx = 2
+    player_ids = {1: player_ids[0], 2: player_ids[1]}
+
+    # prepare the board
+    size = 10
+    players = (0  for x in [1..size] for i in [1..size])
+    powers  = (10 for x in [1..size] for i in [1..size])
+
+    set_player_location = (x, y, idx, power)->
+      players[y][x] = idx
+      powers[y][x] = power
+    set_player_location(0, 0, player_1_idx, 50)
+    set_player_location(size-1, size-1, player_2_idx, 50)
+
+    # create the game
+    game_data = {
+      player_id_map: JSON.stringify(player_ids)
+      players      : JSON.stringify(players)
+      powers       : JSON.stringify(powers)
+      move_queue   : JSON.stringify([])
+      moves        : JSON.stringify({})
+      moves4client : JSON.stringify([])
+      id           : game_id
+    }
+    REDIS.HMSET(game_id, game_data, (err, result)=>
+      throw err if err
+      REDIS.EXPIRE(game_id, 300)  # TODO idle game duration from settings
+      for idx, player_id of player_ids
+        @sockets.socket(player_id).emit('data', 'start_game', +idx)
+    )
+
+  receive_move: (game_id, fx, fy, tx, ty)->
+    # TODO validate the move
+    REDIS.HGET(game_id, 'move_queue', (err, move_queue)=>
+      throw err if err
+      return unless move_queue
+      move_queue = JSON.parse(move_queue)
+      move_queue.push([+fx, +fy, +tx, +ty])
+      move_queue = JSON.stringify(move_queue)
+      REDIS.HSET(game_id, 'move_queue', move_queue, (err, result)->
+        throw err if err
+        REDIS.EXPIRE(game_id, 300)  # TODO idle game duration from settings
+      )
+    )
 
 module.exports = Client
