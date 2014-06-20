@@ -232,10 +232,6 @@ class ServerThread
           cur_cell.decr = moving_power
 
       # apply the winner
-      console.log '---'
-      console.log winner
-      console.log cur_cell
-      console.log '---'
       if winner.user_id
         # this cell is mine. Remove the old move
         move[1] = []
