@@ -13,9 +13,9 @@
 {% block js-init %}
 svg_game = init_svg_game('#svg', 650, 600, {{ user_id }});
 if (svg_game){
-  svg_game.url_board = "{% url game.views.data_board %}";
-  svg_game.url_progress = "{% url game.views.progress %}";
-  svg_game.url_move = "{% url game.views.move %}";
+  svg_game.url_board = "{% url "game.views.data_board" %}";
+  svg_game.url_progress = "{% url "game.views.progress" %}";
+  svg_game.url_move = "{% url "game.views.move" %}";
   svg_game.update_interval = {{ update_interval }};
   svg_game.board_id = {{ waiting_board.id }};
   svg_game.start();
@@ -26,9 +26,9 @@ game.hexagon_radius = 30;
 game.user_id = {{ user_id }};
 game.board_id = {{ waiting_board.id }};
 game.update_interval = {{ update_interval }};
-game.url_board = "{% url game.views.data_board %}";
-game.url_progress = "{% url game.views.progress %}";
-game.url_move = "{% url game.views.move %}";
+game.url_board = "{% url "game.views.data_board" %}";
+game.url_progress = "{% url "game.views.progress" %}";
+game.url_move = "{% url "game.views.move" %}";
 game.start();
 {% endblock %}
 

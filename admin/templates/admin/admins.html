@@ -17,8 +17,8 @@
       <td>{{ admin.email }}</td>
       <td>{{ admin.password }}</td>
       <td>
-        <a href="{% url admin.views.update_admin admin.id %}">edit</a>
-        <a href="{% url admin.views.del_admin admin.id %}">delete</a>
+        <a href="{% url "admin.views.update_admin" admin.id %}">edit</a>
+        <a href="{% url "admin.views.del_admin" admin.id %}">delete</a>
       </td>
     </tr>
     {% endfor %}

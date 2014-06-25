@@ -12,14 +12,14 @@
     {% if session_admin_id %}
       <div class='clearfix row-fluid'>
         <div class='right-heading'>
-          <a href="{% url admin.views.add_admin %}">Add admin</a>
-          <a href="{% url admin.views.add_acc %}">Add account</a>
-          <a href="{% url admin.views.logout %}">Гарах</a>
+          <a href="{% url "admin.views.add_admin" %}">Add admin</a>
+          <a href="{% url "admin.views.add_acc" %}">Add account</a>
+          <a href="{% url "admin.views.logout" %}">Гарах</a>
         </div>
         <div class='left-heading'>
-          <a href="{% url admin.views.accounts %}">Accounts</a>
-          <a href="{% url admin.views.admins %}">Admins</a>
-          <a href="{% url admin.views.messages %}">Messages</a>
+          <a href="{% url "admin.views.accounts" %}">Accounts</a>
+          <a href="{% url "admin.views.admins" %}">Admins</a>
+          <a href="{% url "admin.views.messages" %}">Messages</a>
         </div>
       </div>
     {% endif %}

@@ -1,6 +1,8 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 
-urlpatterns = patterns('public.views',
+view_prefix = 'public.views'
+urlpatterns = patterns(
+    view_prefix,
     url(r'^$', 'index'),
 )

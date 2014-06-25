@@ -57,11 +57,11 @@ Extra commands
 South commands
 ===============
 - For first migration::
-    
+
     ./manage.py schemamigration app_name --initial
 
 - Other time::
-    
+
     ./manage.py schemamigration app_name --auto
 
 - To apply this migration::

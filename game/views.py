@@ -1,8 +1,8 @@
 # coding: utf-8
+import json
 from decorators import render_to, check_login
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render_to_response
-from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -44,7 +44,7 @@ def play(request):
 
     if working_board.status == Board.STATUS_IN_PROGRESS:
         if user_id not in user_ids:
-           return render_to_response('game/notification.html')
+            return render_to_response('game/notification.html')
 
     if not with_cells(users, account):
         # Automatically select cell if cell not selected
@@ -80,10 +80,9 @@ def dashboard(request):
         form = NewBoardForm(request.POST)
         if form.is_valid():
             user_id = request.session.get('account_id')
-            board = Board(
-                    name=form.cleaned_data['name'],
-                    status=Board.STATUS_WAIT,
-                    players=str(user_id))
+            board = Board(name=form.cleaned_data['name'],
+                          status=Board.STATUS_WAIT,
+                          players=str(user_id))
             board.save()
 
             board_id = board.id
@@ -108,7 +107,7 @@ def select_board(request):
     if indx:
         board.players[indx] = user_id
         board.save()
-        if not 0 in board.players:
+        if 0 not in board.players:
             board.status = Board.STATUS_IN_PROGRESS
             board.save()
             game_start(board.id)
@@ -117,7 +116,7 @@ def select_board(request):
     qs = Account.objects.filter(pk__in=board.players)
     for account in qs:
         users.append(account.phone_number)
-    val = simplejson.dumps({'users': users})
+    val = json.dumps({'users': users})
     return HttpResponse(val, mimetype="application/json")
 
 
@@ -128,20 +127,20 @@ def progress(request):
     board = memval('board_%s' % board_id)
     board_users = memval('%s_board_users' % board_id)
     simple_moves = memval('%s_simple_moves' % board_id)
-    val = simplejson.dumps({'moves': simple_moves, board_id: board,
-                            'board_id': board_id, 'board_users': board_users})
+    val = json.dumps({'moves': simple_moves, board_id: board,
+                      'board_id': board_id, 'board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
 
 @check_login
 def move(request):
     """ adds the move to move list """
-    ax = request.GET['fx'];
-    ay = request.GET['fy'];
-    bx = request.GET['tx'];
-    by = request.GET['ty'];
+    ax = request.GET['fx']
+    ay = request.GET['fy']
+    bx = request.GET['tx']
+    by = request.GET['ty']
     move = (int(ax), int(ay), int(bx), int(by))
-    user_id = int(request.session.get('account_id'));
+    user_id = int(request.session.get('account_id'))
 
     board_id = request.GET.get('board_id')
     queue = memval('%s_move_queue' % board_id)
@@ -155,7 +154,7 @@ def move(request):
         memval('%s_move_queue' % board_id, queue)
         msg = 'ack'
     cxt = {'rsp': msg}
-    return HttpResponse(simplejson.dumps(cxt), mimetype="application/json")
+    return HttpResponse(json.dumps(cxt), mimetype="application/json")
 
 
 @check_login
@@ -164,8 +163,8 @@ def data_board(request):
     board_id = request.GET['board_id']
     board = memval('board_%s' % board_id)
     board_users = memval('%s_board_users' % board_id)
-    val = simplejson.dumps({'board_id': board_id, board_id: board,
-                            '%s_board_users': board_users})
+    val = json.dumps({'board_id': board_id, board_id: board,
+                      '%s_board_users': board_users})
     return HttpResponse(val, mimetype="application/json")
 
 

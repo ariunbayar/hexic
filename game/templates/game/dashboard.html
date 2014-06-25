@@ -6,7 +6,7 @@
   <div class='span6'>
     <h2>Хүлээгдэж буй тоглолтууд</h2>
     {% for board in active_boards %}
-    <a href="{% url game.views.play %}?board_id={{ board.id }}">{{ board.name }}</a><br />
+    <a href="{% url "game.views.play" %}?board_id={{ board.id }}">{{ board.name }}</a><br />
     {% endfor %}
   </div>
   <div class='span4'>
@@ -33,7 +33,7 @@
 
 $('.waiting-game').click(
   function() {
-    return init_dashboard($(this), "{% url game.views.select_board %}");
+    return init_dashboard($(this), "{% url "game.views.select_board" %}");
   }
 );
 {% endblock %}

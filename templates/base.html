@@ -11,14 +11,14 @@
     <div class='clearfix'>
       <div class='right-heading'>
         {% if account_id %}
-        <a href="{% url security.views.logout %}">Гарах</a>
+        <a href="{% url "security.views.logout" %}">Гарах</a>
         {% else %}
-        <a href="{% url security.views.login %}">Нэвтрэх</a>
+        <a href="{% url "security.views.login" %}">Нэвтрэх</a>
         {% endif %}
       </div>
       <div class='left-heading'>
-        <a href="{% url public.views.index %}">Нүүр</a>
-        <a href="{% url game.views.dashboard %}">Тоглох</a>
+        <a href="{% url "public.views.index" %}">Нүүр</a>
+        <a href="{% url "game.views.dashboard" %}">Тоглох</a>
       </div>
     </div>
 

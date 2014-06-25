@@ -3,7 +3,7 @@
 {% block content %}
 Filter by:
 <button>+</button>
-<form action="{% url admin.views.messages %}" method="get" accept-charset="utf-8">
+<form action="{% url "admin.views.messages" %}" method="get" accept-charset="utf-8">
   <div class='row-fluid' id='filter' style='display:none'>
     <div class='span6'>
       <label for="id_action">Action</label>
