@@ -117,7 +117,7 @@ def select_board(request):
     for account in qs:
         users.append(account.phone_number)
     val = json.dumps({'users': users})
-    return HttpResponse(val, mimetype="application/json")
+    return HttpResponse(val, content_type="application/json")
 
 
 @check_login
@@ -129,7 +129,7 @@ def progress(request):
     simple_moves = memval('%s_simple_moves' % board_id)
     val = json.dumps({'moves': simple_moves, board_id: board,
                       'board_id': board_id, 'board_users': board_users})
-    return HttpResponse(val, mimetype="application/json")
+    return HttpResponse(val, content_type="application/json")
 
 
 @check_login
@@ -154,7 +154,7 @@ def move(request):
         memval('%s_move_queue' % board_id, queue)
         msg = 'ack'
     cxt = {'rsp': msg}
-    return HttpResponse(json.dumps(cxt), mimetype="application/json")
+    return HttpResponse(json.dumps(cxt), content_type="application/json")
 
 
 @check_login
@@ -165,7 +165,7 @@ def data_board(request):
     board_users = memval('%s_board_users' % board_id)
     val = json.dumps({'board_id': board_id, board_id: board,
                       '%s_board_users': board_users})
-    return HttpResponse(val, mimetype="application/json")
+    return HttpResponse(val, content_type="application/json")
 
 
 def get_account(session):
@@ -201,3 +201,34 @@ def select_cell(request):
             return redirect('game.views.play')
 
     return {'board': memval('board_%s' % board_id)}
+
+
+@check_login
+def quick_match(request):
+    values = dict(opponent=None)
+    return HttpResponse(json.dumps(values), content_type="application/json")
+
+
+def auto_login(request):  # TODO debug only
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
+    session_id = request.session.session_key
+    reserved_users = json.loads(memval('reserved_users') or '{}')
+
+    if session_id in reserved_users:
+        qs = Account.objects.filter(pk=reserved_users[session_id])
+    elif reserved_users:
+        qs = Account.objects.exclude(id__in=reserved_users.values())
+    else:
+        qs = Account.objects.all()
+
+    try:
+        user = qs[:1].get()
+        reserved_users[session_id] = user.id
+        memval('reserved_users', json.dumps(reserved_users), 3600)
+        rval = dict(phone_number=user.phone_number,
+                    pin_code=user.pin_code)
+    except Exception:
+        rval = None
+
+    return HttpResponse(json.dumps(rval), content_type="application/json")

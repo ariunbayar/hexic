@@ -10,6 +10,7 @@
   <body class='content'>
     <div class='clearfix'>
       <div class='right-heading'>
+        {{ account_id }}
         {% if account_id %}
         <a href="{% url "security.views.logout" %}">Гарах</a>
         {% else %}

@@ -10,6 +10,8 @@ urlpatterns = patterns(
     url(r'^game/progress/$',     'progress'),
     url(r'^game/dashboard/$',    'dashboard'),
     url(r'^game/select_board/$', 'select_board'),
+    url(r'^game/quick_match/$',  'quick_match'),
     # TODO remove
     url(r'^game/select_cell/$',  'select_cell'),
+    url(r'^game/auto_login/$',   'auto_login'),  # TODO debug only
 )
