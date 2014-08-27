@@ -5,6 +5,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from game.models import Board
 from game.forms import NewBoardForm
@@ -15,6 +16,7 @@ from utils import (memval, move_valid, game_start,
 from django.db.models import Q
 
 
+"""
 @check_login
 @render_to('game/play.html')
 def play(request):
@@ -65,6 +67,7 @@ def play(request):
                 working_board.save()
 
     return ctx
+"""
 
 
 @check_login
@@ -205,7 +208,40 @@ def select_cell(request):
 
 @check_login
 def quick_match(request):
-    values = dict(opponent=None)
+    # TODO fix the race condition
+    pending_users = memval('pending_users') or []
+    matched_users = memval('matched_users') or {}
+    user_id = request.session.get('account_id')
+
+    if user_id in matched_users:
+        # opponent has been chosen
+        opponent_id = matched_users[user_id]
+    elif pending_users:
+        # match to this opponent
+        is_found = False
+        for idx, opponent_id in enumerate(pending_users):
+            if opponent_id != user_id:
+                matched_users[opponent_id] = user_id
+                matched_users[user_id] = opponent_id
+                is_found = True
+                pending_users.pop(idx)
+                break
+        if not is_found:
+            opponent_id = None
+    else:
+        # user should wait for others
+        pending_users.append(user_id)
+        opponent_id = None
+
+    memval('pending_users', pending_users, 3600)
+    memval('matched_users', matched_users, 3600)
+
+    values = dict()
+    values['opponent_id'] = opponent_id
+    if opponent_id:
+        url = reverse('game.views.play')
+        values['redirect_url'] = '%s?opponent_id=%s' % (url, opponent_id)
+
     return HttpResponse(json.dumps(values), content_type="application/json")
 
 
@@ -213,7 +249,7 @@ def auto_login(request):  # TODO debug only
     if not request.session.exists(request.session.session_key):
         request.session.create()
     session_id = request.session.session_key
-    reserved_users = json.loads(memval('reserved_users') or '{}')
+    reserved_users = memval('reserved_users') or {}
 
     if session_id in reserved_users:
         qs = Account.objects.filter(pk=reserved_users[session_id])
@@ -225,10 +261,19 @@ def auto_login(request):  # TODO debug only
     try:
         user = qs[:1].get()
         reserved_users[session_id] = user.id
-        memval('reserved_users', json.dumps(reserved_users), 3600)
+        memval('reserved_users', reserved_users, 3600)
         rval = dict(phone_number=user.phone_number,
                     pin_code=user.pin_code)
     except Exception:
         rval = None
 
     return HttpResponse(json.dumps(rval), content_type="application/json")
+
+
+@check_login
+@render_to('game/play.html')
+def play(request):
+    ctx = dict(
+        opponent_id=request.GET.get('opponent_id')
+    )
+    return ctx

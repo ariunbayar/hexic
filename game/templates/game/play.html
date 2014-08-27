@@ -1,35 +1,50 @@
 {% extends "base.html" %}
-{% block title %}{{ waiting_board.name }}{% endblock %}
+{% block title %}&lt;The game title here&gt;{% endblock %}
 
 {% block content %}
 
-<h1>{{ waiting_board.name }}</h1>
-<div id="loader"><h1>Loading...</h1></div>
-<div id="playground" style="width: 650px; height: 600px;"></div>
-<div id="svg"></div>
+<div ng-controller="gameController" ng-app="app" data-url="http://localhost:8081">
+  <b>Player:</b> [[ player_id ]]
+  <div class="row-fluid" ng-hide="is_game_started">
+      <div class="span3">
+          Current games: <br />
+          <ul>
+              <li ng-repeat="game in games">
+                  <a href="#"
+                      ng-click="join(game)"
+                      ng-class="{active:$parent.game_id == game}"
+                      >[[ game ]]</a>
+              </li>
+              <li>
+                  <input type="button" value="Host New" ng-click="host_new()"/>
+              </li>
+          </ul>
+      </div>
+      <div class="span9" ng-if="games.indexOf(game_id) >= 0">
+          Hosted: [[ game_id ]] <br />
+          <div ng-repeat="(name, is_ready) in players" class="row-fluid">
+              <div class="span1">
+                  <i ng-if="$parent.player_id == name">&raquo;</i>
+                  &nbsp;
+              </div>
+              <div class="span4"> [[ name ]] </div>
+              <div class="span1"> [[ is_ready ]] </div>
+          </div>
+          <label>
+              <input type="checkbox" ng-model="$parent.is_ready"/> I'm ready
+          </label>
+          <input type="button" value="Start game"
+              ng-if="is_host && is_room_ready()"
+              ng-click="start_game()"/>
+      </div>
+  </div>
+  <div id="game" ng-show="is_game_started"></div>
+</div>
+<script src="http://localhost:8081/socket.io/socket.io.js"></script>
 
 {% endblock %}
 
 {% block js-init %}
-svg_game = init_svg_game('#svg', 650, 600, {{ user_id }});
-if (svg_game){
-  svg_game.url_board = "{% url "game.views.data_board" %}";
-  svg_game.url_progress = "{% url "game.views.progress" %}";
-  svg_game.url_move = "{% url "game.views.move" %}";
-  svg_game.update_interval = {{ update_interval }};
-  svg_game.board_id = {{ waiting_board.id }};
-  svg_game.start();
-}
-
-game = init_game('#playground');
-game.hexagon_radius = 30;
-game.user_id = {{ user_id }};
-game.board_id = {{ waiting_board.id }};
-game.update_interval = {{ update_interval }};
-game.url_board = "{% url "game.views.data_board" %}";
-game.url_progress = "{% url "game.views.progress" %}";
-game.url_move = "{% url "game.views.move" %}";
-game.start();
 {% endblock %}
 
 {# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

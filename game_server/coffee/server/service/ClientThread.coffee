@@ -15,7 +15,7 @@ class ClientThread
 
   client_authorize: (handshakeData, callback)->
     cookie = handshakeData.headers.cookie
-    match = /PHPSESSID=([\w\d]+)/.exec(cookie)
+    match = /sessionid=([\w\d]+)/.exec(cookie)
     if match
       handshakeData.session_id = match[1]
       callback(null, true)
