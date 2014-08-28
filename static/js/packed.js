@@ -668,7 +668,7 @@
   });
 
   app.controller('gameController', function($scope, $interval, $element) {
-    var init, reset_game_settings, scopeWrap, socket, svg_game, svg_game_move;
+    var init, reset_game_settings, run_ai, scopeWrap, socket, svg_game, svg_game_move;
     scopeWrap = function(fn) {
       return function() {
         var args;
@@ -761,12 +761,63 @@
         case 'board':
           board_users = args[0], board_powers = args[1], board_moves = args[2];
           if ($scope.is_game_started) {
-            return svg_game.updateBoard(board_users, board_powers, board_moves);
+            svg_game.updateBoard(board_users, board_powers, board_moves);
+            return run_ai(svg_game.user_id, board_users, board_powers, board_moves);
           }
       }
     }));
-    return svg_game_move = function(fx, fy, tx, ty) {
+    svg_game_move = function(fx, fy, tx, ty) {
       return socket.emit('move', $scope.game_id, fx, fy, tx, ty);
+    };
+    return run_ai = function(user_id, users, powers, moves) {
+      var able, get_attackable, has_cell_at, x, y, _results, _x, _y;
+      has_cell_at = function(x, y) {
+        if (y in users) {
+          return x in users[y];
+        }
+        return false;
+      };
+      get_attackable = function(x, y) {
+        var attackable, mark_if_attackable, shift;
+        shift = y % 2 ? 0 : 1;
+        attackable = false;
+        mark_if_attackable = function(_y, _x) {
+          if (has_cell_at(_x, _y)) {
+            if (users[_y][_x] !== user_id) {
+              return attackable = [_x, _y];
+            }
+          }
+        };
+        mark_if_attackable(y - 1, x - 1 + shift);
+        mark_if_attackable(y - 1, x + shift);
+        mark_if_attackable(y, x + 1);
+        mark_if_attackable(y + 1, x + shift);
+        mark_if_attackable(y + 1, x - 1 + shift);
+        mark_if_attackable(y, x - 1);
+        return attackable;
+      };
+      _results = [];
+      for (y in users) {
+        _results.push((function() {
+          var _results1;
+          _results1 = [];
+          for (x in users[y]) {
+            if (users[y][x] !== user_id) {
+              continue;
+            }
+            y = parseInt(y);
+            x = parseInt(x);
+            able = get_attackable(x, y);
+            if (!able) {
+              continue;
+            }
+            _x = able[0], _y = able[1];
+            _results1.push(svg_game_move(x, y, _x, _y));
+          }
+          return _results1;
+        })());
+      }
+      return _results;
     };
   });
 

@@ -123,6 +123,39 @@ app.controller 'gameController', ($scope, $interval, $element)->
         [board_users, board_powers, board_moves] = args
         if $scope.is_game_started
           svg_game.updateBoard(board_users, board_powers, board_moves)
+          run_ai(svg_game.user_id, board_users, board_powers, board_moves)  # TODO debug only
 
   svg_game_move = (fx, fy, tx, ty)->
     socket.emit('move', $scope.game_id, fx, fy, tx, ty)
+
+  # TODO debug only
+  run_ai = (user_id, users, powers, moves) ->
+    has_cell_at = (x, y) ->
+      if y of users
+        return x of users[y]
+      return false
+    get_attackable = (x, y) ->
+      shift = if y % 2 then 0 else 1
+      attackable = false
+      mark_if_attackable = (_y, _x) ->  # !!! reversed x, y
+        if has_cell_at(_x, _y)
+          if users[_y][_x] != user_id
+            attackable = [_x, _y]
+      mark_if_attackable(y-1, x-1+shift)
+      mark_if_attackable(y-1, x+shift)
+      mark_if_attackable(y  , x+1)
+      mark_if_attackable(y+1, x+shift)
+      mark_if_attackable(y+1, x-1+shift)
+      mark_if_attackable(y  , x-1)
+      return attackable
+
+    for y of users
+      for x of users[y]
+        continue if users[y][x] != user_id
+        y = parseInt(y)
+        x = parseInt(x)
+        able = get_attackable(x, y)
+        continue unless able
+        [_x, _y] = able
+        #append_move(x, y, _x, _y)
+        svg_game_move(x, y, _x, _y)
