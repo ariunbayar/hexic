@@ -112,10 +112,8 @@ app.controller 'gameController', ($scope, $interval, $element)->
       when 'ready_state'
         [player_id, is_ready] = args
         $scope.players[player_id] = is_ready
-        #alert(type + "\n" + player_id + "\n" + is_ready)
       when 'start_game'
         [player_idx] = args
-        #svg_game = new Engine('#game', 350, 300, player_idx)
         svg_game = new Engine('#game', 750, 600, player_idx)
         svg_game.move = svg_game_move
         $scope.is_game_started = true

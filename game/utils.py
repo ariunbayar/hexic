@@ -32,7 +32,7 @@ def game_start(board_id):
     cache.set('%s_simple_moves' % board_id, simple_moves, 60)
 
 
-def memval(name, value='__empty__', duration=30, allow_empty=False):
+def memval(name, value='__empty__', duration=6*3600, allow_empty=False):
     """ get/set memcache value """
     if value == '__empty__': # get case
         value = cache.get(name, None)

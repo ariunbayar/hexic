@@ -233,8 +233,8 @@ def quick_match(request):
         pending_users.append(user_id)
         opponent_id = None
 
-    memval('pending_users', pending_users, 3600)
-    memval('matched_users', matched_users, 3600)
+    memval('pending_users', pending_users)
+    memval('matched_users', matched_users)
 
     values = dict()
     values['opponent_id'] = opponent_id
@@ -261,7 +261,7 @@ def auto_login(request):  # TODO debug only
     try:
         user = qs[:1].get()
         reserved_users[session_id] = user.id
-        memval('reserved_users', reserved_users, 3600)
+        memval('reserved_users', reserved_users)
         rval = dict(phone_number=user.phone_number,
                     pin_code=user.pin_code)
     except Exception:
