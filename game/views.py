@@ -1,5 +1,6 @@
 # coding: utf-8
 import json
+import hashlib
 from decorators import render_to, check_login
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render_to_response
@@ -239,8 +240,10 @@ def quick_match(request):
     values = dict()
     values['opponent_id'] = opponent_id
     if opponent_id:
+        match_str = 'vs'.join(sorted([str(user_id), str(opponent_id)]))
+        match_key = hashlib.md5(match_str).hexdigest()[:8]
         url = reverse('game.views.play')
-        values['redirect_url'] = '%s?opponent_id=%s' % (url, opponent_id)
+        values['redirect_url'] = '%s?key=%s' % (url, match_key)
 
     return HttpResponse(json.dumps(values), content_type="application/json")
 
@@ -274,6 +277,6 @@ def auto_login(request):  # TODO debug only
 @render_to('game/play.html')
 def play(request):
     ctx = dict(
-        opponent_id=request.GET.get('opponent_id')
+        match_key=request.GET.get('key')
     )
     return ctx

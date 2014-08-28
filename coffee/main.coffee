@@ -60,6 +60,9 @@ app.controller 'gameController', ($scope, $interval, $element)->
 
   init = ->
     reset_game_settings()
+    $scope.is_ready = true
+    $scope.is_host = true
+    $scope.join('game_' + $element.attr('data-key'))
 
     $scope.$watch 'is_ready', (is_ready)->
       return unless $scope.game_id
@@ -75,7 +78,6 @@ app.controller 'gameController', ($scope, $interval, $element)->
       )
 
   $scope.join = (game_id)->
-    reset_game_settings()
     socket.emit('join_game', game_id, $scope.is_ready, scopeWrap (players)->
       $scope.game_id = game_id
       $scope.players = players

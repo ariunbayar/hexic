@@ -43,7 +43,7 @@ class ServerThread
       # TODO change to get from members
       REDIS.KEYS('game_*', (err, games)->
         return reject(err) if err
-        games = _.filter(games, ((v)->/^game_\d+$/.test(v)))
+        games = _.filter(games, ((v)->/^game_[0-9a-f]+$/.test(v)))
         resolve(games)
         )
 

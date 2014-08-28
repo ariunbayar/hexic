@@ -3,7 +3,11 @@
 
 {% block content %}
 
-<div ng-controller="gameController" ng-app="app" data-url="http://localhost:8081">
+<div  ng-controller="gameController"
+      ng-app="app"
+      data-url="http://localhost:8081"
+      data-key="{{ match_key }}"
+      >
   <b>Player:</b> [[ player_id ]]
   <div class="row-fluid" ng-hide="is_game_started">
       <div class="span3">
@@ -12,7 +16,6 @@
               <li ng-repeat="game in games">
                   <a href="#"
                       ng-click="join(game)"
-                      ng-class="{active:$parent.game_id == game}"
                       >[[ game ]]</a>
               </li>
               <li>
@@ -20,7 +23,7 @@
               </li>
           </ul>
       </div>
-      <div class="span9" ng-if="games.indexOf(game_id) >= 0">
+      <div class="span9" ng-if="game_id">
           Hosted: [[ game_id ]] <br />
           <div ng-repeat="(name, is_ready) in players" class="row-fluid">
               <div class="span1">

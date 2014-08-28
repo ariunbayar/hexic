@@ -71,6 +71,10 @@ class Client
     # notify the player about current_players
     client_callback(@_get_players_for(game_id))
 
+    player_ids = _.keys(@_get_players_for(game_id))
+    if _.size(game_id, player_ids) >= 2
+      @receive_start_game(game_id, player_ids)
+
   receive_tick_ready: (game_id, is_ready)->
     player_id = @socket.id
     # notify ready state within room
@@ -85,7 +89,7 @@ class Client
     player_ids = {1: player_ids[0], 2: player_ids[1]}
 
     # prepare the board
-    size = 10
+    size = 5
     players = (0  for x in [1..size] for i in [1..size])
     powers  = (10 for x in [1..size] for i in [1..size])
 

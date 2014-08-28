@@ -691,6 +691,9 @@
     };
     init = function() {
       reset_game_settings();
+      $scope.is_ready = true;
+      $scope.is_host = true;
+      $scope.join('game_' + $element.attr('data-key'));
       return $scope.$watch('is_ready', function(is_ready) {
         if (!$scope.game_id) {
           return;
@@ -708,7 +711,6 @@
       });
     };
     $scope.join = function(game_id) {
-      reset_game_settings();
       return socket.emit('join_game', game_id, $scope.is_ready, scopeWrap(function(players) {
         $scope.game_id = game_id;
         $scope.players = players;
