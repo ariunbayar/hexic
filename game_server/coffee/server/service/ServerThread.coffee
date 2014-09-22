@@ -59,6 +59,8 @@ class ServerThread
           move_queue   : JSON.parse(game_data.move_queue)
           moves        : JSON.parse(game_data.moves)
           moves4client : JSON.parse(game_data.moves4client)
+          id           : game_data.id
+          winner_id    : parseInt(game_data.winner_id)
         resolve(game_data)
         )
 
@@ -72,6 +74,7 @@ class ServerThread
         moves        : JSON.stringify(_game_data.moves)
         moves4client : JSON.stringify(_game_data.moves4client)
         id           : game_id
+      game_data.winner_id = _game_data.winner_id if _game_data.winner_id
       REDIS.HMSET(game_id, game_data, (err, result)->
         throw err if err
       )
@@ -83,10 +86,18 @@ class ServerThread
         game_data.players, game_data.powers, game_data.moves4client)
     )
 
+  notify_if_winner_exists: (game_data) ->
+    if game_data.winner_id
+      room = @io.sockets.in(game_data.id)
+      room.emit('data', 'end_game', game_data.winner_id)
+
   game_tick: (p_game_data) ->
     p_game_data.then((game_data)=>
+      if game_data.winner_id
+        return game_data
       if @tick_count == 3
         game_data = @process_power_increment(game_data)
+        @notify_if_winner_exists(game_data)
       game_data = @process_dirty_moves(game_data)
       game_data = @process_moves(game_data)
       return game_data
@@ -95,13 +106,19 @@ class ServerThread
   process_power_increment: (game_data)->
     powers = game_data.powers
     players = game_data.players
+    player_ids = {}
     for row, y in powers
       for power, x in row
-        is_limit_reached = powers[y][x] < @cell_limit
+        is_within_limit = powers[y][x] < @cell_limit
         is_bla = powers[y][x] > 0  # TODO what is it?
-        is_user = players[y][x] > 0
-        if is_limit_reached and is_bla and is_user
+        player_id = players[y][x]
+        is_user = player_id > 0
+        if is_user
+          player_ids[player_id] = true
+        if is_within_limit and is_bla and is_user
           powers[y][x]++
+    if _.size(player_ids) == 1
+      game_data.winner_id = parseInt(_.keys(player_ids)[0])
     return game_data
 
   process_dirty_moves: (game_data)->

@@ -1,0 +1,4 @@
+module.exports =
+  redis:
+    cmd: "/home/ariunbayar/Downloads/redis-2.8.9/src/redis-server"
+    args: ['--port 6379', '--loglevel warning']

@@ -124,6 +124,12 @@ app.controller 'gameController', ($scope, $interval, $element)->
         if $scope.is_game_started
           svg_game.updateBoard(board_users, board_powers, board_moves)
           run_ai(svg_game.user_id, board_users, board_powers, board_moves)  # TODO debug only
+      when 'end_game'
+        [winner_id] = args
+        if svg_game.users_id == winner_id
+          console.log 'Congrats! You win!'
+        else
+          console.log 'You are lost! Try again?'
 
   svg_game_move = (fx, fy, tx, ty)->
     socket.emit('move', $scope.game_id, fx, fy, tx, ty)

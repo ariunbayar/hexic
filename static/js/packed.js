@@ -747,7 +747,7 @@
       return delete $scope.players[player_id];
     }));
     socket.on('data', scopeWrap(function() {
-      var args, board_moves, board_powers, board_users, is_ready, player_id, player_idx, type;
+      var args, board_moves, board_powers, board_users, is_ready, player_id, player_idx, type, winner_id;
       type = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       switch (type) {
         case 'ready_state':
@@ -763,6 +763,14 @@
           if ($scope.is_game_started) {
             svg_game.updateBoard(board_users, board_powers, board_moves);
             return run_ai(svg_game.user_id, board_users, board_powers, board_moves);
+          }
+          break;
+        case 'end_game':
+          winner_id = args[0];
+          if (svg_game.users_id === winner_id) {
+            return console.log('Congrats! You win!');
+          } else {
+            return console.log('You are lost! Try again?');
           }
       }
     }));
