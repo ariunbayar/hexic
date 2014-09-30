@@ -4,7 +4,10 @@ from admin.models import Admin
 from admin.forms import AdminLoginForm, AccountForm, AdminForm
 from api.models import Sms
 from decorators import render_to, check_admin
+from game.utils import memval
 from security.models import Account
+
+import redis, json
 
 from django.contrib import messages as flash
 from django.core.urlresolvers import reverse
@@ -208,3 +211,27 @@ def del_admin(request, admin_id):
     flash.add_message(request, flash.SUCCESS, 'Admin deleted')
 
     return redirect(reverse('admin.views.admins'))
+
+
+@check_admin
+@render_to('admin/dashboard.html')
+def dashboard(request):
+    ctx = {
+        'pending_users': memval('pending_users'),
+        'matched_users': memval('matched_users'),
+        'games': dict()
+    }
+    redis_cache = redis.StrictRedis()  # TODO use settings
+    games = redis_cache.keys('game_*')
+    get_and_decode = lambda k, h: json.loads(redis_cache.hget(k, h))
+    for game in games:
+        ctx['games'][game] = {
+            'id': redis_cache.hget(game, 'id'),
+            'powers': get_and_decode(game, 'powers'),
+            'players': get_and_decode(game, 'players'),
+            'moves4client': get_and_decode(game, 'moves4client'),
+            'moves': get_and_decode(game, 'moves'),
+            'player_id_map': get_and_decode(game, 'player_id_map'),
+            'move_queue': get_and_decode(game, 'move_queue'),
+        }
+    return ctx

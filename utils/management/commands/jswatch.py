@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Watching changes for %s\n' % self.SOURCE)
 
-        command = 'coffee --watch --join %s --compile %s\n'\
+        command = 'game_server/node_modules/coffee-script/bin/coffee --watch --join %s --compile %s\n'\
                   % (self.DESTINATION, self.SOURCE)
         self.stdout.write(' > %s' % command)
         os.system(command)

@@ -1,10 +1,4 @@
 class Dashboard
-  selectBoard: (clicked_elem) ->
-    data = {'board_id': clicked_elem.attr('board_id')}
-    success_fn = (json) ->
-      return
-    @ajax(@select_board_url, data, success_fn)
-
   ajax: (url, data, successFunc = ->) ->
     $.ajax({
       url: url
@@ -44,5 +38,4 @@ class Dashboard
   dashboard = new Dashboard()
   dashboard.select_board_url = select_board_url
   dashboard.quick_match_url = quick_match_url
-  $('.waiting-game').click(-> dashboard.selectBoard())
   $('#quick_match').click(-> dashboard.quick_match())

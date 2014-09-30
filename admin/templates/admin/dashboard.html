@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Matched users</td>
+      <td>{{ matched_users }}</td>
+    </tr>
+    <tr>
+      <td>Pending users</td>
+      <td>{{ pending_users }}</td>
+    </tr>
+    {% for game, details in games.items %}
+    <tr>
+      <td>{{ game }}</td>
+      <td>
+        <b>ID</b> <pre>{{ details.id }}</pre>
+        <b>Player id map</b> <pre>{{ details.player_id_map | pprint }}</pre>
+        <b>Players</b> <pre>{{ details.players | pprint }}</pre>
+        <b>Powers</b> <pre>{{ details.powers | pprint }}</pre>
+        <b>Moves</b> <pre>{{ details.moves | pprint }}</pre>
+        <b>Moves for client</b> <pre>{{ details.moves4client | pprint }}</pre>
+        <b>Move queue</b> <pre>{{ details.move_queue | pprint }}</pre>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+{# vim: set ts=2 sw=2 sts=2 fdn=4 : #}

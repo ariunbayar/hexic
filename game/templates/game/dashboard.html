@@ -2,31 +2,6 @@
 {% block title %}Select board{% endblock %}
 {% block content %}
 
-<div class='row-fluid show-grid'>
-  <div class='span6'>
-    <h2>Хүлээгдэж буй тоглолтууд</h2>
-    {% for board in active_boards %}
-    <a href="{% url "game.views.play" %}?board_id={{ board.id }}">{{ board.name }}</a><br />
-    {% endfor %}
-  </div>
-  <div class='span4'>
-    <h2>Шинээр тоглолт үүсгэх</h2>
-    <form action="" method="post" id='new-game-form'>{% csrf_token %}
-      {% if form.errors %}
-      <div class="errorlist">
-        {{ form.name.errors }}
-      </div>
-      {% endif %}
-      {{ form.name }}
-      <input type="submit" />
-    </form>
-    <h2>Одоо болж байгаа тоглолтууд</h2>
-      {% for board in active_boards %}
-      <a class='waiting-game' board_id='{{ board.id }}'>{{ board.name }}</a><br />
-      {% endfor %}
-  </div>
-</div>
-
 <div>
   <button id="quick_match">Quick Match</button>
 </div>

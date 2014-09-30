@@ -7,15 +7,6 @@
   Dashboard = (function() {
     function Dashboard() {}
 
-    Dashboard.prototype.selectBoard = function(clicked_elem) {
-      var data, success_fn;
-      data = {
-        'board_id': clicked_elem.attr('board_id')
-      };
-      success_fn = function(json) {};
-      return this.ajax(this.select_board_url, data, success_fn);
-    };
-
     Dashboard.prototype.ajax = function(url, data, successFunc) {
       if (successFunc == null) {
         successFunc = function() {};
@@ -71,9 +62,6 @@
     dashboard = new Dashboard();
     dashboard.select_board_url = select_board_url;
     dashboard.quick_match_url = quick_match_url;
-    $('.waiting-game').click(function() {
-      return dashboard.selectBoard();
-    });
     return $('#quick_match').click(function() {
       return dashboard.quick_match();
     });

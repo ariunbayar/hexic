@@ -15,4 +15,5 @@ urlpatterns = patterns(
     url(r'^logout$',                         'logout'),
     url(r'^messages$',                       'messages'),
     url(r'^login$',                          'login'),
+    url(r'^dashboard$',                      'dashboard'),
 )

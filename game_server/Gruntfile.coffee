@@ -1,5 +1,6 @@
 module.exports = (grunt) ->
-  config = require './local_settings'
+  #config = require './local_settings'
+  config = {}
   grunt.initConfig
     config: config
     coffee:
@@ -57,7 +58,7 @@ module.exports = (grunt) ->
   spawn_node_app = ->
     grunt.util.spawn
       cmd: 'node'
-      args: ["--harmony_generators", "app/server/main.js"]
+      args: ["app/server/main.js"]
       opts: {stdio: 'inherit'}
     , (error, result, code) ->
       console.log('>>> Node application stopped!!!')
@@ -85,7 +86,7 @@ module.exports = (grunt) ->
     spawn_redis()
 
   grunt.registerTask("default",
-    ["coffee", "sass", "redis", "connect", "server", "watch"])
+    ["coffee", "sass", "connect", "server", "watch"])
 
   grunt.loadNpmTasks("grunt-contrib-watch")
   grunt.loadNpmTasks("grunt-contrib-coffee")

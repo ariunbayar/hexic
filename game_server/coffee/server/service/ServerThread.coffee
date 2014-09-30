@@ -253,7 +253,7 @@ class ServerThread
         # this cell is mine. Remove the old move
         move[1] = []
         cur_cell.user_id = winner.user_id
-        cur_cell.power -= winner.power - cur_cell.power
+        cur_cell.power = winner.power - cur_cell.power
       else
         # no winner just decrement what old user had
         cur_cell.power -= cur_cell.decr
