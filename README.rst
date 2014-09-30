@@ -60,7 +60,7 @@ South commands
 
     ./manage.py schemamigration app_name --initial
 
-- Other time::
+- Incremental::
 
     ./manage.py schemamigration app_name --auto
 
