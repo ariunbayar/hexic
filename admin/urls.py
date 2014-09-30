@@ -16,4 +16,5 @@ urlpatterns = patterns(
     url(r'^messages$',                       'messages'),
     url(r'^login$',                          'login'),
     url(r'^dashboard$',                      'dashboard'),
+    url(r'^game_details/(?P<game_id>\w+)$', 'game_details'),
 )

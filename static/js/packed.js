@@ -57,10 +57,9 @@
 
   })();
 
-  this.init_dashboard = function(select_board_url, quick_match_url) {
+  this.init_dashboard = function(quick_match_url) {
     var dashboard;
     dashboard = new Dashboard();
-    dashboard.select_board_url = select_board_url;
     dashboard.quick_match_url = quick_match_url;
     return $('#quick_match').click(function() {
       return dashboard.quick_match();
@@ -756,10 +755,13 @@
         case 'end_game':
           winner_id = args[0];
           if (svg_game.users_id === winner_id) {
-            return console.log('Congrats! You win!');
+            console.log('Congrats! You win!');
           } else {
-            return console.log('You are lost! Try again?');
+            console.log('You are lost! Try again?');
           }
+          return setTimeout((function() {
+            return window.location = '/game/dashboard/';
+          }), 5000);
       }
     }));
     svg_game_move = function(fx, fy, tx, ty) {

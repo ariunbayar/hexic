@@ -117,16 +117,33 @@ class Client
     )
 
   receive_move: (game_id, fx, fy, tx, ty)->
-    # TODO validate the move
+    ### TODO validate the move
+      def move_valid(move, board, user_id, users):
+          (x, y, x1, y1) = move
+          xx = x + (0 if y % 2 else 1)
+
+          is_valid = ((x1 - 1 == x) and (y1 == y))\
+                    or ((x1 == xx) and (y1 - 1 == y))\
+                    or ((x1 + 1 == xx) and (y1 - 1 == y))\
+                    or ((x1 + 1 == x) and (y1 == y))\
+                    or ((x1 + 1 == xx) and (y1 + 1 == y))\
+                    or ((x1 == xx) and (y1 + 1 == y))\
+                    or (x == x1 and y == y1) # not move, a removal
+          is_valid = is_valid and (users[y][x][0] == user_id)
+          return is_valid
+    ###
     REDIS.HGET(game_id, 'move_queue', (err, move_queue)=>
       throw err if err
       return unless move_queue
-      move_queue = JSON.parse(move_queue)
-      move_queue.push([+fx, +fy, +tx, +ty])
-      move_queue = JSON.stringify(move_queue)
-      REDIS.HSET(game_id, 'move_queue', move_queue, (err, result)->
-        throw err if err
-        REDIS.EXPIRE(game_id, 300)  # TODO idle game duration from settings
+      REDIS.HGET(game_id, 'winner_id', (err, winner_id)->
+        return if winner_id
+        move_queue = JSON.parse(move_queue)
+        move_queue.push([+fx, +fy, +tx, +ty])
+        move_queue = JSON.stringify(move_queue)
+        REDIS.HSET(game_id, 'move_queue', move_queue, (err, result)->
+          throw err if err
+          REDIS.EXPIRE(game_id, 300)  # TODO idle game duration from settings
+        )
       )
     )
 

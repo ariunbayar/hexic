@@ -216,22 +216,29 @@ def del_admin(request, admin_id):
 @check_admin
 @render_to('admin/dashboard.html')
 def dashboard(request):
+    redis_cache = redis.StrictRedis()  # TODO use settings
     ctx = {
         'pending_users': memval('pending_users'),
         'matched_users': memval('matched_users'),
-        'games': dict()
+        'reserved_users': memval('reserved_users'),
+        'games': redis_cache.keys('game_*')
     }
-    redis_cache = redis.StrictRedis()  # TODO use settings
-    games = redis_cache.keys('game_*')
-    get_and_decode = lambda k, h: json.loads(redis_cache.hget(k, h))
-    for game in games:
-        ctx['games'][game] = {
-            'id': redis_cache.hget(game, 'id'),
-            'powers': get_and_decode(game, 'powers'),
-            'players': get_and_decode(game, 'players'),
-            'moves4client': get_and_decode(game, 'moves4client'),
-            'moves': get_and_decode(game, 'moves'),
-            'player_id_map': get_and_decode(game, 'player_id_map'),
-            'move_queue': get_and_decode(game, 'move_queue'),
-        }
     return ctx
+
+
+@check_admin
+@render_to('admin/game_details.html')
+def game_details(request, game_id):
+    redis_cache = redis.StrictRedis()  # TODO use settings
+    get_and_decode = lambda k, h: json.loads(redis_cache.hget(k, h))
+    details = {
+        'id': redis_cache.hget(game_id, 'id'),
+        'powers': get_and_decode(game_id, 'powers'),
+        'players': get_and_decode(game_id, 'players'),
+        'winner_id': redis_cache.hget(game_id, 'winner_id'),
+        'player_id_map': get_and_decode(game_id, 'player_id_map'),
+        'moves': get_and_decode(game_id, 'moves'),
+        'moves4client': get_and_decode(game_id, 'moves4client'),
+        'move_queue': get_and_decode(game_id, 'move_queue'),
+    }
+    return dict(details=details)

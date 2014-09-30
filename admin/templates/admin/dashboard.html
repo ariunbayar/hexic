@@ -11,6 +11,10 @@
   </thead>
   <tbody>
     <tr>
+      <td>Reserved users</td>
+      <td><pre>{{ reserved_users | pprint }}</pre></td>
+    </tr>
+    <tr>
       <td>Matched users</td>
       <td>{{ matched_users }}</td>
     </tr>
@@ -18,20 +22,14 @@
       <td>Pending users</td>
       <td>{{ pending_users }}</td>
     </tr>
-    {% for game, details in games.items %}
     <tr>
-      <td>{{ game }}</td>
+      <td>Games</td>
       <td>
-        <b>ID</b> <pre>{{ details.id }}</pre>
-        <b>Player id map</b> <pre>{{ details.player_id_map | pprint }}</pre>
-        <b>Players</b> <pre>{{ details.players | pprint }}</pre>
-        <b>Powers</b> <pre>{{ details.powers | pprint }}</pre>
-        <b>Moves</b> <pre>{{ details.moves | pprint }}</pre>
-        <b>Moves for client</b> <pre>{{ details.moves4client | pprint }}</pre>
-        <b>Move queue</b> <pre>{{ details.move_queue | pprint }}</pre>
+        {% for game_id in games %}
+        <a href="{% url "admin.views.game_details" game_id %}">{{ game_id }}</a><br/>
+        {% endfor %}
       </td>
     </tr>
-    {% endfor %}
   </tbody>
 </table>
 

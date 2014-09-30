@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% block title %}Details for {{ details.id }} {% endblock %}
+{% block content %}
+
+<b>ID</b> <pre>{{ details.id }}</pre>
+<b>Players</b> <pre>{{ details.players | pprint }}</pre>
+<b>Powers</b> <pre>{{ details.powers | pprint }}</pre>
+<b>Player id map</b> <pre>{{ details.player_id_map | pprint }}</pre>
+<b>Winner</b> <pre>{{ details.winner_id | pprint }}</pre>
+<b>Moves</b> <pre>{{ details.moves | pprint }}</pre>
+<b>Moves for client</b> <pre>{{ details.moves4client | pprint }}</pre>
+<b>Move queue</b> <pre>{{ details.move_queue | pprint }}</pre>
+
+{% endblock %}

@@ -10,7 +10,6 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Ariunbayar Bat-Erdene', 'admin@example.com'),
-    ('Bulgantamir', 'bulgaa@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -142,20 +141,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 )
 
 # Key for SMS client to recieve any messages
-SMS_CLIENT_KEY = 'FDpLAxrP3f7yYxvu'
-
-# Refresh and game movement/increment interval
-UPDATE_INTERVAL = 1000  # in milliseconds
-
-
-USER_COLORS = [
-    '90CA77',
-    '81C6DD',
-    'E9B64D',
-    'E48743',
-    '9E3B33'
-]
-
+SMS_CLIENT_KEY = 'FDpLAxrP3f7yYxvu'  # TODO connect with http://smssync.ushahidi.com/
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

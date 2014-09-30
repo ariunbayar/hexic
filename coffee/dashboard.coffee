@@ -34,8 +34,7 @@ class Dashboard
 
     find_opponent(begin_match)
 
-@init_dashboard = (select_board_url, quick_match_url) ->
+@init_dashboard = (quick_match_url) ->
   dashboard = new Dashboard()
-  dashboard.select_board_url = select_board_url
   dashboard.quick_match_url = quick_match_url
   $('#quick_match').click(-> dashboard.quick_match())

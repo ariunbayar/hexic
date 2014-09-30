@@ -130,6 +130,7 @@ app.controller 'gameController', ($scope, $interval, $element)->
           console.log 'Congrats! You win!'
         else
           console.log 'You are lost! Try again?'
+        setTimeout((-> window.location = '/game/dashboard/'), 5000) # TODO debug only
 
   svg_game_move = (fx, fy, tx, ty)->
     socket.emit('move', $scope.game_id, fx, fy, tx, ty)

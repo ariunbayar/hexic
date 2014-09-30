@@ -36,7 +36,7 @@
       x: 30,
       y: 30
     },
-    animate: true,
+    animate: false,
     touch_detected: false,
     mouse_detected: false,
     rollback_queue: [],
