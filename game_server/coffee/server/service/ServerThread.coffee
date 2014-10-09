@@ -1,5 +1,6 @@
 _      = require('underscore')
 whenjs = require('when')
+http   = require('http')
 
 class ServerThread
   # begin constants TODO differentiate
@@ -87,9 +88,35 @@ class ServerThread
     )
 
   notify_if_winner_exists: (game_data) ->
-    if game_data.winner_id
-      room = @io.sockets.in(game_data.id)
-      room.emit('data', 'end_game', game_data.winner_id)
+    return unless game_data.winner_id
+
+    # notify players
+    room = @io.sockets.in(game_data.id)
+    room.emit('data', 'end_game', game_data.winner_id)
+
+    # notify hexic
+    handshakeData = @io.sockets.manager.handshaken
+    payload = JSON.stringify
+      winner: handshakeData[game_data.player_id_map[game_data.winner_id][0]].session_id
+      players: [
+        handshakeData[game_data.player_id_map[1][0]].session_id,
+        handshakeData[game_data.player_id_map[2][0]].session_id,
+      ]
+    # TODO use settings
+    req_opts =
+      host: 'localhost'
+      port: 8000
+      path: '/api/_game_server/?key=FDpLAxrP3f7yYxvu'
+      method: 'POST'
+      headers:
+        'X-Requested-With': 'XMLHttpRequest'
+        'Content-Type': 'application/json'
+        'Content-Length': Buffer.byteLength(payload)
+    rsp_body = ''
+    request = http.request(req_opts, (rsp)->
+      rsp.on('data', ((chunk)-> rsp_body += chunk))
+    )
+    request.end(payload)
 
   game_tick: (p_game_data) ->
     p_game_data.then((game_data)=>

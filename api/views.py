@@ -1,9 +1,15 @@
+import json
+
 from api.models import Sms
-from security.models import Account
+from decorators import ajax_required, api_key_valid
 from helpers import generate_password, is_deposit
+from security.models import Account
 from settings import SMS_CLIENT_KEY
 
+from django.contrib.sessions.models import Session
 from django.http import HttpResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 
 def message_received(request):
@@ -43,3 +49,22 @@ def message_received(request):
 
     sms.save()
     return HttpResponse('msg received')
+
+
+def _get_account_id_by_session(session_id):
+    session = Session.objects.get(session_key=session_id)
+    return session.get_decoded().get('account_id')
+
+
+@csrf_exempt
+@require_POST
+@ajax_required
+@api_key_valid
+def game_server(request):
+    game_data = json.loads(request.body)
+
+    winner_id = _get_account_id_by_session(game_data['winner'])
+    account_ids = map(lambda sid: _get_account_id_by_session(sid), game_data['players'])
+    import pprint; pprint.pprint((account_ids, winner_id))
+
+    return HttpResponse('ACK')

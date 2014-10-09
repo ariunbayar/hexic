@@ -15,6 +15,7 @@ class ClientThread
 
   client_authorize: (handshakeData, callback)->
     cookie = handshakeData.headers.cookie
+    # TODO load session name from settings
     match = /sessionid=([\w\d]+)/.exec(cookie)
     if match
       handshakeData.session_id = match[1]

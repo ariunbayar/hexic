@@ -86,7 +86,11 @@ class Client
     return unless _.isArray(player_ids) and _.size(player_ids) >= 2
     player_1_idx = 1
     player_2_idx = 2
-    player_ids = {1: player_ids[0], 2: player_ids[1]}
+
+    @socket.manager.handshaken[@socket.id].session_id
+    player_ids =
+      1: [player_ids[0], @socket.manager.handshaken[player_ids[0]].session_id]
+      2: [player_ids[1], @socket.manager.handshaken[player_ids[1]].session_id]
 
     # prepare the board
     size = 5
@@ -112,7 +116,7 @@ class Client
     REDIS.HMSET(game_id, game_data, (err, result)=>
       throw err if err
       REDIS.EXPIRE(game_id, 300)  # TODO idle game duration from settings
-      for idx, player_id of player_ids
+      for idx, [player_id, session_id] of player_ids
         @sockets.socket(player_id).emit('data', 'start_game', +idx)
     )
 
