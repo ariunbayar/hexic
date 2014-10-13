@@ -32,6 +32,8 @@ if 'test' in sys.argv:  # running Django tests
         'NAME': ':memory:',
     }
 
+SIO_URL = 'http://localhost:8081'
+
 
 #-------------
 # django debug toolbar setting
@@ -39,11 +41,6 @@ if 'test' in sys.argv:  # running Django tests
 INTERNAL_IPS = ('127.0.0.1',)
 
 DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True,
-    'HIDE_DJANGO_SQL': False,
-    'TAG': 'div',
-    'ENABLE_STACKTRACES': True,
 }
 
 PREPEND_MIDDLEWARE_CLASSES = (

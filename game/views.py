@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 
 from security.models import Account
 from utils import memval
+from settings import SIO_URL
 
 
 @check_login
@@ -97,6 +98,7 @@ def play(request):
     redis_cache.delete('game_%s' % request.GET.get('key'))
 
     ctx = dict(
-        match_key=request.GET.get('key')
+        match_key=request.GET.get('key'),
+        sio_url=SIO_URL
     )
     return ctx

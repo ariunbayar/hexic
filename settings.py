@@ -143,6 +143,8 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 # Key for SMS client to recieve any messages
 SMS_CLIENT_KEY = 'FDpLAxrP3f7yYxvu'  # TODO connect with http://smssync.ushahidi.com/
 
+SIO_URL = ''  # overridden in local_settings
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error.

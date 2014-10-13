@@ -5,7 +5,7 @@
 
 <div  ng-controller="gameController"
       ng-app="app"
-      data-url="http://localhost:8081"
+      data-url="{{ sio_url }}"
       data-key="{{ match_key }}"
       >
   <b>Player:</b> [[ player_id ]]

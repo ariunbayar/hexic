@@ -12,10 +12,12 @@
       "when": "latest",
       "socket.io-redis": "latest",
       "socket.io": "0.9"
+      "bower": "latest",
   },
   "devDependencies": {
       "redis-dump": "latest",
       "grunt": "latest",
+      "grunt-cli": "latest",
       "connect": "latest",
       "connect-livereload": "latest",
       "grunt-contrib-watch": "latest",
