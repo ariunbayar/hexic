@@ -11,8 +11,8 @@
       "underscore": "latest",
       "when": "latest",
       "socket.io-redis": "latest",
-      "socket.io": "0.9"
-      "bower": "latest",
+      "socket.io": "0.9",
+      "bower": "latest"
   },
   "devDependencies": {
       "redis-dump": "latest",
