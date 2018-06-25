@@ -35,10 +35,6 @@ Getting started
 
 Extra commands
 ===============
-- To remove all .pyc files run::
-
-    find . -name "*.pyc" -exec rm {} \;
-
 - To run tests::
 
     python manage.py test -v 2 api game public security admin

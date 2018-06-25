@@ -1,6 +1,7 @@
 *.swp
 *.pyc
 *.db
+activate
 local_settings.py
 game_server/node_modules/
 game_server/bower_components/
