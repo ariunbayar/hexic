@@ -1,0 +1,783 @@
+[
+    {
+        "fields": {
+            "app_label": "auth",
+            "model": "permission",
+            "name": "permission"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "app_label": "auth",
+            "model": "group",
+            "name": "group"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "app_label": "auth",
+            "model": "user",
+            "name": "user"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "app_label": "auth",
+            "model": "message",
+            "name": "message"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "app_label": "contenttypes",
+            "model": "contenttype",
+            "name": "content type"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "app_label": "sessions",
+            "model": "session",
+            "name": "session"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "app_label": "sites",
+            "model": "site",
+            "name": "site"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "app_label": "south",
+            "model": "migrationhistory",
+            "name": "migration history"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "app_label": "security",
+            "model": "account",
+            "name": "account"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "app_label": "api",
+            "model": "sms",
+            "name": "sms"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "app_label": "admin",
+            "model": "admin",
+            "name": "admin"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "app_label": "game",
+            "model": "hexicprofile",
+            "name": "hexic profile"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "app_label": "game",
+            "model": "board",
+            "name": "board"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "domain": "example.com",
+            "name": "example.com"
+        },
+        "model": "sites.site",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "app_name": "security",
+            "applied": "2013-01-18T06:32:48",
+            "migration": "0001_initial"
+        },
+        "model": "south.migrationhistory",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "app_name": "security",
+            "applied": "2013-01-18T06:32:48",
+            "migration": "0002_auto__add_field_account_created_at"
+        },
+        "model": "south.migrationhistory",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "app_name": "api",
+            "applied": "2013-01-18T06:32:48",
+            "migration": "0001_initial"
+        },
+        "model": "south.migrationhistory",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "app_name": "admin",
+            "applied": "2013-01-18T06:32:48",
+            "migration": "0001_initial"
+        },
+        "model": "south.migrationhistory",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-03-10T03:16:46",
+            "migration": "0001_initial"
+        },
+        "model": "south.migrationhistory",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-04-10T00:08:10",
+            "migration": "0002_auto__add_activeboard"
+        },
+        "model": "south.migrationhistory",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-04-13T04:33:38",
+            "migration": "0002_auto__add_board"
+        },
+        "model": "south.migrationhistory",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-04-13T08:02:26",
+            "migration": "0003_auto__del_hexicprofile__chg_field_board_created_at"
+        },
+        "model": "south.migrationhistory",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-04-13T08:14:50",
+            "migration": "0004_auto__add_field_board_players__chg_field_board_created_at"
+        },
+        "model": "south.migrationhistory",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-09-14T04:33:25",
+            "migration": "0004_auto__add_field_board_players"
+        },
+        "model": "south.migrationhistory",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "app_name": "game",
+            "applied": "2013-09-14T04:33:25",
+            "migration": "0005_auto__chg_field_board_players"
+        },
+        "model": "south.migrationhistory",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "created_at": "2013-01-22T00:12:04",
+            "credit": 600,
+            "phone_number": 99437911,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "created_at": "2013-03-13T13:24:13",
+            "credit": 600,
+            "phone_number": 99887766,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "created_at": "2014-05-05T15:25:41",
+            "credit": 600,
+            "phone_number": 88880000,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000001,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000002,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000003,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000004,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000005,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000006,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000007,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000008,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "created_at": "2014-09-30T09:57:18",
+            "credit": 600,
+            "phone_number": 88000009,
+            "pin_code": 1234
+        },
+        "model": "security.account",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 1,
+            "date_time": "2013-01-22T00:12:04",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 2,
+            "date_time": "2013-01-22T00:12:10",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 2,
+            "date_time": "2013-01-22T00:12:11",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 2,
+            "date_time": "2013-01-22T00:12:12",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 2,
+            "date_time": "2013-01-22T00:12:13",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "account": 5,
+            "action": 2,
+            "date_time": "2013-01-22T03:23:30",
+            "sender": "+976596",
+            "text": "(Tand 99437911 dugaaraas 100 negj ilgeelee)"
+        },
+        "model": "api.sms",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "account": null,
+            "action": 0,
+            "date_time": "2014-09-30T15:37:23",
+            "sender": "123",
+            "text": "abc"
+        },
+        "model": "api.sms",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "email": "asda@example.com",
+            "password": "123",
+            "user_name": "admin"
+        },
+        "model": "admin.admin",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "codename": "add_permission",
+            "content_type": 1,
+            "name": "Can add permission"
+        },
+        "model": "auth.permission",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "codename": "change_permission",
+            "content_type": 1,
+            "name": "Can change permission"
+        },
+        "model": "auth.permission",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "codename": "delete_permission",
+            "content_type": 1,
+            "name": "Can delete permission"
+        },
+        "model": "auth.permission",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "codename": "add_group",
+            "content_type": 2,
+            "name": "Can add group"
+        },
+        "model": "auth.permission",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "codename": "change_group",
+            "content_type": 2,
+            "name": "Can change group"
+        },
+        "model": "auth.permission",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "codename": "delete_group",
+            "content_type": 2,
+            "name": "Can delete group"
+        },
+        "model": "auth.permission",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "codename": "add_user",
+            "content_type": 3,
+            "name": "Can add user"
+        },
+        "model": "auth.permission",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "codename": "change_user",
+            "content_type": 3,
+            "name": "Can change user"
+        },
+        "model": "auth.permission",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "codename": "delete_user",
+            "content_type": 3,
+            "name": "Can delete user"
+        },
+        "model": "auth.permission",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "codename": "add_message",
+            "content_type": 4,
+            "name": "Can add message"
+        },
+        "model": "auth.permission",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "codename": "change_message",
+            "content_type": 4,
+            "name": "Can change message"
+        },
+        "model": "auth.permission",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "codename": "delete_message",
+            "content_type": 4,
+            "name": "Can delete message"
+        },
+        "model": "auth.permission",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "codename": "add_contenttype",
+            "content_type": 5,
+            "name": "Can add content type"
+        },
+        "model": "auth.permission",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "codename": "change_contenttype",
+            "content_type": 5,
+            "name": "Can change content type"
+        },
+        "model": "auth.permission",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "codename": "delete_contenttype",
+            "content_type": 5,
+            "name": "Can delete content type"
+        },
+        "model": "auth.permission",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "codename": "add_session",
+            "content_type": 6,
+            "name": "Can add session"
+        },
+        "model": "auth.permission",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "codename": "change_session",
+            "content_type": 6,
+            "name": "Can change session"
+        },
+        "model": "auth.permission",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "codename": "delete_session",
+            "content_type": 6,
+            "name": "Can delete session"
+        },
+        "model": "auth.permission",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "codename": "add_site",
+            "content_type": 7,
+            "name": "Can add site"
+        },
+        "model": "auth.permission",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "codename": "change_site",
+            "content_type": 7,
+            "name": "Can change site"
+        },
+        "model": "auth.permission",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "codename": "delete_site",
+            "content_type": 7,
+            "name": "Can delete site"
+        },
+        "model": "auth.permission",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "codename": "add_migrationhistory",
+            "content_type": 8,
+            "name": "Can add migration history"
+        },
+        "model": "auth.permission",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "codename": "change_migrationhistory",
+            "content_type": 8,
+            "name": "Can change migration history"
+        },
+        "model": "auth.permission",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "codename": "delete_migrationhistory",
+            "content_type": 8,
+            "name": "Can delete migration history"
+        },
+        "model": "auth.permission",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "codename": "add_account",
+            "content_type": 9,
+            "name": "Can add account"
+        },
+        "model": "auth.permission",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "codename": "change_account",
+            "content_type": 9,
+            "name": "Can change account"
+        },
+        "model": "auth.permission",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "codename": "delete_account",
+            "content_type": 9,
+            "name": "Can delete account"
+        },
+        "model": "auth.permission",
+        "pk": 27
+    },
+    {
+        "fields": {
+            "codename": "add_sms",
+            "content_type": 10,
+            "name": "Can add sms"
+        },
+        "model": "auth.permission",
+        "pk": 28
+    },
+    {
+        "fields": {
+            "codename": "change_sms",
+            "content_type": 10,
+            "name": "Can change sms"
+        },
+        "model": "auth.permission",
+        "pk": 29
+    },
+    {
+        "fields": {
+            "codename": "delete_sms",
+            "content_type": 10,
+            "name": "Can delete sms"
+        },
+        "model": "auth.permission",
+        "pk": 30
+    },
+    {
+        "fields": {
+            "codename": "add_admin",
+            "content_type": 11,
+            "name": "Can add admin"
+        },
+        "model": "auth.permission",
+        "pk": 31
+    },
+    {
+        "fields": {
+            "codename": "change_admin",
+            "content_type": 11,
+            "name": "Can change admin"
+        },
+        "model": "auth.permission",
+        "pk": 32
+    },
+    {
+        "fields": {
+            "codename": "delete_admin",
+            "content_type": 11,
+            "name": "Can delete admin"
+        },
+        "model": "auth.permission",
+        "pk": 33
+    },
+    {
+        "fields": {
+            "codename": "add_hexicprofile",
+            "content_type": 12,
+            "name": "Can add hexic profile"
+        },
+        "model": "auth.permission",
+        "pk": 34
+    },
+    {
+        "fields": {
+            "codename": "change_hexicprofile",
+            "content_type": 12,
+            "name": "Can change hexic profile"
+        },
+        "model": "auth.permission",
+        "pk": 35
+    },
+    {
+        "fields": {
+            "codename": "delete_hexicprofile",
+            "content_type": 12,
+            "name": "Can delete hexic profile"
+        },
+        "model": "auth.permission",
+        "pk": 36
+    },
+    {
+        "fields": {
+            "codename": "add_board",
+            "content_type": 14,
+            "name": "Can add board"
+        },
+        "model": "auth.permission",
+        "pk": 40
+    },
+    {
+        "fields": {
+            "codename": "change_board",
+            "content_type": 14,
+            "name": "Can change board"
+        },
+        "model": "auth.permission",
+        "pk": 41
+    },
+    {
+        "fields": {
+            "codename": "delete_board",
+            "content_type": 14,
+            "name": "Can delete board"
+        },
+        "model": "auth.permission",
+        "pk": 42
+    }
+]
